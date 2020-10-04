@@ -18,7 +18,7 @@ const style = {
       padding: '2em 0em',
     },
     last: {
-      marginBottom: '300px',
+      marginBottom: '300px', 
     },
     comp: {
         margin:'0.5rem',

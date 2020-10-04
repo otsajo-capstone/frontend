@@ -26,7 +26,7 @@ class Login extends Component {
             </Header>
             <Form size='large'>
               <Segment stacked>
-                <Form.Input fluid icon='user' iconPosition='left' placeholder='E-mail address' />
+                <Form.Input fluid icon='user' iconPosition='left' placeholder='ID' />
                 <Form.Input
                   fluid
                   icon='lock'
@@ -42,6 +42,7 @@ class Login extends Component {
             </Form>
             <Message>
                 Join and Get your Color!<br />
+              <Link to="/">Search ID/or PassWord</Link><br /> 
               <Link to="/signup">Sign Up</Link>
             </Message>
           </Grid.Column>
