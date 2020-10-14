@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import {
   Button,
   Container,
-  Step,
 } from 'semantic-ui-react'
 
 const style = {
@@ -36,20 +35,15 @@ class RegisterHeader extends Component {
         return (
             <div>
                 <Container style={style.h3}>
-                    { number !== '4' && <Link to={prior}><Button onClick={onClickHome} content='Back' icon='arrow alternate circle left outline' labelPosition='left' /></Link>}
+                    { number !== '2' && 
+                    <Link to={prior}>
+                        <Button 
+                        onClick={onClickHome}
+                        content='Back'
+                        icon='arrow alternate circle left outline'
+                        labelPosition='left'/>
+                    </Link>}
                     <h1>Join COLORFIT</h1>
-                </Container>
-                <Container style={style.base}>
-                    <Step.Group fluid>
-                        { (number === '1' || number === undefined) ?
-                            ( <Step active icon='address card' title='Step 1:' description='Create personal account' /> )
-                            : ( <Step disabled icon='address card' title='Step 1:' description='Create personal account' /> )
-                        }
-                        { number === '2' ?
-                            ( <Step active icon='clipboard outline' title='Step 2:' description='Enter your detail information' /> )
-                            : ( <Step disabled icon='clipboard outline' title='Step 2:' description='Enter your detail information' /> )
-                        }
-                    </Step.Group>
                 </Container>
             </div>
         );

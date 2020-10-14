@@ -1,18 +1,14 @@
 import React from 'react';
-import Login from 'components/Login';
+import Layout from '../components/Layout';
 
-/*
-const Home = () => (
-    <div>
-        <Login/>
-    </div>
-);
-*/
-
-const Home = () => (
-    <div>
-        Home Page
-    </div>
-);
+const Home = () => {
+    return(
+        <Layout>
+            <div>
+                HOME PAGE
+            </div>
+        </Layout>
+    );
+};
 
 export default Home;
