@@ -19,12 +19,11 @@ class Find extends Component {
   constructor(props){
     super(props);
     this.state = {
-      id: '',
-      name: '',
-      email: '',
-      password: '',
-      type: 0,
-      buttonColor: ['teal', 'teal', 'teal', 'teal']
+      name1: '',
+      email1: '',
+      id2: '',
+      name2: '',
+      email2: ''
     }
   }
 
@@ -34,48 +33,45 @@ class Find extends Component {
     });
   }
 
-  handleButtonClick = (e) => {
-    const nextColor = ['teal', 'teal', 'teal', 'teal'];
-    var nextType = 0;
-
-    if (this.state.buttonColor[e.target.value-1] !== 'pink'){
-        nextColor[e.target.value-1] = 'pink';
-        nextType = e.target.value;
-    }
-    this.setState({
-        type: nextType,
-        buttonColor: nextColor
-      });
-  }
-
-  checkRegister = async e => {
-    //새로고침 방지
-    e.preventDefault();
-    
-    try {
-        var formdata = new FormData();
-        formdata.append('mb_id', this.state.id);
-        formdata.append('mb_pw', this.state.password);
-        formdata.append('mb_name', this.state.name);
-        formdata.append('mb_email', this.state.email);
-        formdata.append('mb_type', this.state.type);
-
-        const response = await Axios.post(
-            "/colorfit/member/signUp",
-            formdata,
-        );
-
+  findId = async e => {
+    try{
+      const response = await Axios.get(
+        "/colorfit/member/findId/" + this.state.name1 + "/" 
+        + this.state.email1 + "/"
+      );
+      
       const { status, data } = response;
       if (data.status===200){
-        this.props.history.push('/signup/2');
+        console.log(data.stringResult)
       }
       else{
-        alert("registeration failed! check your information");
+        alert("recheck your information");
       }
-    } catch(error) {
+    }
+    catch(error) {
       console.log(error);
     }
   }
+
+  findPw = async e => {
+    try{
+      const response = await Axios.get(
+        "/colorfit/member/findPw/" + this.state.id2 + "/" 
+        + this.state.name2 + "/" + this.state.email2 + "/"
+      );
+      
+      const { status, data } = response;
+      if (data.status===200){
+      }
+      else{
+        alert("recheck your information");
+      }
+    }
+    catch(error) {
+      console.log(error);
+    }
+  }
+
 
   render() {
     return (
@@ -88,26 +84,24 @@ class Find extends Component {
                         </Header>
               <Label style={style.base}> Name </Label>
               <Form.Input
-              name='name'
+              name='name1'
               placeholder='name'
-              value={this.state.name}
+              value={this.state.name1}
               onChange={this.handleChange}/>
 
               <Label style={style.base}> Email </Label>
               <Form.Input
-              name='email'
+              name='email1'
               fluid icon='at'
               placeholder='E-mail address'
-              value={this.state.email}
+              value={this.state.email1}
               onChange={this.handleChange}/>
               <Button
-                    disabled={this.state.id.length<1
-                        || this.state.name.length<1
-                        || this.state.email.length<1
-                        || this.state.password.length<1}
+                    disabled={ this.state.name1.length<1
+                        || this.state.email1.length<1 }
                     color='teal'
                     fluid size='large'
-                    onClick={this.checkRegister}>
+                    onClick={this.findId}>
                         find id
                     </Button>
               </Segment>
@@ -122,40 +116,38 @@ class Find extends Component {
                         </Header>
               <Label style={style.base}> Id </Label>
               <Form.Input
-              name='id'
+              name='id2'
               placeholder='id'
-              value={this.state.id}
+              value={this.state.id2}
               onChange={this.handleChange}/>
 
               <Label style={style.base}> Name </Label>
               <Form.Input
-              name='name'
+              name='name2'
               placeholder='name'
-              value={this.state.name}
+              value={this.state.name2}
               onChange={this.handleChange}/>
 
               <Label style={style.base}> Email </Label>
               <Form.Input
-              name='email'
+              name='email2'
               fluid icon='at'
               placeholder='E-mail address'
-              value={this.state.email}
+              value={this.state.email2}
               onChange={this.handleChange}/>
               <Button
-                    disabled={this.state.id.length<1
-                        || this.state.name.length<1
-                        || this.state.email.length<1
-                        || this.state.password.length<1}
+                    disabled={this.state.id2.length<1
+                        || this.state.name2.length<1
+                        || this.state.email2.length<1}
                     color='teal'
                     fluid size='large'
-                    onClick={this.checkRegister}>
+                    onClick={this.findPw}>
                         Send temp password to your Email
                     </Button>
               </Segment>
               </Form>
               </div>
               </div>
-
     )
   }
 }
