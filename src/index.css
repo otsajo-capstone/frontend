@@ -1,6 +1,76 @@
+
+@font-face {
+  font-family: "Inter";
+  font-weight: 200;
+  src: local('Inter'), url("./fonts/Inter/Inter-ExtraLight-slnt=0.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Inter";
+  font-weight: 300;
+  src: local('Inter'), url("./fonts/Inter/Inter-Light-slnt=0.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  src: local('Inter'), url("./fonts/Inter/Inter-Regular-slnt=0.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Inter";
+  font-weight: 500;
+  src: local('Inter'), url("./fonts/Inter/Inter-Medium-slnt=0.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Inter";
+  font-weight: 600;
+  src: local('Inter'), url("./fonts/Inter/Inter-SemiBold-slnt=0.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Inter";
+  font-weight: 700;
+  src: local('Inter'), url("./fonts/Inter/Inter-Bold-slnt=0.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Inter";
+  font-weight: 800;
+  src: local('Inter'), url("./fonts/Inter/Inter-ExtraBold-slnt=0.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "NotoSansKR";
+  font-weight: 100;
+  src: local('NotoSansKR'), url("./fonts/NotoSansKR/NotoSansKR-Thin.otf") format("opentype");
+}
+@font-face {
+  font-family: "NotoSansKR";
+  font-weight: 300;
+  src: local('NotoSansKR'), url("./fonts/NotoSansKR/NotoSansKR-Light.otf") format("opentype");
+}
+@font-face {
+  font-family: "NotoSansKR";
+  font-style: normal;
+  font-weight: 400;
+  src: local('NotoSansKR'), url("./fonts/NotoSansKR/NotoSansKR-Regular.otf") format("opentype");
+}
+@font-face {
+  font-family: "NotoSansKR";
+  font-weight: 500;
+  src: local('NotoSansKR'), url("./fonts/NotoSansKR/NotoSansKR-Medium.otf") format("opentype");
+}
+@font-face {
+  font-family: "NotoSansKR";
+  font-weight: 700;
+  src: local('NotoSansKR'), url("./fonts/NotoSansKR/NotoSansKR-Bold.otf") format("opentype");
+}
+@font-face {
+  font-family: "NotoSansKR";
+  font-weight: 900;
+  src: local('NotoSansKR'), url("./fonts/NotoSansKR/NotoSansKR-Black.otf") format("opentype");
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family: Inter, NotoSansKR, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -11,6 +81,7 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
 
 /*
 body {

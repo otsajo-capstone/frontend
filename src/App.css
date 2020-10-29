@@ -1,6 +1,7 @@
 .App {
   background: black;
   color: aqua;
+  font-family: Inter;
   font-size: 36px;
   padding: 1rem;
   font-weight: 600;

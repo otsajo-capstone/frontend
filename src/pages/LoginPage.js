@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import Login from 'components/Login';
 import Store from '../store/store';
 import Layout from '../components/Layout';
+import '.././index.css'
 
 /*
 const LoginPage = () => (
@@ -18,11 +19,18 @@ const LoginPage = () => (
 
 class LoginPage extends Component {
     render(){
+        const style = {
+            fontFamily: ['Inter', 'NotoSansKR'],
+          }
         return (
             <Layout>
                 <Store.Consumer>
                     {Store => (
-                        <Login onLogin={Store.onLogin}/>
+                        <Login
+                        style={style}
+                        memberId={Store.memberId}
+                        logged={Store.logged}
+                        onLogin={Store.onLogin}/>
                     )}
                 </Store.Consumer>
             </Layout>

@@ -1,15 +1,21 @@
 import React from 'react';
 import Header from './header';
+import Store from '../store/store';
 import { Container } from 'semantic-ui-react';
-//import  { userContext, onLogin, onLogout } from './UserContext';
 
 const Layout = ({children}) => {
     return (
         <div>
-                {<Header/>}
-                <Container style={{ marginTop: '7em' }}>
+            <Store.Consumer>
+                {Store => (<Header
+                logged={Store.logged}
+                onLogin={Store.onLogin}
+                onLogout={Store.onLogout}/>
+                )}
+            </Store.Consumer>
+            <Container style={{ marginTop: '7em' }}>
                 {children}
-                </Container>
+            </Container>
         </div>
     )
 }

@@ -6,6 +6,7 @@ const Home = () => {
         <Layout>
             <div>
                 HOME PAGE
+                
             </div>
         </Layout>
     );

@@ -17,6 +17,10 @@ const style = {
     paddinglr : {
         paddingLeft : '6%',
         paddingRight : '6%'
+    },
+    button : {
+        margin:'0.01rem',
+        padding:'0.01rem'
     }
 };
 
@@ -88,68 +92,67 @@ class PersonalInput extends Component {
             <div>
                 <Form>
                     <Segment piled style={style.paddinglr}>
-                        <Label style={style.base}> Id </Label>
+                        <Label style={style.base}> 아이디 </Label>
                         <Form.Input
                         name='id'
-                        placeholder='id'
+                        placeholder='아이디 (5자 이상)'
                         value={this.state.id}
                         onChange={this.handleChange}/>
 
-                        <Label style={style.base}> Name </Label>
+                        <Label style={style.base}> 이름 </Label>
                         <Form.Input
                         name='name'
-                        placeholder='name'
+                        placeholder='홍길동'
                         value={this.state.name}
                         onChange={this.handleChange}/>
 
-                        <Label style={style.base}> Email </Label>
+                        <Label style={style.base}> 이메일 </Label>
                         <Form.Input
                         name='email'
                         fluid icon='at'
-                        placeholder='E-mail address'
+                        placeholder='abc1234@email.com'
                         value={this.state.email}
                         onChange={this.handleChange}/>
 
-                        <Label style={style.base}> Password </Label>
+                        <Label style={style.base}> 비밀번호 </Label>
                         <Form.Input
                         name='password'
                         fluid icon='lock'
-                        placeholder='Password'
+                        placeholder='비밀번호'
                         type='password'
                         value={this.state.password}
                         onChange={this.handleChange}/>
 
-                        <Label style={style.base}> Your Personal Color </Label>
-                        <Grid style={style.base} columns='equal'>
+                        <Label style={style.base}> 퍼스널 컬러 선택 </Label>
+                        <Grid style={style.button} columns='equal'>
                                 <Grid.Row>
                                     <Grid.Column>
                                         <Segment>
-                                            <Button fluid value='1' color={this.state.buttonColor[0]} onClick={this.handleButtonClick}>Spring Warm</Button>
+                                            <Button fluid value='1' color={this.state.buttonColor[0]} onClick={this.handleButtonClick}>봄 웜</Button>
                                         </Segment>
                                     </Grid.Column>
                                     <Grid.Column>
                                         <Segment>
-                                            <Button fluid value='2' color={this.state.buttonColor[1]} onClick={this.handleButtonClick}>Summer Cool</Button>
+                                            <Button fluid value='2' color={this.state.buttonColor[1]} onClick={this.handleButtonClick}>여름 쿨</Button>
                                         </Segment>
                                     </Grid.Column>
                                 </Grid.Row>
                                 <Grid.Row>
                                 <Grid.Column>
                                         <Segment>
-                                            <Button fluid value='3' color={this.state.buttonColor[2]} onClick={this.handleButtonClick}>Autumn Warm</Button>
+                                            <Button fluid value='3' color={this.state.buttonColor[2]} onClick={this.handleButtonClick}>가을 웜</Button>
                                         </Segment>
                                     </Grid.Column>
                                     <Grid.Column>
                                         <Segment>
-                                            <Button fluid value='4' color={this.state.buttonColor[3]} onClick={this.handleButtonClick}>Winter Cool</Button>
+                                            <Button fluid value='4' color={this.state.buttonColor[3]} onClick={this.handleButtonClick}>겨울 쿨</Button>
                                         </Segment>
                                     </Grid.Column>
                                 </Grid.Row>
                                 <Grid.Row>
                                     <Grid.Column>
                                         <Segment textAlign='center'>
-                                            If you don't choose anything,<br/>
-                                            You can choose it later
+                                            가입 후에도 컬러 선택 및 변경이 가능합니다.
                                         </Segment>
                                     </Grid.Column>
                                 </Grid.Row>
@@ -164,7 +167,7 @@ class PersonalInput extends Component {
                     color='teal'
                     fluid size='large'
                     onClick={this.checkRegister}>
-                        Register
+                        가입하기
                     </Button>
                 </Form>
             </div>

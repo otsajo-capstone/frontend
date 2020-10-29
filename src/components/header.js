@@ -6,7 +6,6 @@ import {
     Menu,
   } from 'semantic-ui-react'
 import logo from '../image/temp_logo.png'
-//import  { userContext, onLogin, onLogout } from './UserContext';
 
 class Header extends Component{
     handleClick = async e =>{
@@ -17,20 +16,19 @@ class Header extends Component{
         return(
             <Menu fixed='top'>
                 <Container>
-                    <Menu.Item header>
-                    <Image size='mini' src={logo} style={{ marginRight: '1.5em' }} />
-                    COLOR FIT                
+                    <Menu.Item header as={Link} to=''>
+                        <Image size='mini' src={logo} style={{ marginRight: '1.5em' }} />
+                        COLOR FIT              
                     </Menu.Item>
 
-                    <Menu.Item as={Link} name ='Home' to=''/>
-                    <Menu.Item as={Link} name ='Analysis' to='analysis'/>
-                    <Menu.Item as='a' name ='Dress Room'/>
+                    <Menu.Item as={Link} name ='의류 컬러분석' to='analysis'/>
+                    <Menu.Item as='a' name ='드레스 룸'/>
 
                     <Menu.Menu position='right'>
-                        { !this.props.logged && <Menu.Item as={Link} name='Log In' to='login'/>}
-                        { !this.props.logged && <Menu.Item as={Link} name='Sign Up' to='signup'/>}
-                        { this.props.logged && <Menu.Item as='a' name ='My Page'/>}
-                        { this.props.logged && <Menu.Item as='a' name ='Logout' onClick={this.handleClick}/>}
+                        { !this.props.logged && <Menu.Item as={Link} name='로그인' to='login'/>}
+                        { !this.props.logged && <Menu.Item as={Link} name='회원가입' to='signup'/>}
+                        { this.props.logged && <Menu.Item as={Link} name ='내 정보' to='mypage'/>}
+                        { this.props.logged && <Menu.Item as='a' name ='로그아웃' onClick={this.handleClick}/>}
                     </Menu.Menu>
             
                 </Container>

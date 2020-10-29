@@ -42,7 +42,7 @@ class Find extends Component {
       
       const { status, data } = response;
       if (data.status===200){
-        console.log(data.stringResult)
+        alert("your id : " + data.stringResult);        
       }
       else{
         alert("recheck your information");
@@ -54,6 +54,7 @@ class Find extends Component {
   }
 
   findPw = async e => {
+    e.preventDefault();
     try{
       const response = await Axios.get(
         "/colorfit/member/findPw/" + this.state.id2 + "/" 
@@ -62,6 +63,8 @@ class Find extends Component {
       
       const { status, data } = response;
       if (data.status===200){
+        alert("check your email");
+        this.props.history.push('/login');
       }
       else{
         alert("recheck your information");

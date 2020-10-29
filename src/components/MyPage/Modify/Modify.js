@@ -3,6 +3,7 @@ import logo from 'image/temp_logo.png';
 import { Link, withRouter } from 'react-router-dom';
 import { Button, Container, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react'
 import Axios from 'axios';
+//import  { userContext, onLogin, onLogout } from '../UserContext';
 
 class Login extends Component {
   constructor(props){
@@ -54,9 +55,6 @@ class Login extends Component {
   }
 
   render() {
-    const font = {
-      fontFamily: ['Inter', 'NotoSansKR'],
-    }
     return (
       <Container>
         <div className='login-form'>
@@ -69,17 +67,15 @@ class Login extends Component {
         `}</style>
           <Grid textAlign='center' style={{ height: '100%' }} verticalAlign='middle'>
             <Grid.Column style={{ maxWidth: 450 }}>
-              <Header style={{ fontSize: '3em', fontFamily: ['Inter', 'NotoSansKR']}}
-               color='teal'
-               textAlign='center'>
-                COLOR FIT
+              <Header as='h2' color='teal' textAlign='center'>
+                <Image src={logo}/> Log-in to your account
               </Header>
               <Form size='large'>
                 <Segment stacked>
                   <Form.Input 
                   fluid icon='user'
                   iconPosition='left'
-                  placeholder='아이디'
+                  placeholder='ID'
                   value={this.state.id}
                   onChange={this.handleChange}
                   name="id"/>
@@ -87,7 +83,7 @@ class Login extends Component {
                     fluid
                     icon='lock'
                     iconPosition='left'
-                    placeholder='비밀번호'
+                    placeholder='PASSWORD'
                     type='password'
                     value={this.state.password}
                     onChange={this.handleChange}
@@ -97,15 +93,15 @@ class Login extends Component {
                   color='teal'
                   fluid
                   size='large'
-                  onClick={this.checkLogin}
-                  style={font}>
-                    로그인
+                  onClick={this.checkLogin}>
+                    Login
                   </Button>
                 </Segment>
               </Form>
               <Message>
-                <Link to="/signup">회원가입</Link><br />
-                <Link to="/search">아이디/비밀번호 찾기</Link>
+                  Join and Get your Color!<br/>
+                <Link to="/search">Search ID or PassWord</Link><br /> 
+                <Link to="/signup">Sign Up</Link>
               </Message>
             </Grid.Column>
           </Grid>

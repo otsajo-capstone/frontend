@@ -1,52 +1,58 @@
 import React, { Component } from 'react';
-import { Home, LoginPage, SignUp, DressroomPage, SearchPage, AnalysisPage } from 'pages';
+import {
+  Home,
+  LoginPage,
+  SignUp, 
+  DressroomPage, 
+  SearchPage, 
+  AnalysisPage,
+  UserInfoPage } from 'pages';
 import { Route, Switch, withRouter, Router } from 'react-router-dom';
 import Store from './store/store';
-//import { userContext, onLogin, onLogout } from './components/UserContext';
+import './index.css';
 
 class App extends Component {
   
   constructor(props){
     super(props);
     this.state = {
-      user : {},
+      memberId : 0,
       logged: false,
       onLogin: this.onLogin,
       onLogout: this.onLogout
     }
   }
 
-/*
-  state = {
-    logged: false,
-    user: {},
-    username: {},
-    usertype: {}
-}
-*/
-  onLogin = () => {
+  onLogin = (memberId) => {
     this.setState({
+      memberId: memberId,
       logged: true
     });
   }
 
   onLogout = () => {
     this.setState({
+      memberId: 0,
       logged: false
     });
   }
 
-
+  
   render() {
-    const {logged, onLogout} = this.state;
-    //const { logged, user, username, usertype } = this.state
-
+    const {memberId, logged, onLogin, onLogout} = this.state;
+    const style = {
+      fontFamily: ['Inter', 'NotoSansKR'],
+    }
     return (
       <Store.Provider value={this.state}>
-        <div>
+        <div style={style}>
           <Route exact path="/" component={Home} />
           <Route exact path="/login" component={LoginPage} />
           <Route exact path="/search" component={SearchPage} />
+          <Switch>
+            <Route path="/mypage/:number" component={UserInfoPage} />
+            <Route path="/mypage" component={UserInfoPage} />
+          </Switch>
           <Switch>
             <Route path="/signup/:number" component={SignUp} />
             <Route path="/signup" component={SignUp} />
