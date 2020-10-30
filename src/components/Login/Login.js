@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import logo from 'image/temp_logo.png';
 import { Link, withRouter } from 'react-router-dom';
-import { Button, Container, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react'
+import { Button, Container, Form, Grid, Header, Message, Segment } from 'semantic-ui-react'
 import Axios from 'axios';
+
 
 class Login extends Component {
   constructor(props){

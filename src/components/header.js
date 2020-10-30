@@ -21,8 +21,8 @@ class Header extends Component{
                         COLOR FIT              
                     </Menu.Item>
 
-                    <Menu.Item as={Link} name ='의류 컬러분석' to='analysis'/>
-                    <Menu.Item as='a' name ='드레스 룸'/>
+                    { this.props.logged && <Menu.Item as={Link} name ='의류 컬러분석' to='analysis'/>}
+                    { this.props.logged && <Menu.Item as={Link} name ='드레스 룸' to='dressroom'/>}
 
                     <Menu.Menu position='right'>
                         { !this.props.logged && <Menu.Item as={Link} name='로그인' to='login'/>}

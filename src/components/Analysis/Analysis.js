@@ -136,13 +136,13 @@ class Analysis extends Component {
                         name='link'
                         active={activeItem === 'link'}
                         onClick={this.handleItemClick}>
-                        Upload Website Link
+                        사이트 링크로 분석하기
                     </Menu.Item>
                     <Menu.Item
                         name='upload'
                         active={activeItem === 'upload'}
                         onClick={this.handleItemClick}>
-                        Upload Image File
+                        이미지 파일로 분석하기
                     </Menu.Item>
                 </Menu>
                 
@@ -153,10 +153,11 @@ class Analysis extends Component {
                 placeholder>
                     <Header image>
                         <Image circular src={linkimage}/>
-                            Copy and Paste your Website Link
+                            분석할 사이트의 주소를 복사&붙여넣기 하세요
                     </Header>
                     <Segment.Inline>
-                        <Input action='Analysis' placeholder='http://...'/>
+                        <Input action='페이지 사진 가져오기'
+                        placeholder='http://...'/>
                     </Segment.Inline>
 
                 </Segment>}
@@ -168,13 +169,13 @@ class Analysis extends Component {
                 placeholder>
                     <Header image>
                         <Image circular src={uploadimage}/>
-                            Upload your Cloth Image
+                            분석할 사진 파일을 업로드 하세요
                     </Header>
                     <Segment>
                         <DragDrop handleDrop={this.handleDrop}>
                             {this.state.files.length === 0 &&
-                            <div>
-                                Drag and Drop your Image Files Here!
+                            <div textAlign='center'>
+                                이 창에 이미지 파일들을 드래그해서 업로드하세요
                             </div>}
                             <div style={{height: 300, width: 250}}>
                             {this.state.files.map((file,i) =>
@@ -183,15 +184,14 @@ class Analysis extends Component {
                         </DragDrop>
                     </Segment>
                     <Button
-                            fluid
-                            size='large'
-                            color='teal'
-                            >
-                            Analysis
-                        </Button>
+                        fluid
+                        size='large'
+                        color='teal'
+                        >
+                        분석하기
+                    </Button>
                 </Segment>
-                    }
-                
+                }
             </div>
         )
     }
