@@ -3,6 +3,7 @@ import Info from '../components/MyPage/Info'
 import Modify from '../components/MyPage/Modify'
 import Store from '../store/store';
 import Layout from '../components/Layout';
+import InfoHeader from '../components/MyPage/InfoHeader'
 
 class UserInfoPage extends Component {
     render(){
@@ -11,14 +12,15 @@ class UserInfoPage extends Component {
 
         return (
             <Layout>
-                <Store.Consumer>
-                        {Store => (
-                            (number === '1' || number === undefined) &&
-                            <Info memberId={Store.memberId}/>
-                            ||
-                            (number === '2') &&
-                            <Modify memberId={Store.memberId}/>
-                        )}
+                <InfoHeader number={number} />
+                <Store.Consumer>                    
+                    {Store => (
+                        (number === '1' || number === undefined) &&
+                        <Info memberId={Store.memberId}/>
+                        ||
+                        (number === '2') &&
+                        <Modify memberId={Store.memberId}/>
+                    )}
                 </Store.Consumer>
             </Layout>
         )

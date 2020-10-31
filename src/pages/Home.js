@@ -6,7 +6,6 @@ import {
     Segment,
     Header,} from 'semantic-ui-react'
 import mainImage from '../image/mainImage.jpg';
-import {Link} from 'react-router-dom';
 
 const Home = () => {
     return(

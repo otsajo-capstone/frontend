@@ -26,12 +26,38 @@ const style = {
 };
 
 class Info extends Component {
+  constructor(props){
+    super(props);
+
+    this.state = {
+      mb_id: this.props.memberId,
+      mb_name: 'noname',
+      mb_email: 'noemail',
+      mb_type: 0
+    };
+  }
+
+  componentDidMount(){
+
+      Axios.get("/colorfit/member/mypage/" + String(this.state.mb_id))
+      .then(res => (res.data.status === 200) && this.setState({
+        mb_name: res.data.mdto.mb_name,
+        mb_email: res.data.mdto.mb_email,
+        mb_type: res.data.mdto.mb_type
+      }));
+
+  }
 
   render(){
     return(
         <div>
           <Container>
-          
+            <div>
+              {this.state.mb_id}
+            </div>
+            <div>
+              {this.state.mb_email}
+            </div>
           </Container>
         </div>
     )

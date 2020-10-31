@@ -107,7 +107,6 @@ class DragDrop extends Component{
     }
 }
 
-
 class Analysis extends Component {
     state = { 
         activeItem: 'link',
@@ -123,7 +122,6 @@ class Analysis extends Component {
           fileList.push(files[i].name)
         }
         this.setState({files: fileList})
-        
       }
 
     render(){
