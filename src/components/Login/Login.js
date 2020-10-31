@@ -38,7 +38,7 @@ class Login extends Component {
       if (data.status===200){
         //(토큰 저장)
         
-        this.props.onLogin(data.intResult);
+        this.props.onLogin(data.intResult, this.state.id);
         console.log('logged:', this.props.logged)
         this.props.history.push('/');
       }

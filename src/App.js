@@ -17,15 +17,17 @@ class App extends Component {
     super(props);
     this.state = {
       memberId : 0,
+      id: '',
       logged: false,
       onLogin: this.onLogin,
       onLogout: this.onLogout
     }
   }
 
-  onLogin = (memberId) => {
+  onLogin = (memberId, id) => {
     this.setState({
       memberId: memberId,
+      id: id,
       logged: true
     });
   }
@@ -33,13 +35,14 @@ class App extends Component {
   onLogout = () => {
     this.setState({
       memberId: 0,
+      id: '',
       logged: false
     });
   }
 
   
   render() {
-    const {memberId, logged, onLogin, onLogout} = this.state;
+    const {memberId, id, logged, onLogin, onLogout} = this.state;
     const style = {
       fontFamily: ['Inter', 'NotoSansKR'],
     }
