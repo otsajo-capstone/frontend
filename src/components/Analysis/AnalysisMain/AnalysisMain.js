@@ -18,7 +18,7 @@ import {
     List
 } from 'semantic-ui-react';
 import Axios from 'axios';
-import {useDropzone} from 'react-dropzone';
+import { useDropzone } from 'react-dropzone';
 
 const linkimage = require('../image/linkimage.png')
 const uploadimage = require('../image/uploadimage.png')
@@ -122,37 +122,37 @@ class DragDrop extends Component {
 
 function DropZone(props) {
     const {
-        acceptedFiles, 
-        getRootProps, 
-        getInputProps} = useDropzone({ accept: 'image/jpeg, image/png'});
-    
+        acceptedFiles,
+        getRootProps,
+        getInputProps } = useDropzone({ accept: 'image/jpeg, image/png' });
+
     const files = acceptedFiles.map(file => (
-      <li key={file.path}>
-          {file.path} - {file.size} bytes
-      </li>
+        <li key={file.path}>
+            {file.path} - {file.size} bytes
+        </li>
     ));
-  
+
     return (
         <Container>
             <Segment stacked padded='very'>
-            <div {...getRootProps({className: 'dropzone'})}>
-                <input {...getInputProps()} />
-                <p>파일을 박스에 드래그 하거나 <b>여기를</b> 클릭하세요. (jpg/png)</p>
-            </div>
-            <Divider/>
-            <List>
-            <List.Item>
-      <List.Icon name='file' />
-      <List.Content>
-        <List.Header>{files}</List.Header>
-        <List.Description></List.Description>
-                </List.Content>
-                </List.Item>
+                <div {...getRootProps({ className: 'dropzone' })}>
+                    <input {...getInputProps()} />
+                    <p>파일을 박스에 드래그 하거나 <b>여기를</b> 클릭하세요. (jpg/png)</p>
+                </div>
+                <Divider />
+                <List>
+                    <List.Item>
+                        <List.Icon name='file' />
+                        <List.Content>
+                            <List.Header>{files}</List.Header>
+                            <List.Description></List.Description>
+                        </List.Content>
+                    </List.Item>
                 </List>
             </Segment>
-      </Container>
+        </Container>
     );
-  }
+}
 
 class AnalysisMain extends Component {
     constructor(props) {
@@ -258,7 +258,7 @@ class AnalysisMain extends Component {
         };
         newArr[elementsIndex] = newElement;
 
-        
+
 
         this.setState({
             result: newArr
@@ -316,7 +316,7 @@ class AnalysisMain extends Component {
                 }
                 dbcolor = dbcolor.slice(0, -1) + "]"
                 console.log(dbcolor);
-    
+
                 var dbrequest = new FormData();
                 dbrequest.append('mb_uid', this.props.memberId);
                 dbrequest.append('spring', 0); //임시
@@ -327,7 +327,7 @@ class AnalysisMain extends Component {
                 dbrequest.append('dress_img_org', item.props.src)
                 dbrequest.append('dress_img_sav', item.props.src)
                 dbrequest.append('dress_name', item.key); //바꿀 수 있게
-                
+
                 console.log(dbrequest.get('mb_uid'))
 
                 const dbresponse = await Axios.post(
@@ -426,7 +426,7 @@ class AnalysisMain extends Component {
                         textAlign='center'
                         placeholder>
                         <Header> 결과를 확인하세요.
-                            마이 드레스룸에서 저장된 결과를 다시 볼 수 있어요.
+                        마이 드레스룸에서 저장된 결과를 다시 볼 수 있어요.
                              </Header>
                         <Segment>
                             <Card.Group itemsPerRow={4}>
@@ -464,7 +464,7 @@ class AnalysisMain extends Component {
                         <Segment>
                             <p className="title">React Drag and Drop Image Upload</p>
                             <div className="content">
-                            <DropZone/>
+                                <DropZone />
                             </div>
                         </Segment>
                         <Button

@@ -1,5 +1,5 @@
 import React, { Component, useContext } from 'react';
-import {Link} from 'react-router-dom';
+import {Link, withRouter} from 'react-router-dom';
 import {
     Container,
     Image,
@@ -10,6 +10,8 @@ import logo from '../image/temp_logo.png'
 class Header extends Component{
     handleClick = async e =>{
         this.props.onLogout();
+        console.log('logged:', this.props.logged)
+        this.props.history.push('/');
     }
 
     render(){
@@ -37,4 +39,4 @@ class Header extends Component{
     }
 }
 
-export default Header;
+export default withRouter(Header);

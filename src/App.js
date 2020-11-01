@@ -7,6 +7,7 @@ import {
   SearchPage, 
   AnalysisPage,
   UserInfoPage } from 'pages';
+import Layout from './components/Layout'
 import { Route, Switch, withRouter, Router } from 'react-router-dom';
 import Store from './store/store';
 import './index.css';
@@ -48,6 +49,7 @@ class App extends Component {
     }
     return (
       <Store.Provider value={this.state}>
+        <Layout>
         <div style={style}>
           <Route exact path="/" component={Home} />
           <Route exact path="/login" component={LoginPage} />
@@ -66,6 +68,7 @@ class App extends Component {
           </Switch>
           <Route exact path="/dressroom" component={DressroomPage} />        
         </div>
+        </Layout>
       </Store.Provider>
     );
   }
