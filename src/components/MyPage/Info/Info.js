@@ -40,23 +40,13 @@ class Info extends Component {
   }
 
   componentDidMount() {
-    Axios.get("/colorfit/member/mypage/" + String(this.props.memberId))
+    Axios.get("http://localhost:8080/colorfit/member/mypage/" + String(this.props.memberId))
       .then(res => (res.data.status === 200)
         && this.setState({
           mb_name: res.data.mdto.mb_name,
           mb_email: res.data.mdto.mb_email,
           mb_type: res.data.mdto.mb_type,
-          
         }))
-
-    //왜안대..
-    if (this.state.mb_type > 0) {
-      const nextColor = ['teal', 'teal', 'teal', 'teal'];
-      nextColor[this.state.mb_type - 1] = 'pink';
-      this.setState({
-        buttonColor: nextColor
-      });
-    }
   }
 
   handleChange = (e) => {
@@ -88,35 +78,24 @@ class Info extends Component {
       valdata.append('mb_pw', this.state.password);
       console.log(this.props.id)
 
-      const res = await Axios.post(
-        "/colorfit/member/login/",
-        valdata
+      var formdata = new FormData();
+      formdata.append('mb_name', this.state.mb_name);
+      formdata.append('mb_pw', this.state.password);
+      formdata.append('mb_email', this.state.mb_email);
+      formdata.append('mb_type', this.state.mb_type);
+      formdata.append('mb_uid', this.props.memberId);
+
+      const response = await Axios.post(
+        "http://localhost:8080/colorfit/member/mypageUpdate",
+        formdata,
       );
 
-      const { data } = res;
+      const { data } = response;
       if (data.status === 200) {
-        var formdata = new FormData();
-        formdata.append('mb_name', this.state.mb_name);
-        formdata.append('mb_pw', this.state.password);
-        formdata.append('mb_email', this.state.mb_email);
-        formdata.append('mb_type', this.state.mb_type);
-        formdata.append('mb_uid', this.props.memberId);
-
-        const response = await Axios.post(
-          "/colorfit/member/mypageUpdate",
-          formdata,
-        );
-
-        const { data } = response;
-        if (data.status === 200) {
-          alert("정보 업데이트 되었습니다.");
-        }
-        else {
-          alert("오류");
-        }
+        alert("정보 업데이트 되었습니다.");
       }
       else {
-        alert("비밀번호가 올바르지 않습니다.");
+        alert("오류");
       }
     }
     catch (error) {
@@ -131,13 +110,13 @@ class Info extends Component {
           <Form>
             <Segment style={style.paddinglr}>
 
-            <Label style={style.base}> 아이디 </Label>
+              <Label style={style.base}> 아이디 </Label>
               <Form.Input
                 name='id'
                 type='text'
-                value={this.props.id}/>
-            
-            <Label style={style.base}> 이메일 </Label>
+                value={this.props.id} />
+
+              <Label style={style.base}> 이메일 </Label>
               <Form.Input
                 name='email'
                 fluid icon='at'
@@ -150,7 +129,7 @@ class Info extends Component {
                 name='name'
                 type='text'
                 value={this.state.mb_name}
-                onChange={this.handleChange}/>
+                onChange={this.handleChange} />
 
               <Label style={style.base}> 변경할 비밀번호 </Label>
               <Form.Input
@@ -169,31 +148,31 @@ class Info extends Component {
                 type='password'
                 value={this.state.pw_check}
                 onChange={this.handleChange}
-                error={!(this.state.password==this.state.pw_check)}/>
+                error={!(this.state.password == this.state.pw_check)} />
 
               <Label style={style.base}> 퍼스널 컬러 </Label>
               <Grid style={style.button} columns='equal'>
                 <Grid.Row>
                   <Grid.Column>
                     <Segment>
-                      <Button fluid value='1' color={this.state.mb_type==1&&'pink' || !(this.state.mb_type==1)&&'teal'} onClick={this.handleButtonClick}>봄 웜</Button>
+                      <Button fluid value='1' color={this.state.mb_type == 1 && 'pink' || !(this.state.mb_type == 1) && 'teal'} onClick={this.handleButtonClick}>봄 웜</Button>
                     </Segment>
                   </Grid.Column>
                   <Grid.Column>
                     <Segment>
-                      <Button fluid value='2' color={this.state.mb_type==2&&'pink' || !(this.state.mb_type==2)&&'teal'} onClick={this.handleButtonClick}>여름 쿨</Button>
+                      <Button fluid value='2' color={this.state.mb_type == 2 && 'pink' || !(this.state.mb_type == 2) && 'teal'} onClick={this.handleButtonClick}>여름 쿨</Button>
                     </Segment>
                   </Grid.Column>
                 </Grid.Row>
                 <Grid.Row>
                   <Grid.Column>
                     <Segment>
-                      <Button fluid value='3' color={this.state.mb_type==3&&'pink' || !(this.state.mb_type==3)&&'teal'} onClick={this.handleButtonClick}>가을 웜</Button>
+                      <Button fluid value='3' color={this.state.mb_type == 3 && 'pink' || !(this.state.mb_type == 3) && 'teal'} onClick={this.handleButtonClick}>가을 웜</Button>
                     </Segment>
                   </Grid.Column>
                   <Grid.Column>
                     <Segment>
-                      <Button fluid value='4' color={this.state.mb_type==4&&'pink' || !(this.state.mb_type==4)&&'teal'} onClick={this.handleButtonClick}>겨울 쿨</Button>
+                      <Button fluid value='4' color={this.state.mb_type == 4 && 'pink' || !(this.state.mb_type == 4) && 'teal'} onClick={this.handleButtonClick}>겨울 쿨</Button>
                     </Segment>
                   </Grid.Column>
                 </Grid.Row>
@@ -204,15 +183,13 @@ class Info extends Component {
               color='teal'
               fluid size='large'
               onClick={this.update}
-              disabled={ this.state.mb_name.length<3
-                || this.state.password.length<5
-                || (this.state.password!=this.state.pw_check)
+              disabled={this.state.mb_name.length < 3
+                || this.state.password.length < 5
+                || (this.state.password != this.state.pw_check)
               }>
               수정하기
               </Button>
           </Form>
-          <div>
-          </div>
         </Container>
       </div>
     )
