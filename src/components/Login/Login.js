@@ -6,7 +6,7 @@ import Axios from 'axios';
 
 
 class Login extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
       id: '',
@@ -30,26 +30,26 @@ class Login extends Component {
       formdata.append('mb_pw', this.state.password);
 
       const response = await Axios.post(
-        "colorfit/member/login/",
-         formdata
+        "http://localhost:8080/colorfit/member/login/",
+        formdata
       );
-        
+
       const { status, data } = response;
-      if (data.status===200){
+      if (data.status === 200) {
         //(토큰 저장)
-        
+
         this.props.onLogin(data.intResult, this.state.id);
         console.log('logged:', this.props.logged)
         this.props.history.push('/');
       }
-      else{
+      else {
         alert("login failed!");
         this.setState({
           id: "",
           password: ""
         })
       }
-    } catch(error) {
+    } catch (error) {
       console.log(error);
     }
   }
@@ -70,20 +70,20 @@ class Login extends Component {
         `}</style>
           <Grid textAlign='center' style={{ height: '100%' }} verticalAlign='middle'>
             <Grid.Column style={{ maxWidth: 450 }}>
-              <Header style={{ fontSize: '3em', fontFamily: ['Inter', 'NotoSansKR']}}
-               color='teal'
-               textAlign='center'>
+              <Header style={{ fontSize: '3em', fontFamily: ['Inter', 'NotoSansKR'] }}
+                color='teal'
+                textAlign='center'>
                 COLOR FIT
               </Header>
               <Form size='large'>
                 <Segment stacked>
-                  <Form.Input 
-                  fluid icon='user'
-                  iconPosition='left'
-                  placeholder='아이디'
-                  value={this.state.id}
-                  onChange={this.handleChange}
-                  name="id"/>
+                  <Form.Input
+                    fluid icon='user'
+                    iconPosition='left'
+                    placeholder='아이디'
+                    value={this.state.id}
+                    onChange={this.handleChange}
+                    name="id" />
                   <Form.Input
                     fluid
                     icon='lock'
@@ -95,11 +95,11 @@ class Login extends Component {
                     name="password"
                   />
                   <Button
-                  color='teal'
-                  fluid
-                  size='large'
-                  onClick={this.checkLogin}
-                  style={font}>
+                    color='teal'
+                    fluid
+                    size='large'
+                    onClick={this.checkLogin}
+                    style={font}>
                     로그인
                   </Button>
                 </Segment>

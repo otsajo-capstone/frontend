@@ -34,6 +34,7 @@ class Info extends Component {
       mb_email: 'noemail',
       mb_type: 0,
       password: '',
+      pw_check: '',
       buttonColor: ['teal', 'teal', 'teal', 'teal']
     };
   }
@@ -45,6 +46,7 @@ class Info extends Component {
           mb_name: res.data.mdto.mb_name,
           mb_email: res.data.mdto.mb_email,
           mb_type: res.data.mdto.mb_type,
+          
         }))
 
     //왜안대..
@@ -128,55 +130,70 @@ class Info extends Component {
         <Container>
           <Form>
             <Segment style={style.paddinglr}>
-              <Label style={style.base}> 이름 </Label>
-              <Form.Input
-                name='name'
-                type='text'
-                value={this.state.mb_name}
-                onChange={this.handleChange} />
-              <div>
-                {this.state.name}
-              </div>
 
-              <Label style={style.base}> 이메일 </Label>
+            <Label style={style.base}> 아이디 </Label>
+              <Form.Input
+                name='id'
+                type='text'
+                value={this.props.id}/>
+            
+            <Label style={style.base}> 이메일 </Label>
               <Form.Input
                 name='email'
                 fluid icon='at'
                 value={this.state.mb_email}
                 onChange={this.handleChange} />
 
-              <Label style={style.base}> 비밀번호 확인 </Label>
+
+              <Label style={style.base}> 이름 </Label>
+              <Form.Input
+                name='name'
+                type='text'
+                value={this.state.mb_name}
+                onChange={this.handleChange}/>
+
+              <Label style={style.base}> 변경할 비밀번호 </Label>
               <Form.Input
                 name='password'
                 fluid icon='lock'
-                placeholder='비밀번호'
+                placeholder='새 비밀번호'
                 type='password'
                 value={this.state.password}
                 onChange={this.handleChange} />
+
+              <Label style={style.base}> 비밀번호 확인 </Label>
+              <Form.Input
+                name='pw_check'
+                fluid icon='lock'
+                placeholder='비밀번호'
+                type='password'
+                value={this.state.pw_check}
+                onChange={this.handleChange}
+                error={!(this.state.password==this.state.pw_check)}/>
 
               <Label style={style.base}> 퍼스널 컬러 </Label>
               <Grid style={style.button} columns='equal'>
                 <Grid.Row>
                   <Grid.Column>
                     <Segment>
-                      <Button fluid value='1' color={this.state.buttonColor[0]} onClick={this.handleButtonClick}>봄 웜</Button>
+                      <Button fluid value='1' color={this.state.mb_type==1&&'pink' || !(this.state.mb_type==1)&&'teal'} onClick={this.handleButtonClick}>봄 웜</Button>
                     </Segment>
                   </Grid.Column>
                   <Grid.Column>
                     <Segment>
-                      <Button fluid value='2' color={this.state.buttonColor[1]} onClick={this.handleButtonClick}>여름 쿨</Button>
+                      <Button fluid value='2' color={this.state.mb_type==2&&'pink' || !(this.state.mb_type==2)&&'teal'} onClick={this.handleButtonClick}>여름 쿨</Button>
                     </Segment>
                   </Grid.Column>
                 </Grid.Row>
                 <Grid.Row>
                   <Grid.Column>
                     <Segment>
-                      <Button fluid value='3' color={this.state.buttonColor[2]} onClick={this.handleButtonClick}>가을 웜</Button>
+                      <Button fluid value='3' color={this.state.mb_type==3&&'pink' || !(this.state.mb_type==3)&&'teal'} onClick={this.handleButtonClick}>가을 웜</Button>
                     </Segment>
                   </Grid.Column>
                   <Grid.Column>
                     <Segment>
-                      <Button fluid value='4' color={this.state.buttonColor[3]} onClick={this.handleButtonClick}>겨울 쿨</Button>
+                      <Button fluid value='4' color={this.state.mb_type==4&&'pink' || !(this.state.mb_type==4)&&'teal'} onClick={this.handleButtonClick}>겨울 쿨</Button>
                     </Segment>
                   </Grid.Column>
                 </Grid.Row>
@@ -186,7 +203,11 @@ class Info extends Component {
             <Button
               color='teal'
               fluid size='large'
-              onClick={this.update}>
+              onClick={this.update}
+              disabled={ this.state.mb_name.length<3
+                || this.state.password.length<5
+                || (this.state.password!=this.state.pw_check)
+              }>
               수정하기
               </Button>
           </Form>

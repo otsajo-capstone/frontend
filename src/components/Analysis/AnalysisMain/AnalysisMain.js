@@ -1,4 +1,4 @@
-import React, { Component, useCallback } from 'react';
+import React, { Component, useCallback, useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import {
     Input,
@@ -128,31 +128,37 @@ function DropZone(props) {
 
     const files = acceptedFiles.map(file => (
         <li key={file.path}>
-            {file.path} - {file.size} bytes
+            {file.size} bytes
         </li>
     ));
 
     return (
         <Container>
             <Segment stacked padded='very'>
+                <Container style={{ minHeight: 30 }}>
                 <div {...getRootProps({ className: 'dropzone' })}>
                     <input {...getInputProps()} />
-                    <p>파일을 박스에 드래그 하거나 <b>여기를</b> 클릭하세요. (jpg/png)</p>
+                    <br/>
+                    <p>파일을 박스에 드래그 하거나<br/><b>여기를</b> 클릭하세요. (jpg/png)</p>
+                    <br/>
                 </div>
+                </Container>
                 <Divider />
                 <List>
-                    <List.Item>
+                {files.map(
+                    file => <List.Item>
                         <List.Icon name='file' />
                         <List.Content>
-                            <List.Header>{files}</List.Header>
-                            <List.Description></List.Description>
+                            <List.Header>{file.key}</List.Header>
+                            <List.Description>{file}</List.Description>
                         </List.Content>
-                    </List.Item>
+                    </List.Item>)}
                 </List>
             </Segment>
         </Container>
     );
 }
+
 
 class AnalysisMain extends Component {
     constructor(props) {
@@ -347,9 +353,10 @@ class AnalysisMain extends Component {
         }
     }
 
+    
     render() {
         const { activeItem } = this.state
-
+    
         return (
             <div>
                 <Menu attached='top' tabular color='teal'>
@@ -461,12 +468,10 @@ class AnalysisMain extends Component {
                             <Image circular src={uploadimage} />
                             분석할 사진 파일을 업로드 하세요
                     </Header>
-                        <Segment>
-                            <p className="title">React Drag and Drop Image Upload</p>
+                        
                             <div className="content">
-                                <DropZone />
+                                <DropZone/>
                             </div>
-                        </Segment>
                         <Button
                             fluid
                             size='large'
