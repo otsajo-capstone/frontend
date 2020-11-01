@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useCallback } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import {
     Input,
@@ -13,12 +13,16 @@ import {
     Grid,
     Card,
     Checkbox,
-    Item
+    Item,
+    Divider,
+    List
 } from 'semantic-ui-react';
 import Axios from 'axios';
+import {useDropzone} from 'react-dropzone';
 
 const linkimage = require('../image/linkimage.png')
 const uploadimage = require('../image/uploadimage.png')
+
 /*
 class DragDrop extends Component {
     state = {
@@ -115,6 +119,41 @@ class DragDrop extends Component {
 }
 */
 
+
+function DropZone(props) {
+    const {
+        acceptedFiles, 
+        getRootProps, 
+        getInputProps} = useDropzone({ accept: 'image/jpeg, image/png'});
+    
+    const files = acceptedFiles.map(file => (
+      <li key={file.path}>
+          {file.path} - {file.size} bytes
+      </li>
+    ));
+  
+    return (
+        <Container>
+            <Segment stacked padded='very'>
+            <div {...getRootProps({className: 'dropzone'})}>
+                <input {...getInputProps()} />
+                <p>파일을 박스에 드래그 하거나 <b>여기를</b> 클릭하세요. (jpg/png)</p>
+            </div>
+            <Divider/>
+            <List>
+            <List.Item>
+      <List.Icon name='file' />
+      <List.Content>
+        <List.Header>{files}</List.Header>
+        <List.Description></List.Description>
+                </List.Content>
+                </List.Item>
+                </List>
+            </Segment>
+      </Container>
+    );
+  }
+
 class AnalysisMain extends Component {
     constructor(props) {
         super(props);
@@ -147,7 +186,7 @@ class AnalysisMain extends Component {
             formdata.append('height', "");
 
             const response = await Axios.post(
-                "django/url",
+                "http://34.82.152.172:5000/url",
                 formdata
             );
             const { data } = response;
@@ -182,13 +221,13 @@ class AnalysisMain extends Component {
 
     handleImageAnalysisClick = async (e) => {
         console.log(this.state.files)
-        console.log(typeof(this.state.files[0]))
+        console.log(typeof (this.state.files[0]))
 
         var formdata = new FormData();
         formdata.append('files', this.state.files);
-        
+
         const response = await Axios.post(
-            "django/image/analyze",
+            "/image/analyze",
             formdata
         );
 
@@ -212,11 +251,15 @@ class AnalysisMain extends Component {
         let newArr = [...this.state.result];
         console.log('idx:', elementsIndex)
         //console.log('arr:', newArr[elementsIndex])
-        
-        let newElement = {...newArr[elementsIndex],
-            props: {...newArr[elementsIndex].props, check: !newArr[elementsIndex].props.check}};
+
+        let newElement = {
+            ...newArr[elementsIndex],
+            props: { ...newArr[elementsIndex].props, check: !newArr[elementsIndex].props.check }
+        };
         newArr[elementsIndex] = newElement;
+
         
+
         this.setState({
             result: newArr
         });
@@ -239,11 +282,11 @@ class AnalysisMain extends Component {
             src_list: src_list
         })
         //console.log(jsondata);
-        
+
         const response = await Axios.post(
-            "django/url/analyze",
+            "http://34.82.152.172:5000/url/analyze",
             jsondata,
-            {headers: {'Content-Type': 'application/json'}}
+            { headers: { 'Content-Type': 'application/json' } }
         );
 
         const { data } = response;
@@ -257,19 +300,23 @@ class AnalysisMain extends Component {
                     src={item.src}
                     colors={
                         item.colors.map(color =>
-                        <li
-                        key={color.hex}
-                        ratio={color.ratio}
-                        />)
+                            <li
+                                key={color.hex}
+                                ratio={color.ratio.toFixed(3)}
+                            />)
                     }
                 />
             )
-            //console.log(Items)            
-            
-            for (var item of data.analysis_result){
-                var dbcolor = new String(item.colors);
-                console.log(dbcolor);
 
+            for (var item of Items) {
+                var dbcolor = new String("[");
+                for (var color of item.props.colors) {
+                    dbcolor += "{\"hex\": \"" + String(color.key) +
+                        "\", \"ratio\": \"" + String(color.props.ratio) + "\"},"
+                }
+                dbcolor = dbcolor.slice(0, -1) + "]"
+                console.log(dbcolor);
+    
                 var dbrequest = new FormData();
                 dbrequest.append('mb_uid', this.props.memberId);
                 dbrequest.append('spring', 0); //임시
@@ -277,25 +324,24 @@ class AnalysisMain extends Component {
                 dbrequest.append('autumn', 0); //임시
                 dbrequest.append('winter', 0); //임시
                 dbrequest.append('color', dbcolor);
+                dbrequest.append('dress_img_org', item.props.src)
+                dbrequest.append('dress_img_sav', item.props.src)
                 dbrequest.append('dress_name', item.key); //바꿀 수 있게
-                dbrequest.append('dress_memo', ''); //바꿀 수 있게
-                dbrequest.append('dressImg', item.src)
-                dbrequest.append('share_type', 0); //바꿀 수 있게
+                
+                console.log(dbrequest.get('mb_uid'))
 
                 const dbresponse = await Axios.post(
-                    "/colorfit/analysis/saveResult",
-                    dbrequest
+                    "http://localhost:8080/colorfit/analysis/saveResult2",
+                    dbrequest,
                 )
-                console.log(dbresponse);
             }
-
 
             this.setState({
                 saved: Items,
                 activeItem: 'link_result'
             })
-        
-        //url유효하지 않으면 response에 data: error:error: "unknown url type: 'abcdfsafs'"
+
+            //url유효하지 않으면 response에 data: error:error: "unknown url type: 'abcdfsafs'"
 
             //스프링으로
         }
@@ -310,8 +356,8 @@ class AnalysisMain extends Component {
                     <Menu.Item
                         name='link_input'
                         active={activeItem === 'link_input'
-                         || activeItem === 'link_output'
-                        || activeItem === 'link_result'}
+                            || activeItem === 'link_output'
+                            || activeItem === 'link_result'}
                         onClick={this.handleItemClick}>
                         사이트 링크로 분석하기
                     </Menu.Item>
@@ -379,10 +425,11 @@ class AnalysisMain extends Component {
                         attached='bottom'
                         textAlign='center'
                         placeholder>
-                        <Header> 결과가 나의 옷장에 저장되었습니다.
+                        <Header> 결과를 확인하세요.
+                            마이 드레스룸에서 저장된 결과를 다시 볼 수 있어요.
                              </Header>
                         <Segment>
-                        <Card.Group itemsPerRow={4}>
+                            <Card.Group itemsPerRow={4}>
                                 {this.state.saved.map(
                                     card => <Card fluid>
                                         <Image src={card.props.src} />
@@ -390,7 +437,7 @@ class AnalysisMain extends Component {
                                             {card.props.colors.map(
                                                 color => <Card.Description>
                                                     color: {color.key} ratio: {color.props.ratio}
-                                                    </Card.Description>
+                                                </Card.Description>
                                             )}
                                         </Card.Content>
                                     </Card>
@@ -406,14 +453,19 @@ class AnalysisMain extends Component {
                         attached='bottom'
                         textAlign='center'
                         placeholder>
-                        <Header style={{ fontSize: '1.3em',
-                        fontFamily: ['Inter', 'NotoSansKR']}}
-                        textAlign='center'>
+                        <Header style={{
+                            fontSize: '1.3em',
+                            fontFamily: ['Inter', 'NotoSansKR']
+                        }}
+                            textAlign='center'>
                             <Image circular src={uploadimage} />
                             분석할 사진 파일을 업로드 하세요
                     </Header>
                         <Segment>
-                            
+                            <p className="title">React Drag and Drop Image Upload</p>
+                            <div className="content">
+                            <DropZone/>
+                            </div>
                         </Segment>
                         <Button
                             fluid
@@ -425,7 +477,6 @@ class AnalysisMain extends Component {
                     </Button>
                     </Segment>
                 }
-
             </div>
         )
     }
