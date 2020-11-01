@@ -19,7 +19,7 @@ import Axios from 'axios';
 
 const linkimage = require('../image/linkimage.png')
 const uploadimage = require('../image/uploadimage.png')
-
+/*
 class DragDrop extends Component {
     state = {
         drag: false
@@ -113,31 +113,21 @@ class DragDrop extends Component {
         )
     }
 }
-
-/* 안돼..
-function validURL(str) {
-    var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
-      '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
-      '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
-      '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
-    return !!pattern.test(str);
-}
 */
 
 class AnalysisMain extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {
             activeItem: 'link_input',
             url: '',
             result: [],
-            files: []
+            files: [],
+            saved: []
         }
     }
-    
+
     handleItemClick = (e, { name }) => this.setState({ activeItem: name })
 
     handleDrop = (files) => {
@@ -149,13 +139,12 @@ class AnalysisMain extends Component {
         this.setState({ files: fileList })
     }
 
-
     handleLinkAnalysisClick = async (e) => {
         if (true) {
             var formdata = new FormData();
             formdata.append('url', this.state.url);
-            formdata.append('width', 100);
-            formdata.append('height', 100);
+            formdata.append('width', "");
+            formdata.append('height', "");
 
             const response = await Axios.post(
                 "django/url",
@@ -188,9 +177,24 @@ class AnalysisMain extends Component {
             }
         }
         else {
-
         }
+    }
 
+    handleImageAnalysisClick = async (e) => {
+        console.log(this.state.files)
+        console.log(typeof(this.state.files[0]))
+
+        var formdata = new FormData();
+        formdata.append('files', this.state.files);
+        
+        const response = await Axios.post(
+            "django/image/analyze",
+            formdata
+        );
+
+        console.log(formdata.get('files'))
+        const { data } = response;
+        console.log(response)
     }
 
     handleChange = (e) => {
@@ -200,26 +204,101 @@ class AnalysisMain extends Component {
     }
 
     handleCheck = (url) => {
-        console.log(this.state.result)
+        //console.log(this.state.result)
         //console.log('val:', e.target.value)
-        /*
-        const elementsIndex = this.state.result.findIndex(
-            element => element.key == e.target.value );
-        console.log(e.target.value)
-        */
         const elementsIndex = this.state.result.findIndex(
             element => element.key == url);
 
         let newArr = [...this.state.result];
         console.log('idx:', elementsIndex)
         //console.log('arr:', newArr[elementsIndex])
-
-        newArr[elementsIndex] =
-            { ...newArr[elementsIndex], check: !newArr[elementsIndex].props.check };
-
+        
+        let newElement = {...newArr[elementsIndex],
+            props: {...newArr[elementsIndex].props, check: !newArr[elementsIndex].props.check}};
+        newArr[elementsIndex] = newElement;
+        
         this.setState({
             result: newArr
         });
+        console.log(newArr)
+        //console.log(this.state.result);
+    }
+
+    geturlReport = async (e) => {
+        var src_list = [];
+
+        for (var item of this.state.result) {
+            if (item.props.check == true) {
+                console.log(item.key);
+                src_list.push(item.key);
+            }
+        }
+        //console.log(src_list);
+
+        var jsondata = JSON.stringify({
+            src_list: src_list
+        })
+        //console.log(jsondata);
+        
+        const response = await Axios.post(
+            "django/url/analyze",
+            jsondata,
+            {headers: {'Content-Type': 'application/json'}}
+        );
+
+        const { data } = response;
+
+        //console.log(response)
+
+        if (data.status === "success") {
+            const Items = data.analysis_result.map((item) =>
+                <li
+                    key={item.name}
+                    src={item.src}
+                    colors={
+                        item.colors.map(color =>
+                        <li
+                        key={color.hex}
+                        ratio={color.ratio}
+                        />)
+                    }
+                />
+            )
+            //console.log(Items)            
+            
+            for (var item of data.analysis_result){
+                var dbcolor = new String(item.colors);
+                console.log(dbcolor);
+
+                var dbrequest = new FormData();
+                dbrequest.append('mb_uid', this.props.memberId);
+                dbrequest.append('spring', 0); //임시
+                dbrequest.append('summer', 0); //임시
+                dbrequest.append('autumn', 0); //임시
+                dbrequest.append('winter', 0); //임시
+                dbrequest.append('color', dbcolor);
+                dbrequest.append('dress_name', item.key); //바꿀 수 있게
+                dbrequest.append('dress_memo', ''); //바꿀 수 있게
+                dbrequest.append('dressImg', item.src)
+                dbrequest.append('share_type', 0); //바꿀 수 있게
+
+                const dbresponse = await Axios.post(
+                    "/colorfit/analysis/saveResult",
+                    dbrequest
+                )
+                console.log(dbresponse);
+            }
+
+
+            this.setState({
+                saved: Items,
+                activeItem: 'link_result'
+            })
+        
+        //url유효하지 않으면 response에 data: error:error: "unknown url type: 'abcdfsafs'"
+
+            //스프링으로
+        }
     }
 
     render() {
@@ -230,7 +309,9 @@ class AnalysisMain extends Component {
                 <Menu attached='top' tabular color='teal'>
                     <Menu.Item
                         name='link_input'
-                        active={activeItem === 'link_input' || activeItem === 'link_output'}
+                        active={activeItem === 'link_input'
+                         || activeItem === 'link_output'
+                        || activeItem === 'link_result'}
                         onClick={this.handleItemClick}>
                         사이트 링크로 분석하기
                     </Menu.Item>
@@ -287,20 +368,73 @@ class AnalysisMain extends Component {
                                 )}
                             </Card.Group>
                         </Segment>
+                        <Button color='teal' onClick={this.geturlReport}>
+                            선택 후 결과 보기
+                        </Button>
+
                     </Segment>}
 
+                { (activeItem === 'link_result') &&
+                    <Segment
+                        attached='bottom'
+                        textAlign='center'
+                        placeholder>
+                        <Header> 결과가 나의 옷장에 저장되었습니다.
+                             </Header>
+                        <Segment>
+                        <Card.Group itemsPerRow={4}>
+                                {this.state.saved.map(
+                                    card => <Card fluid>
+                                        <Image src={card.props.src} />
+                                        <Card.Content>
+                                            {card.props.colors.map(
+                                                color => <Card.Description>
+                                                    color: {color.key} ratio: {color.props.ratio}
+                                                    </Card.Description>
+                                            )}
+                                        </Card.Content>
+                                    </Card>
+                                )}
+                            </Card.Group>
+                        </Segment>
+
+                    </Segment>
+                }
 
                 { (activeItem === 'upload_input') &&
                     <Segment
                         attached='bottom'
                         textAlign='center'
                         placeholder>
-                        <Header image>
+                        <Header style={{ fontSize: '1.3em',
+                        fontFamily: ['Inter', 'NotoSansKR']}}
+                        textAlign='center'>
                             <Image circular src={uploadimage} />
                             분석할 사진 파일을 업로드 하세요
                     </Header>
                         <Segment>
-                            <DragDrop handleDrop={this.handleDrop}>
+                            
+                        </Segment>
+                        <Button
+                            fluid
+                            size='large'
+                            color='teal'
+                            onClick={this.handleImageAnalysisClick}
+                        >
+                            분석하기
+                    </Button>
+                    </Segment>
+                }
+
+            </div>
+        )
+    }
+}
+
+
+/*
+
+<DragDrop handleDrop={this.handleDrop}>
                                 {this.state.files.length === 0 &&
                                     <div textAlign='center'>
                                         이 창에 이미지 파일들을 드래그해서 업로드하세요
@@ -310,20 +444,6 @@ class AnalysisMain extends Component {
                                         <div key={i}>{file}</div>)}
                                 </div>
                             </DragDrop>
-                        </Segment>
-                        <Button
-                            fluid
-                            size='large'
-                            color='teal'
-                        >
-                            분석하기
-                    </Button>
-                    </Segment>
-                }
-            </div>
-        )
-    }
-}
-
+*/
 
 export default withRouter(AnalysisMain);

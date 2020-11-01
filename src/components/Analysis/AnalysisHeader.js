@@ -42,7 +42,7 @@ class AnalysisHeader extends Component {
         return (
             <div>
               <Container>
-              <Header style={{ fontSize: '3em', fontFamily: ['Inter', 'NotoSansKR']}}
+              <Header style={{ fontSize: '3em', fontFamily: ['Inter', 'NotoSansKR'], padding: '1rem'}}
                color='teal'
                textAlign='center'>
                   Analysis
