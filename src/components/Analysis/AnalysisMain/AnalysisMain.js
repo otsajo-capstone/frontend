@@ -8,10 +8,13 @@ import { Input,
     Container,
     Icon,
     Header,
-    Grid } from 'semantic-ui-react';
+    Message,
+    Grid,
+    Card } from 'semantic-ui-react';
+import Axios from 'axios';
 
-const linkimage = require('./image/linkimage.png')
-const uploadimage = require('./image/uploadimage.png')
+const linkimage = require('../image/linkimage.png')
+const uploadimage = require('../image/uploadimage.png')
 
 class DragDrop extends Component{
     state = {
@@ -107,9 +110,23 @@ class DragDrop extends Component{
     }
 }
 
-class Analysis extends Component {
+/* 안돼..
+function validURL(str) {
+    var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+      '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+      '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+      '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+    return !!pattern.test(str);
+}
+*/
+
+class AnalysisMain extends Component {
     state = { 
-        activeItem: 'link',
+        activeItem: 'link_input',
+        url: '',
+        result: [],
         files: []
     }
 
@@ -123,28 +140,68 @@ class Analysis extends Component {
         }
         this.setState({files: fileList})
       }
+    
+    
+    handleLinkAnalysisClick = async (e)=> {
+        if(true){
+            var formdata = new FormData();
+            formdata.append('url', this.state.url);
+            formdata.append('width', 100);
+            formdata.append('height', 100);
+
+            const response = await Axios.post(
+                "django/url",
+                formdata
+            );
+                
+            const { status, data } = response;
+            //console.log(response);
+            
+            if (data.status === "success"){
+                this.setState({
+                    result: data.src_list,
+                    activeItem: 'link_output'})
+                }
+            else{
+                console.log(response)
+            }
+        }
+        else{
+
+        }
+
+    }
+
+    handleChange = (e) => {
+        this.setState({
+          [e.target.name]: e.target.value
+        });
+      }
 
     render(){
         const { activeItem } = this.state
+        const imageUrlList = this.state.result.map(
+            (result) => <Image key={result} src={result}/>
+        )
 
         return(
             <div>
                 <Menu attached='top' tabular color='teal'>
                     <Menu.Item
-                        name='link'
-                        active={activeItem === 'link'}
+                        name='link_input'
+                        active={activeItem === 'link_input' || activeItem === 'link_output'}
                         onClick={this.handleItemClick}>
                         사이트 링크로 분석하기
                     </Menu.Item>
                     <Menu.Item
-                        name='upload'
-                        active={activeItem === 'upload'}
+                        name='upload_input'
+                        active={activeItem === 'upload_input'}
                         onClick={this.handleItemClick}>
                         이미지 파일로 분석하기
                     </Menu.Item>
                 </Menu>
                 
-                { (activeItem === 'link') &&
+                { (activeItem === 'link_input') &&
                 <Segment
                 attached='bottom'
                 textAlign='center'
@@ -154,13 +211,32 @@ class Analysis extends Component {
                             분석할 사이트의 주소를 복사&붙여넣기 하세요
                     </Header>
                     <Segment.Inline>
-                        <Input action='페이지 사진 가져오기'
-                        placeholder='http://...'/>
+                        <Input name='url'
+                        value={this.state.url}
+                        onChange={this.handleChange}
+                        placeholder='http://...' />
+                        <Button color='teal' onClick={this.handleLinkAnalysisClick}>
+                            입력 후 클릭
+                        </Button>
                     </Segment.Inline>
 
                 </Segment>}
+
+                { (activeItem === 'link_output') &&
+                <Segment
+                attached='bottom'
+                textAlign='center'
+                placeholder>
+                    {this.state.link}
+                <div>
+                    <Card>
+                        {imageUrlList}
+                    </Card>
+                </div>
+                </Segment>}
                 
-                { (activeItem === 'upload') &&
+                
+                { (activeItem === 'upload_input') &&
                 <Segment
                 attached='bottom'
                 textAlign='center'
@@ -196,4 +272,4 @@ class Analysis extends Component {
 }
 
 
-export default withRouter(Analysis);
+export default withRouter(AnalysisMain);

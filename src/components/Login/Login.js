@@ -30,7 +30,7 @@ class Login extends Component {
       formdata.append('mb_pw', this.state.password);
 
       const response = await Axios.post(
-        "/colorfit/member/login/",
+        "colorfit/member/login/",
          formdata
       );
         

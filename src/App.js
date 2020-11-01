@@ -60,7 +60,10 @@ class App extends Component {
             <Route path="/signup/:number" component={SignUp} />
             <Route path="/signup" component={SignUp} />
           </Switch>
-          <Route exact path="/analysis" component={AnalysisPage} />
+          <Switch>
+            <Route exact path="/analysis/:number" component={AnalysisPage} />
+            <Route exact path="/analysis" component={AnalysisPage} />
+          </Switch>
           <Route exact path="/dressroom" component={DressroomPage} />        
         </div>
       </Store.Provider>
