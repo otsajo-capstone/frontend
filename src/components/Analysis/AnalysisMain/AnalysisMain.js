@@ -15,7 +15,8 @@ import {
     Checkbox,
     Item,
     Divider,
-    List
+    List,
+    Form
 } from 'semantic-ui-react';
 import Axios from 'axios';
 import { useDropzone } from 'react-dropzone';
@@ -136,23 +137,23 @@ function DropZone(props) {
         <Container>
             <Segment stacked padded='very'>
                 <Container style={{ minHeight: 30 }}>
-                <div {...getRootProps({ className: 'dropzone' })}>
-                    <input {...getInputProps()} />
-                    <br/>
-                    <p>파일을 박스에 드래그 하거나<br/><b>여기를</b> 클릭하세요. (jpg/png)</p>
-                    <br/>
-                </div>
+                    <div {...getRootProps({ className: 'dropzone' })}>
+                        <input {...getInputProps()} />
+                        <br />
+                        <p>파일을 박스에 드래그 하거나<br /><b>여기를</b> 클릭하세요. (jpg/png)</p>
+                        <br />
+                    </div>
                 </Container>
                 <Divider />
                 <List>
-                {files.map(
-                    file => <List.Item>
-                        <List.Icon name='file' />
-                        <List.Content>
-                            <List.Header>{file.key}</List.Header>
-                            <List.Description>{file}</List.Description>
-                        </List.Content>
-                    </List.Item>)}
+                    {files.map(
+                        file => <List.Item>
+                            <List.Icon name='file' />
+                            <List.Content>
+                                <List.Header>{file.key}</List.Header>
+                                <List.Description>{file}</List.Description>
+                            </List.Content>
+                        </List.Item>)}
                 </List>
             </Segment>
         </Container>
@@ -168,9 +169,40 @@ class AnalysisMain extends Component {
             activeItem: 'link_input',
             url: '',
             result: [],
-            files: [],
-            saved: []
+            saved: [],
+            file: null
         }
+        this.onFormSubmit = this.onFormSubmit.bind(this);
+        this.onChange = this.onChange.bind(this);
+    }
+    
+    onFormSubmit = async (e) => {
+        console.log(this.state.file)
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append('files', this.state.file);
+
+        const config = {
+            headers: {
+                'content-type': 'multipart/form-data'
+            }
+        };
+
+        const response = await Axios.post(
+            "http://34.82.152.172:5000/image/amalyze",
+            formData,
+            config
+        );
+        
+        const { data } = response;        
+        console.log(response)
+    }
+
+    onChange(e) {
+        console.log(e.target.files)
+        console.log(e.target.files[0])
+        this.setState({ file: e.target.files[0] });
+        console.log(this.state.file)
     }
 
     handleItemClick = (e, { name }) => this.setState({ activeItem: name })
@@ -208,7 +240,7 @@ class AnalysisMain extends Component {
                 const Items = data.src_list.map((item) =>
                     <li
                         key={item}
-                        check={new Boolean(true)}
+                        check={false}
                     />
                 )
 
@@ -225,28 +257,12 @@ class AnalysisMain extends Component {
         }
     }
 
-    handleImageAnalysisClick = async (e) => {
-        console.log(this.state.files)
-        console.log(typeof (this.state.files[0]))
-
-        var formdata = new FormData();
-        formdata.append('files', this.state.files);
-
-        const response = await Axios.post(
-            "/image/analyze",
-            formdata
-        );
-
-        console.log(formdata.get('files'))
-        const { data } = response;
-        console.log(response)
-    }
-
     handleChange = (e) => {
         this.setState({
             [e.target.name]: e.target.value
         });
     }
+    
 
     handleCheck = (url) => {
         //console.log(this.state.result)
@@ -353,10 +369,10 @@ class AnalysisMain extends Component {
         }
     }
 
-    
+
     render() {
         const { activeItem } = this.state
-    
+
         return (
             <div>
                 <Menu attached='top' tabular color='teal'>
@@ -468,15 +484,21 @@ class AnalysisMain extends Component {
                             <Image circular src={uploadimage} />
                             분석할 사진 파일을 업로드 하세요
                     </Header>
-                        
-                            <div className="content">
-                                <DropZone/>
-                            </div>
+
+                        <div className="content">
+                            <Form>
+                            <form onSubmit={this.onFormSubmit}>
+                                <input type="file"
+                                name="myImage"
+                                onChange={this.onChange}/>
+                            </form>
+                            </Form>
+                        </div>
                         <Button
                             fluid
                             size='large'
                             color='teal'
-                            onClick={this.handleImageAnalysisClick}
+                            onClick={this.onFormSubmit}
                         >
                             분석하기
                     </Button>

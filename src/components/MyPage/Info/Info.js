@@ -183,8 +183,8 @@ class Info extends Component {
               color='teal'
               fluid size='large'
               onClick={this.update}
-              disabled={this.state.mb_name.length < 3
-                || this.state.password.length < 5
+              disabled={this.state.mb_name.length < 1
+                || this.state.password.length < 4
                 || (this.state.password != this.state.pw_check)
               }>
               수정하기
