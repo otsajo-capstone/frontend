@@ -70,10 +70,10 @@ class Dressroom extends Component {
           <Header>
             나의 드레스룸</Header>
           <Segment>
-            <Card.Group itemsPerRow={3}>
+            <Card.Group itemsPerRow={4}>
               {this.state.mylist.map(
                 card => <Card fluid>
-                  <Image src={card.props.dress_img_org} />
+                  <Image src={card.props.dress_img_org}/>
                   <Card.Header>{card.props.dress_name}</Card.Header>
                   <Card.Meta>
                     <span className='date'>{card.props.dress_regDate.slice(5,10)}</span>

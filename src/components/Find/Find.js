@@ -82,21 +82,21 @@ class Find extends Component {
         <div>
           <Form>
             <Segment piled style={style.paddinglr}>
-              <Header style={{ fontSize: '2em' }}>
-                Forgot Id?
+              <Header style={{ fontSize: '2em', fontFamily: ['Inter', 'NotoSansKR'], }}>
+                아이디 찾기
                         </Header>
-              <Label style={style.base}> Name </Label>
+              <Label style={style.base}> 이름 </Label>
               <Form.Input
                 name='name1'
-                placeholder='name'
+                placeholder='이름'
                 value={this.state.name1}
                 onChange={this.handleChange} />
 
-              <Label style={style.base}> Email </Label>
+              <Label style={style.base}> 이메일 </Label>
               <Form.Input
                 name='email1'
                 fluid icon='at'
-                placeholder='E-mail address'
+                placeholder='이메일 주소'
                 value={this.state.email1}
                 onChange={this.handleChange} />
               <Button
@@ -105,7 +105,7 @@ class Find extends Component {
                 color='teal'
                 fluid size='large'
                 onClick={this.findId}>
-                find id
+                아이디 찾기
                     </Button>
             </Segment>
           </Form>
@@ -114,28 +114,28 @@ class Find extends Component {
         <div>
           <Form>
             <Segment piled style={style.paddinglr}>
-              <Header style={{ fontSize: '2em' }}>
-                Forgot Password?
+              <Header style={{ fontSize: '2em', fontFamily: ['Inter', 'NotoSansKR'] }}>
+                비밀번호 찾기
                         </Header>
-              <Label style={style.base}> Id </Label>
+              <Label style={style.base}> 아이디 </Label>
               <Form.Input
                 name='id2'
-                placeholder='id'
+                placeholder='아이디'
                 value={this.state.id2}
                 onChange={this.handleChange} />
 
-              <Label style={style.base}> Name </Label>
+              <Label style={style.base}> 이름 </Label>
               <Form.Input
                 name='name2'
-                placeholder='name'
+                placeholder='이름'
                 value={this.state.name2}
                 onChange={this.handleChange} />
 
-              <Label style={style.base}> Email </Label>
+              <Label style={style.base}> 이메일 </Label>
               <Form.Input
                 name='email2'
                 fluid icon='at'
-                placeholder='E-mail address'
+                placeholder='이메일'
                 value={this.state.email2}
                 onChange={this.handleChange} />
               <Button
@@ -145,7 +145,7 @@ class Find extends Component {
                 color='teal'
                 fluid size='large'
                 onClick={this.findPw}>
-                Send temp password to your Email
+                이메일 주소로 임시 비밀번호 보내기
                     </Button>
             </Segment>
           </Form>
