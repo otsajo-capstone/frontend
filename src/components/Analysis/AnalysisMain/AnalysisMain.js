@@ -7,13 +7,9 @@ import {
     Segment,
     Menu,
     Container,
-    Icon,
     Header,
-    Message,
-    Grid,
     Card,
     Checkbox,
-    Item,
     Divider,
     List,
     Form
@@ -120,7 +116,7 @@ class DragDrop extends Component {
 }
 */
 
-
+/*
 function DropZone(props) {
     const {
         acceptedFiles,
@@ -159,6 +155,7 @@ function DropZone(props) {
         </Container>
     );
 }
+*/
 
 
 class AnalysisMain extends Component {
@@ -175,7 +172,7 @@ class AnalysisMain extends Component {
         this.onFormSubmit = this.onFormSubmit.bind(this);
         this.onChange = this.onChange.bind(this);
     }
-    
+
     onFormSubmit = async (e) => {
         console.log(this.state.file)
         e.preventDefault();
@@ -189,13 +186,62 @@ class AnalysisMain extends Component {
         };
 
         const response = await Axios.post(
-            "http://34.82.152.172:5000/image/amalyze",
+            "http://34.82.152.172:5000/image/analyze",
             formData,
             config
         );
-        
-        const { data } = response;        
+
+        const { data } = response;
         console.log(response)
+
+        if (data.status === "success") {
+            const Items = data.analysis_result.map((item) =>
+                <li
+                    key={item.name}
+                    src={item.src}
+                    colors={
+                        item.colors.map(color =>
+                            <li
+                                key={color.hex}
+                                ratio={color.ratio.toFixed(3)}
+                            />)
+                    }
+                />
+            )
+
+            for (var item of Items) {
+                var dbcolor = new String("[");
+                for (var color of item.props.colors) {
+                    dbcolor += "{\"hex\": \"" + String(color.key) +
+                        "\", \"ratio\": \"" + String(color.props.ratio) + "\"},"
+                }
+                dbcolor = dbcolor.slice(0, -1) + "]"
+                //console.log(dbcolor);
+
+                var dbrequest = new FormData();
+                dbrequest.append('mb_uid', this.props.memberId);
+                dbrequest.append('spring', 0); //임시
+                dbrequest.append('summer', 0); //임시
+                dbrequest.append('autumn', 0); //임시
+                dbrequest.append('winter', 0); //임시
+                dbrequest.append('color', dbcolor);
+                dbrequest.append('dress_img_org', item.props.src)
+                dbrequest.append('dress_img_sav', item.props.src)
+                dbrequest.append('dress_name', item.key); //바꿀 수 있게
+
+                console.log(dbrequest.get('mb_uid'))
+
+                const dbresponse = await Axios.post(
+                    "http://localhost:8080/colorfit/analysis/saveResult2",
+                    dbrequest,
+                )
+            }
+
+            this.setState({
+                saved: Items,
+                activeItem: 'result'
+            })
+        }
     }
 
     onChange(e) {
@@ -262,7 +308,7 @@ class AnalysisMain extends Component {
             [e.target.name]: e.target.value
         });
     }
-    
+
 
     handleCheck = (url) => {
         //console.log(this.state.result)
@@ -337,7 +383,7 @@ class AnalysisMain extends Component {
                         "\", \"ratio\": \"" + String(color.props.ratio) + "\"},"
                 }
                 dbcolor = dbcolor.slice(0, -1) + "]"
-                console.log(dbcolor);
+                //console.log(dbcolor);
 
                 var dbrequest = new FormData();
                 dbrequest.append('mb_uid', this.props.memberId);
@@ -360,7 +406,7 @@ class AnalysisMain extends Component {
 
             this.setState({
                 saved: Items,
-                activeItem: 'link_result'
+                activeItem: 'result'
             })
 
             //url유효하지 않으면 response에 data: error:error: "unknown url type: 'abcdfsafs'"
@@ -443,7 +489,7 @@ class AnalysisMain extends Component {
 
                     </Segment>}
 
-                { (activeItem === 'link_result') &&
+                { (activeItem === 'result') &&
                     <Segment
                         attached='bottom'
                         textAlign='center'
@@ -487,11 +533,11 @@ class AnalysisMain extends Component {
 
                         <div className="content">
                             <Form>
-                            <form onSubmit={this.onFormSubmit}>
-                                <input type="file"
-                                name="myImage"
-                                onChange={this.onChange}/>
-                            </form>
+                                <form onSubmit={this.onFormSubmit}>
+                                    <input type="file"
+                                        name="myImage"
+                                        onChange={this.onChange} />
+                                </form>
                             </Form>
                         </div>
                         <Button

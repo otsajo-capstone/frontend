@@ -73,11 +73,6 @@ class Info extends Component {
     e.preventDefault();
 
     try {
-      var valdata = new FormData();
-      valdata.append('mb_id', this.props.id);
-      valdata.append('mb_pw', this.state.password);
-      console.log(this.props.id)
-
       var formdata = new FormData();
       formdata.append('mb_name', this.state.mb_name);
       formdata.append('mb_pw', this.state.password);
