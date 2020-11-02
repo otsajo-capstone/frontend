@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import Info from '../components/MyPage/Info'
-import Modify from '../components/MyPage/Modify'
+import Check from '../components/MyPage/Check'
 import Store from '../store/store';
 import Layout from '../components/Layout';
 import InfoHeader from '../components/MyPage/InfoHeader'
@@ -19,7 +19,7 @@ class UserInfoPage extends Component {
                         <Info memberId={Store.memberId} id={Store.id}/>
                         ||
                         (number === '2') &&
-                        <Modify memberId={Store.memberId} id={Store.id}/>
+                        <Check memberId={Store.memberId} id={Store.id}/>
                     )}
                 </Store.Consumer>
             </Layout>

@@ -6,12 +6,9 @@ import {
     Image,
     Segment,
     Menu,
-    Container,
     Header,
     Card,
     Checkbox,
-    Divider,
-    List,
     Form
 } from 'semantic-ui-react';
 import Axios from 'axios';

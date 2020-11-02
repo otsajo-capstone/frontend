@@ -23,13 +23,13 @@ class Header extends Component{
                         COLOR FIT              
                     </Menu.Item>
 
-                    { this.props.logged && <Menu.Item as={Link} name ='의류 컬러분석' to='analysis'/>}
-                    { this.props.logged && <Menu.Item as={Link} name ='드레스 룸' to='dressroom'/>}
+                    { this.props.logged && <Menu.Item as={Link} name ='의류 컬러분석' to='/analysis'/>}
+                    { this.props.logged && <Menu.Item as={Link} name ='드레스 룸' to='/dressroom'/>}
 
                     <Menu.Menu position='right'>
-                        { !this.props.logged && <Menu.Item as={Link} name='로그인' to='login'/>}
-                        { !this.props.logged && <Menu.Item as={Link} name='회원가입' to='signup'/>}
-                        { this.props.logged && <Menu.Item as={Link} name ='내 정보' to='mypage'/>}
+                        { !this.props.logged && <Menu.Item as={Link} name='로그인' to='/login'/>}
+                        { !this.props.logged && <Menu.Item as={Link} name='회원가입' to='/signup'/>}
+                        { this.props.logged && <Menu.Item as={Link} name ='내 정보' to='/mypage'/>}
                         { this.props.logged && <Menu.Item as='a' name ='로그아웃' onClick={this.handleClick}/>}
                     </Menu.Menu>
             
