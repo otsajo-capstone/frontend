@@ -2,6 +2,9 @@ import React, { Component } from 'react'
 import { Link, withRouter } from 'react-router-dom';
 import Axios from 'axios';
 import { Segment, Header, Card, Image, Icon } from 'semantic-ui-react';
+import CanvasJSReact from '../react-canvasjs-chart-samples/react-canvasjs-chart-samples/src/assets/canvasjs.react';
+var CanvasJS = CanvasJSReact.CanvasJS;
+var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 class Dressroom extends Component {
   constructor(props) {
@@ -73,17 +76,19 @@ class Dressroom extends Component {
             <Card.Group itemsPerRow={4}>
               {this.state.mylist.map(
                 card => <Card fluid>
-                  <Image src={card.props.dress_img_org}/>
+                  <Image src={card.props.dress_img_org} />
                   <Card.Header>{card.props.dress_name}</Card.Header>
                   <Card.Meta>
-                    <span className='date'>{card.props.dress_regDate.slice(5,10)}</span>
+                    <span className='date'>{card.props.dress_regDate.slice(5, 10)}</span>
                   </Card.Meta>
                   <Card.Content>
                     {card.props.color.map(
                       c => <Card.Description>
                         color: {c.key} ratio: {c.props.ratio}
+
                       </Card.Description>
                     )}
+                    
                   </Card.Content>
                   <Card.Content extra>
                     <a><Icon name='heart' color='red' />

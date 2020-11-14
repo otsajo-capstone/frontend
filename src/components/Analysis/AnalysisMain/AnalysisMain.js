@@ -13,6 +13,9 @@ import {
 } from 'semantic-ui-react';
 import Axios from 'axios';
 import { useDropzone } from 'react-dropzone';
+import CanvasJSReact from '../../react-canvasjs-chart-samples/react-canvasjs-chart-samples/src/assets/canvasjs.react';
+var CanvasJS = CanvasJSReact.CanvasJS;
+var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 const linkimage = require('../image/linkimage.png')
 const uploadimage = require('../image/uploadimage.png')
@@ -171,7 +174,7 @@ class AnalysisMain extends Component {
     }
 
     onFormSubmit = async (e) => {
-        console.log(this.state.file)
+        //console.log(this.state.file)
         e.preventDefault();
         const formData = new FormData();
         formData.append('files', this.state.file);
@@ -183,13 +186,13 @@ class AnalysisMain extends Component {
         };
 
         const response = await Axios.post(
-            "http://34.82.152.172:5000/image/analyze",
+            "http://34.105.97.231:5000/image/analyze",
             formData,
             config
         );
 
         const { data } = response;
-        console.log(response)
+        //console.log(response)
 
         if (data.status === "success") {
             const Items = data.analysis_result.map((item) =>
@@ -226,7 +229,7 @@ class AnalysisMain extends Component {
                 dbrequest.append('dress_img_sav', item.props.src)
                 dbrequest.append('dress_name', item.key); //바꿀 수 있게
 
-                console.log(dbrequest.get('mb_uid'))
+                //console.log(dbrequest.get('mb_uid'))
 
                 const dbresponse = await Axios.post(
                     "http://localhost:8080/colorfit/analysis/saveResult2",
@@ -242,10 +245,10 @@ class AnalysisMain extends Component {
     }
 
     onChange(e) {
-        console.log(e.target.files)
-        console.log(e.target.files[0])
+        //console.log(e.target.files)
+        //console.log(e.target.files[0])
         this.setState({ file: e.target.files[0] });
-        console.log(this.state.file)
+        //console.log(this.state.file)
     }
 
     handleItemClick = (e, { name }) => this.setState({ activeItem: name })
@@ -267,7 +270,7 @@ class AnalysisMain extends Component {
             formdata.append('height', "");
 
             const response = await Axios.post(
-                "http://34.82.152.172:5000/url",
+                "http://34.105.97.231:5000/url",
                 formdata
             );
             const { data } = response;
@@ -314,7 +317,7 @@ class AnalysisMain extends Component {
             element => element.key == url);
 
         let newArr = [...this.state.result];
-        console.log('idx:', elementsIndex)
+        //console.log('idx:', elementsIndex)
         //console.log('arr:', newArr[elementsIndex])
 
         let newElement = {
@@ -328,7 +331,7 @@ class AnalysisMain extends Component {
         this.setState({
             result: newArr
         });
-        console.log(newArr)
+        //console.log(newArr)
         //console.log(this.state.result);
     }
 
@@ -337,7 +340,7 @@ class AnalysisMain extends Component {
 
         for (var item of this.state.result) {
             if (item.props.check == true) {
-                console.log(item.key);
+                //console.log(item.key);
                 src_list.push(item.key);
             }
         }
@@ -349,7 +352,7 @@ class AnalysisMain extends Component {
         //console.log(jsondata);
 
         const response = await Axios.post(
-            "http://34.82.152.172:5000/url/analyze",
+            "http://34.105.97.231:5000/url/analyze",
             jsondata,
             { headers: { 'Content-Type': 'application/json' } }
         );
@@ -393,7 +396,7 @@ class AnalysisMain extends Component {
                 dbrequest.append('dress_img_sav', item.props.src)
                 dbrequest.append('dress_name', item.key); //바꿀 수 있게
 
-                console.log(dbrequest.get('mb_uid'))
+                //console.log(dbrequest.get('mb_uid'))
 
                 const dbresponse = await Axios.post(
                     "http://localhost:8080/colorfit/analysis/saveResult2",
@@ -415,6 +418,21 @@ class AnalysisMain extends Component {
 
     render() {
         const { activeItem } = this.state
+
+        const options = {
+            title: {
+                text: "Basic Column Chart in React"
+            },
+            data: [{
+                type: "pie",
+                dataPoints: [
+                    { label: "Apple", y: 10 },
+                    { label: "Orange", y: 15 },
+                    { label: "Banana", y: 25 },
+                    { label: "Mango", y: 30 },
+                ]
+            }]
+        }
 
         return (
             <div>
@@ -554,6 +572,12 @@ class AnalysisMain extends Component {
 
 
 /*
+
+                <div>
+        <CanvasJSChart options = {options}
+        />
+      </div>
+
 
 <DragDrop handleDrop={this.handleDrop}>
                                 {this.state.files.length === 0 &&
