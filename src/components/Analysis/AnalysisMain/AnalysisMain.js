@@ -260,7 +260,7 @@ class AnalysisMain extends Component {
                 //console.log(dbrequest.get('mb_uid'))
 
                 const dbresponse = await Axios.post(
-                    "http://localhost:8080/colorfit/analysis/saveResult2",
+                    "http://localhost:8080/colorfit/analysis/saveImageResult",
                     dbrequest,
                     config_spring
                 )
@@ -355,7 +355,13 @@ class AnalysisMain extends Component {
                 })
             }
             else {
-                console.log(response)
+                console.log(response);
+                this.setState({
+                    progressActive: false,
+                    loading: false,
+                    percent: 0
+                })
+                alert("다시 시도해 주세요.");
             }
         }
         else {
@@ -468,14 +474,15 @@ class AnalysisMain extends Component {
                 dbrequest.append('autumn', 0); //임시
                 dbrequest.append('winter', 0); //임시
                 dbrequest.append('color', dbcolor);
-                dbrequest.append('dress_img_org', item.props.src)
-                dbrequest.append('dress_img_sav', item.props.src)
-                dbrequest.append('dress_name', item.key); //바꿀 수 있게
+                dbrequest.append('dress_link', this.state.url);
+                dbrequest.append('dress_img_org', item.props.src);
+                dbrequest.append('dress_img_sav', item.props.src);
+                dbrequest.append('dress_name', item.key);                
 
                 //console.log(dbrequest.get('mb_uid'))
 
                 const dbresponse = await Axios.post(
-                    "http://localhost:8080/colorfit/analysis/saveResult2",
+                    "http://localhost:8080/colorfit/analysis/saveLinkResult",
                     dbrequest,
                 )
             }
