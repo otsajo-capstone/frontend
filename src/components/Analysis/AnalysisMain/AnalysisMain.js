@@ -9,7 +9,10 @@ import {
     Header,
     Card,
     Checkbox,
-    Form
+    Form,
+    Progress,
+    Dimmer,
+    Loader
 } from 'semantic-ui-react';
 import Axios from 'axios';
 import { useDropzone } from 'react-dropzone';
@@ -167,19 +170,35 @@ class AnalysisMain extends Component {
             url: '',
             result: [],
             saved: [],
-            file: null
+            file: null,
+            progressActive: false,
+            loading: false,
+            percent: 0,
         }
         this.onFormSubmit = this.onFormSubmit.bind(this);
         this.onChange = this.onChange.bind(this);
     }
 
+    // upload image to analyze color
     onFormSubmit = async (e) => {
         //console.log(this.state.file)
         e.preventDefault();
+
+        this.setState({
+            loading: true,
+            progressActive: true
+        })
+
         const formData = new FormData();
         formData.append('files', this.state.file);
 
         const config = {
+            onUploadProgress: progressEvent => {
+                let percentCompleted = Math.floor((progressEvent.loaded * 70) / progressEvent.total);
+                this.setState({
+                    percent: percentCompleted
+                })
+            },
             headers: {
                 'content-type': 'multipart/form-data'
             }
@@ -195,6 +214,15 @@ class AnalysisMain extends Component {
         //console.log(response)
 
         if (data.status === "success") {
+            const config_spring = {
+                onUploadProgress: progressEvent => {
+                    let percentCompleted = Math.floor(((progressEvent.loaded * 30) / progressEvent.total) + 70);
+                    this.setState({
+                        percent: percentCompleted
+                    })
+                }
+            };
+
             const Items = data.analysis_result.map((item) =>
                 <li
                     key={item.name}
@@ -234,12 +262,16 @@ class AnalysisMain extends Component {
                 const dbresponse = await Axios.post(
                     "http://localhost:8080/colorfit/analysis/saveResult2",
                     dbrequest,
+                    config_spring
                 )
             }
 
             this.setState({
                 saved: Items,
-                activeItem: 'result'
+                activeItem: 'result',
+                progressActive: false,
+                loading: false,
+                percent: 0
             })
         }
     }
@@ -264,6 +296,27 @@ class AnalysisMain extends Component {
 
     handleLinkAnalysisClick = async (e) => {
         if (true) {
+            console.time('크롤링');
+
+            this.setState({
+                loading: true,
+                progressActive: true
+            })
+
+            const config = {
+                onUploadProgress: progressEvent => {
+                    let percentCompleted = Math.floor((progressEvent.loaded * 33) / progressEvent.total);
+                    this.setState({
+                        percent: percentCompleted
+                    })
+                },
+                onDownloadProgress: (progressEvent) => {
+                    let percentCompleted = Math.round(90 + (progressEvent.loaded * 10) / progressEvent.total);
+                    console.log(progressEvent.lengthComputable)
+                    console.log(percentCompleted);
+                }
+            };
+
             var formdata = new FormData();
             formdata.append('url', this.state.url);
             formdata.append('width', "");
@@ -271,9 +324,13 @@ class AnalysisMain extends Component {
 
             const response = await Axios.post(
                 "http://34.105.97.231:5000/url",
-                formdata
+                formdata,
+                config
             );
+
             const { data } = response;
+
+            console.timeEnd('크롤링');
 
             if (data.status === "success") {
                 /*
@@ -289,10 +346,12 @@ class AnalysisMain extends Component {
                         check={false}
                     />
                 )
-
                 this.setState({
                     result: Items,
-                    activeItem: 'link_output'
+                    activeItem: 'link_output',
+                    progressActive: false,
+                    loading: false,
+                    percent: 0
                 })
             }
             else {
@@ -336,6 +395,21 @@ class AnalysisMain extends Component {
     }
 
     geturlReport = async (e) => {
+        this.setState({
+            loading: true,
+            progressActive: true
+        })
+
+        const config = {
+            onUploadProgress: progressEvent => {
+                let percentCompleted = Math.floor((progressEvent.loaded * 100) / progressEvent.total);
+                this.setState({
+                    percent: percentCompleted
+                })
+            },
+            headers: { 'Content-Type': 'application/json' }
+        };
+
         var src_list = [];
 
         for (var item of this.state.result) {
@@ -351,14 +425,15 @@ class AnalysisMain extends Component {
         })
         //console.log(jsondata);
 
+        console.time('분석');
         const response = await Axios.post(
             "http://34.105.97.231:5000/url/analyze",
             jsondata,
-            { headers: { 'Content-Type': 'application/json' } }
+            config
         );
 
         const { data } = response;
-
+        console.timeEnd('분석');
         //console.log(response)
 
         if (data.status === "success") {
@@ -376,6 +451,7 @@ class AnalysisMain extends Component {
                 />
             )
 
+            console.time('DB');
             for (var item of Items) {
                 var dbcolor = new String("[");
                 for (var color of item.props.colors) {
@@ -404,17 +480,20 @@ class AnalysisMain extends Component {
                 )
             }
 
+            console.timeEnd('DB');
+
             this.setState({
                 saved: Items,
-                activeItem: 'result'
+                activeItem: 'result',
+                progressActive: false,
+                loading: false,
+                percent: 0
             })
 
             //url유효하지 않으면 response에 data: error:error: "unknown url type: 'abcdfsafs'"
-
             //스프링으로
         }
     }
-
 
     render() {
         const { activeItem } = this.state
@@ -471,7 +550,15 @@ class AnalysisMain extends Component {
                                 입력 후 클릭
                         </Button>
                         </Segment.Inline>
-
+                        {
+                            (this.state.loading) &&
+                            <Dimmer active inverted>
+                                <Loader
+                                    inverted
+                                    disabled={!this.state.loading}
+                                    content='Loading...' />
+                            </Dimmer>
+                        }
                     </Segment>}
 
                 { (activeItem === 'link_output') &&
@@ -501,7 +588,15 @@ class AnalysisMain extends Component {
                         <Button color='teal' onClick={this.geturlReport}>
                             선택 후 결과 보기
                         </Button>
-
+                        {
+                            (this.state.loading) &&
+                            <Dimmer active inverted>
+                                <Loader
+                                    inverted
+                                    disabled={!this.state.loading}
+                                    content='Loading...' />
+                            </Dimmer>
+                        }
                     </Segment>}
 
                 { (activeItem === 'result') &&
@@ -563,8 +658,18 @@ class AnalysisMain extends Component {
                         >
                             분석하기
                     </Button>
+                        {
+                            (this.state.loading) &&
+                            <Dimmer active inverted>
+                                <Loader
+                                    inverted
+                                    disabled={!this.state.loading}
+                                    content='Loading...' />
+                            </Dimmer>
+                        }
                     </Segment>
                 }
+
             </div>
         )
     }
@@ -572,13 +677,23 @@ class AnalysisMain extends Component {
 
 
 /*
+//progress 못짠거
+{
+                    <Progress
+                    active={this.state.loading}
+                    disabled={!this.state.loading}
+                    percent={this.state.percent}
+                    color='blue'
+                    />
+                }
 
+//chart 사용 예시
                 <div>
         <CanvasJSChart options = {options}
         />
       </div>
 
-
+//dreapdrop 초안
 <DragDrop handleDrop={this.handleDrop}>
                                 {this.state.files.length === 0 &&
                                     <div textAlign='center'>
