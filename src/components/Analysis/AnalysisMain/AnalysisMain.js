@@ -12,7 +12,7 @@ import {
     Form,
     Progress,
     Dimmer,
-    Loader, Divider, Grid
+    Loader, Divider, Grid,Icon
 } from 'semantic-ui-react';
 import Axios from 'axios';
 import { useDropzone } from 'react-dropzone';
@@ -196,7 +196,6 @@ class AnalysisMain extends Component {
 
     // upload image to analyze color
     onFormSubmit = async (e) => {
-        //console.log(this.state.file)
         e.preventDefault();
 
         this.setState({
@@ -228,7 +227,6 @@ class AnalysisMain extends Component {
         );
 
         const { data } = response;
-        //console.log(response)
 
         if (data.status === "success") {
             const config_spring = {
@@ -251,6 +249,13 @@ class AnalysisMain extends Component {
                                 ratio={color.ratio.toFixed(3)}
                             />)
                     }
+                    result={
+                        item.result.map(season =>
+                            <li
+                                key={season.type}
+                                ratio={season.ratio.toFixed(3)}
+                            />)
+                    }
                 />
             )
 
@@ -261,14 +266,32 @@ class AnalysisMain extends Component {
                         "\", \"ratio\": \"" + String(color.props.ratio) + "\"},"
                 }
                 dbcolor = dbcolor.slice(0, -1) + "]"
-                //console.log(dbcolor);
+
+                var spring = 0;
+                var summer = 0;
+                var autumn = 0;
+                var winter = 0;
+                for (var season of item.props.result) {
+                    if (season.key.includes("봄")){
+                        spring = parseInt(season.props.ratio*100);
+                    }
+                    if (season.key.includes("여름")){
+                        summer = parseInt(season.props.ratio*100);
+                    }
+                    if (season.key.includes("가을")){
+                        autumn = parseInt(season.props.ratio*100);
+                    }
+                    if (season.key.includes("겨울")){
+                        winter = parseInt(season.props.ratio*100);
+                    }
+                }
 
                 var dbrequest = new FormData();
                 dbrequest.append('mb_uid', this.props.memberId);
-                dbrequest.append('spring', 0); //임시
-                dbrequest.append('summer', 0); //임시
-                dbrequest.append('autumn', 0); //임시
-                dbrequest.append('winter', 0); //임시
+                dbrequest.append('spring', spring); 
+                dbrequest.append('summer', summer); 
+                dbrequest.append('autumn', autumn); 
+                dbrequest.append('winter', winter); 
                 dbrequest.append('color', dbcolor);
                 dbrequest.append('dress_img_org', item.props.src)
                 dbrequest.append('dress_img_sav', item.props.src)
@@ -352,13 +375,6 @@ class AnalysisMain extends Component {
             console.timeEnd('크롤링');
 
             if (data.status === "success") {
-                /*
-                for (let i = 0; i < data.src_list.length; i++) {
-                    this.setState({
-                        result: this.state.result.concat([{ check: true, url: data.src_list[i] }])
-                    })
-                }*/
-
                 const Items = data.src_list.map((item) =>
                     <li
                         key={item}
@@ -395,14 +411,10 @@ class AnalysisMain extends Component {
 
 
     handleCheck = (url) => {
-        //console.log(this.state.result)
-        //console.log('val:', e.target.value)
         const elementsIndex = this.state.result.findIndex(
             element => element.key == url);
 
         let newArr = [...this.state.result];
-        //console.log('idx:', elementsIndex)
-        //console.log('arr:', newArr[elementsIndex])
 
         let newElement = {
             ...newArr[elementsIndex],
@@ -413,8 +425,6 @@ class AnalysisMain extends Component {
         this.setState({
             result: newArr
         });
-        //console.log(newArr)
-        //console.log(this.state.result);
     }
 
     geturlReport = async (e) => {
@@ -437,17 +447,14 @@ class AnalysisMain extends Component {
 
         for (var item of this.state.result) {
             if (item.props.check == true) {
-                //console.log(item.key);
                 src_list.push(item.key);
             }
         }
-        //console.log(src_list);
-
+ 
         var jsondata = JSON.stringify({
             src_list: src_list
         })
-        //console.log(jsondata);
-
+ 
         this.setRandomImage();
         console.time('분석');
         const response = await Axios.post(
@@ -458,7 +465,6 @@ class AnalysisMain extends Component {
 
         const { data } = response;
         console.timeEnd('분석');
-        //console.log(response)
 
         if (data.status === "success") {
             const Items = data.analysis_result.map((item) =>
@@ -472,6 +478,13 @@ class AnalysisMain extends Component {
                                 ratio={color.ratio.toFixed(3)}
                             />)
                     }
+                    result={
+                        item.result.map(season =>
+                            <li
+                                key={season.type}
+                                ratio={season.ratio.toFixed(3)}
+                            />)
+                    }
                 />
             )
 
@@ -483,14 +496,32 @@ class AnalysisMain extends Component {
                         "\", \"ratio\": \"" + String(color.props.ratio) + "\"},"
                 }
                 dbcolor = dbcolor.slice(0, -1) + "]"
-                //console.log(dbcolor);
+
+                var spring = 0;
+                var summer = 0;
+                var autumn = 0;
+                var winter = 0;
+                for (var season of item.props.result) {
+                    if (season.key.includes("봄")){
+                        spring = parseInt(season.props.ratio*100);
+                    }
+                    if (season.key.includes("여름")){
+                        summer = parseInt(season.props.ratio*100);
+                    }
+                    if (season.key.includes("가을")){
+                        autumn = parseInt(season.props.ratio*100);
+                    }
+                    if (season.key.includes("겨울")){
+                        winter = parseInt(season.props.ratio*100);
+                    }
+                }
 
                 var dbrequest = new FormData();
                 dbrequest.append('mb_uid', this.props.memberId);
-                dbrequest.append('spring', 0); //임시
-                dbrequest.append('summer', 0); //임시
-                dbrequest.append('autumn', 0); //임시
-                dbrequest.append('winter', 0); //임시
+                dbrequest.append('spring', spring); 
+                dbrequest.append('summer', summer); 
+                dbrequest.append('autumn', autumn); 
+                dbrequest.append('winter', winter); 
                 dbrequest.append('color', dbcolor);
                 dbrequest.append('dress_link', this.state.url);
                 dbrequest.append('dress_img_org', item.props.src);
@@ -521,22 +552,6 @@ class AnalysisMain extends Component {
 
     render() {
         const { activeItem } = this.state
-
-        const options = {
-            title: {
-                text: "Basic Column Chart in React"
-            },
-            data: [{
-                type: "pie",
-                dataPoints: [
-                    { label: "Apple", y: 10 },
-                    { label: "Orange", y: 15 },
-                    { label: "Banana", y: 25 },
-                    { label: "Mango", y: 30 },
-                ]
-            }]
-        }
-
         return (
             <div>
                 <Grid container style={{ padding: '5em 0em' }}>
@@ -658,7 +673,10 @@ class AnalysisMain extends Component {
                                                     <Card.Content>
                                                         {card.props.colors.map(
                                                             color => <Card.Description>
-                                                                color: {color.key} ratio: {color.props.ratio}
+                                                                <div style={{ color: color.key }}>
+                                                                    <Icon name='square full' />
+                                                                    {color.key} : { (color.props.ratio*100).toFixed(2)}%
+                                                                </div>
                                                             </Card.Description>
                                                         )}
                                                     </Card.Content>

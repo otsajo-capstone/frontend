@@ -29,12 +29,6 @@ class Dressroom extends Component {
         + String(this.props.memberId))
     const { data } = response;
 
-    //console.log(data.dlist);
-    //console.log(typeof(data.dlist[0]))
-    //console.log(data.dlist[0])
-    //console.log(data.dlist[0].dress_img_org)
-    //console.log(JSON.parse(data.dlist[0].color))
-
     if (data.status === 200) {
       const Items = data.dlist.map((item) =>
         <li
@@ -58,7 +52,6 @@ class Dressroom extends Component {
           likes={item.likes}
         />
       )
-
       this.setState({
         mylist: Items
       })
@@ -77,15 +70,14 @@ class Dressroom extends Component {
     const { data } = response;
 
     if (data.status === 200) {
-      console.log(data.ddto) //옷
-      console.log(data.rlist) //댓글
+      //console.log(data.ddto) //옷
+      //console.log(data.rlist) //댓글
 
       this.setState({
         clicked: !this.state.clicked,
         clickedCard: card,
       })
     }
-    //console.log(this.state.clickedCard)
   }
 
   closeDimmer = async e => {
@@ -106,18 +98,21 @@ class Dressroom extends Component {
           <Segment>
             <Card.Group itemsPerRow={4}>
               {this.state.mylist.map(
-                card => <Card fluid onClick={() => this.handleClickCardEvent(card)}>
+                card => <Card fluid
+                  onClick={() => this.handleClickCardEvent(card)}
+                  style={{ textDecoration: 'none' }}>
                   <Image src={card.props.dress_img_org} />
-                  <Card.Header>{card.props.dress_name}</Card.Header>
+                  <Card.Header style={{ textDecoration: 'none' }}>{card.props.dress_name}</Card.Header>
                   <Card.Meta>
                     <span className='date'>{card.props.dress_regDate.slice(5, 10)}</span>
                   </Card.Meta>
                   <Card.Content>
-                    {card.props.color.map(
-                      c => <Card.Description>
-                        color: {c.key} ratio: {c.props.ratio}
-                      </Card.Description>
-                    )}
+                    <Card.Description>
+                      <div style={{ color: card.props.color[0].key }}>
+                        <Icon name='square full' />
+                        {card.props.color[0].key}
+                      </div>
+                    </Card.Description>
 
                   </Card.Content>
                   <Card.Content extra>
@@ -139,64 +134,88 @@ class Dressroom extends Component {
                 <Modal.Header>상세 정보 보기</Modal.Header>
                 <Modal.Content image scrolling>
                   <Image size='huge'
-                  style={{ position: 'relative', 
-                  alignSelf: 'center', 
-                  justifyContent: 'center', 
-                  alignItems: 'center'}}
-                  src={this.state.clickedCard.props.dress_img_org} wrapped />
+                    style={{
+                      position: 'relative',
+                      alignSelf: 'center',
+                      justifyContent: 'center',
+                      alignItems: 'center'
+                    }}
+                    src={this.state.clickedCard.props.dress_img_org} wrapped />
                   <Modal.Description>
                     <Container>
                       <Item.Group divided>
                         <Item>
-                            <Item.Content>
-                              <Item.Header>이름</Item.Header>
-                              <Item.Description>
-                                {this.state.clickedCard.props.dress_name}
-                              </Item.Description>
-                            </Item.Content>
+                          <Item.Content>
+                            <Item.Header>이름</Item.Header>
+                            <Item.Description>
+                              {this.state.clickedCard.props.dress_name}
+                            </Item.Description>
+                          </Item.Content>
                         </Item>
                         <Item>
-                            <Item.Content>
-                              <Item.Header>컬러 정보</Item.Header>
-                              <Item.Description>
-                              </Item.Description>
-                            </Item.Content>
+                          <Item.Content>
+                            <Item.Header>컬러 정보</Item.Header>
+                            <CanvasJSChart options={{
+                              data: [{
+                                type: "pie",
+                                dataPoints: [
+                                  {
+                                    label: this.state.clickedCard.props.color[0].key,
+                                    y: this.state.clickedCard.props.color[0].props.ratio,
+                                    color: this.state.clickedCard.props.color[0].key
+                                  },
+                                  {
+                                    label: this.state.clickedCard.props.color[1].key,
+                                    y: this.state.clickedCard.props.color[1].props.ratio,
+                                    color: this.state.clickedCard.props.color[1].key
+                                  },
+                                  {
+                                    label: this.state.clickedCard.props.color[2].key,
+                                    y: this.state.clickedCard.props.color[2].props.ratio,
+                                    color: this.state.clickedCard.props.color[2].key
+                                  },
+                                ]
+                              }]
+                            }} />
+                            <Item.Description>
+                            </Item.Description>
+                          </Item.Content>
                         </Item>
                         <Item>
-                            <Item.Content>
-                              <Item.Header>저장한 날짜, 시간</Item.Header>
-                              <Item.Description>
-                                {this.state.clickedCard.props.dress_regDate}
-                              </Item.Description>
-                            </Item.Content>
+                          <Item.Content>
+                            <Item.Header>저장한 날짜, 시간</Item.Header>
+                            <Item.Description>
+                              {this.state.clickedCard.props.dress_regDate}
+                            </Item.Description>
+                          </Item.Content>
                         </Item>
                         <Item>
-                            <Item.Content>
-                              <Item.Header>쇼핑몰 링크</Item.Header>
-                              <Item.Description>
-                                <a onClick={()=>window.open(this.state.clickedCard.props.dress_link, "_blank")}>
+                          <Item.Content>
+                            <Item.Header>쇼핑몰 링크</Item.Header>
+                            <Item.Description>
+                              <a onClick={() => window.open(this.state.clickedCard.props.dress_link, "_blank")}>
                                 {this.state.clickedCard.props.dress_link}</a>
-                              </Item.Description>
-                            </Item.Content>
+                            </Item.Description>
+                          </Item.Content>
                         </Item>
                         <Item>
-                            <Item.Content>
-                              <Item.Header>메모</Item.Header>
-                              <Item.Description>
-                                {this.state.clickedCard.props.dress_memo}
-                              </Item.Description>
-                            </Item.Content>
+                          <Item.Content>
+                            <Item.Header>메모</Item.Header>
+                            <Item.Description>
+                              {this.state.clickedCard.props.dress_memo}
+                            </Item.Description>
+                          </Item.Content>
                         </Item>
                         <Item>
-                            <Item.Content>
-                              <Item.Header>공개 여부</Item.Header>
-                              <Item.Description>
-                                {(this.state.clickedCard.props.share_type===1) &&
+                          <Item.Content>
+                            <Item.Header>공개 여부</Item.Header>
+                            <Item.Description>
+                              {(this.state.clickedCard.props.share_type === 1) &&
                                 <div>공개 중</div>}
-                                {(this.state.clickedCard.props.share_type===0) &&
+                              {(this.state.clickedCard.props.share_type === 0) &&
                                 <div>나만 보는 중</div>}
-                              </Item.Description>
-                            </Item.Content>
+                            </Item.Description>
+                          </Item.Content>
                         </Item>
                       </Item.Group>
                     </Container>
@@ -207,7 +226,7 @@ class Dressroom extends Component {
                     content="수정하기"
                     labelPosition='right'
                     icon='edit'
-                    color='blue'/>
+                    color='blue' />
                   <Button
                     content="삭제하기"
                     labelPosition='right'
@@ -218,7 +237,6 @@ class Dressroom extends Component {
               </Modal>
             }
           </Segment>
-
         </Segment>
       </div>
     );
