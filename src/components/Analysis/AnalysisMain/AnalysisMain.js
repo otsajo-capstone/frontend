@@ -625,7 +625,8 @@ class AnalysisMain extends Component {
                                         <Card.Group itemsPerRow={4}>
                                             {this.state.result.map(
                                                 card => <Card fluid>
-                                                    <Image src={card.key} />
+                                                    <Image src={card.key} 
+                                                    style={{ objectFit: 'cover'}}/>
                                                     <Card.Content>
                                                         <Checkbox
                                                             name='result.url'
@@ -669,7 +670,8 @@ class AnalysisMain extends Component {
                                         <Card.Group itemsPerRow={4}>
                                             {this.state.saved.map(
                                                 card => <Card fluid>
-                                                    <Image src={card.props.src} />
+                                                    <Image src={card.props.src}
+                                                    style={{ objectFit: 'cover'}} />
                                                     <Card.Content>
                                                         {card.props.colors.map(
                                                             color => <Card.Description>
