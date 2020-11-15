@@ -137,7 +137,9 @@ class Dressroom extends Component {
               >
                 <Modal.Header>상세 정보 보기</Modal.Header>
                 <Modal.Content image scrolling>
-                  <Image size='medium' src={this.state.clickedCard.props.dress_img_org} wrapped />
+                  <Image size='huge'
+                  style={{ position: 'relative', alignSelf: 'center', justifyContent: 'center', alignItems: 'center'}}
+                  src={this.state.clickedCard.props.dress_img_org} wrapped />
                   <Modal.Description>
                     <Container>
                       <Item.Group divided>

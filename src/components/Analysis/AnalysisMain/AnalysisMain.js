@@ -12,16 +12,20 @@ import {
     Form,
     Progress,
     Dimmer,
-    Loader
+    Loader, Divider, Grid
 } from 'semantic-ui-react';
 import Axios from 'axios';
 import { useDropzone } from 'react-dropzone';
 import CanvasJSReact from '../../react-canvasjs-chart-samples/react-canvasjs-chart-samples/src/assets/canvasjs.react';
 var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
-
 const linkimage = require('../image/linkimage.png')
 const uploadimage = require('../image/uploadimage.png')
+
+function importAll(r) {
+    return r.keys().map(r);
+}
+const images = importAll(require.context('../image/loading/', false, /\.(png|jpe?g|svg)$/));
 
 /*
 class DragDrop extends Component {
@@ -174,9 +178,20 @@ class AnalysisMain extends Component {
             progressActive: false,
             loading: false,
             percent: 0,
+            loadingImage: []
         }
         this.onFormSubmit = this.onFormSubmit.bind(this);
         this.onChange = this.onChange.bind(this);
+    }
+
+    setRandomImage() {
+        const min = 0;
+        const max = images.length;
+        const rand = min + Math.floor(Math.random() * (max-min));
+
+        this.setState({
+            loadingImage: images[rand]
+        })
     }
 
     // upload image to analyze color
@@ -203,6 +218,8 @@ class AnalysisMain extends Component {
                 'content-type': 'multipart/form-data'
             }
         };
+        
+        this.setRandomImage();
 
         const response = await Axios.post(
             "http://34.105.97.231:5000/image/analyze",
@@ -258,6 +275,7 @@ class AnalysisMain extends Component {
                 dbrequest.append('dress_name', item.key); //바꿀 수 있게
 
                 //console.log(dbrequest.get('mb_uid'))
+                this.setRandomImage();
 
                 const dbresponse = await Axios.post(
                     "http://localhost:8080/colorfit/analysis/saveImageResult",
@@ -321,6 +339,7 @@ class AnalysisMain extends Component {
             formdata.append('url', this.state.url);
             formdata.append('width', "");
             formdata.append('height', "");
+            this.setRandomImage();
 
             const response = await Axios.post(
                 "http://34.105.97.231:5000/url",
@@ -431,6 +450,7 @@ class AnalysisMain extends Component {
         })
         //console.log(jsondata);
 
+        this.setRandomImage();
         console.time('분석');
         const response = await Axios.post(
             "http://34.105.97.231:5000/url/analyze",
@@ -477,10 +497,10 @@ class AnalysisMain extends Component {
                 dbrequest.append('dress_link', this.state.url);
                 dbrequest.append('dress_img_org', item.props.src);
                 dbrequest.append('dress_img_sav', item.props.src);
-                dbrequest.append('dress_name', item.key);                
+                dbrequest.append('dress_name', item.key);
 
                 //console.log(dbrequest.get('mb_uid'))
-
+                this.setRandomImage();
                 const dbresponse = await Axios.post(
                     "http://localhost:8080/colorfit/analysis/saveLinkResult",
                     dbrequest,
@@ -522,161 +542,179 @@ class AnalysisMain extends Component {
 
         return (
             <div>
-                <Menu attached='top' tabular color='teal'>
-                    <Menu.Item
-                        name='link_input'
-                        active={activeItem === 'link_input'
-                            || activeItem === 'link_output'
-                            || activeItem === 'link_result'}
-                        onClick={this.handleItemClick}>
-                        사이트 링크로 분석하기
+                <Grid container style={{ padding: '5em 0em' }}>
+                    <Grid.Row>
+                        <Grid.Column>
+                            <Menu attached='top' tabular color='teal'>
+                                <Menu.Item
+                                    name='link_input'
+                                    active={activeItem === 'link_input'
+                                        || activeItem === 'link_output'
+                                        || activeItem === 'link_result'}
+                                    onClick={this.handleItemClick}>
+                                    사이트 링크로 분석하기
                     </Menu.Item>
-                    <Menu.Item
-                        name='upload_input'
-                        active={activeItem === 'upload_input'}
-                        onClick={this.handleItemClick}>
-                        이미지 파일로 분석하기
+                                <Menu.Item
+                                    name='upload_input'
+                                    active={activeItem === 'upload_input'}
+                                    onClick={this.handleItemClick}>
+                                    이미지 파일로 분석하기
                     </Menu.Item>
-                </Menu>
+                            </Menu>
 
-                { (activeItem === 'link_input') &&
-                    <Segment
-                        attached='bottom'
-                        textAlign='center'
-                        placeholder>
-                        <Header image>
-                            <Image circular src={linkimage} />
+                            {(activeItem === 'link_input') &&
+                                <Segment
+                                    attached='bottom'
+                                    textAlign='center'
+                                    placeholder>
+                                    <Header image>
+                                        <Image circular src={linkimage} />
                             분석할 사이트의 주소를 복사&붙여넣기 하세요
                     </Header>
-                        <Segment.Inline>
-                            <Input name='url'
-                                value={this.state.url}
-                                onChange={this.handleChange}
-                                placeholder='http://...' />
-                            <Button color='teal' onClick={this.handleLinkAnalysisClick}>
-                                입력 후 클릭
+                                    <Segment.Inline>
+                                        <Input name='url'
+                                            value={this.state.url}
+                                            onChange={this.handleChange}
+                                            placeholder='http://...' />
+                                        <Button color='teal' onClick={this.handleLinkAnalysisClick}>
+                                            입력 후 클릭
                         </Button>
-                        </Segment.Inline>
-                        {
-                            (this.state.loading) &&
-                            <Dimmer active inverted>
-                                <Loader
-                                    inverted
-                                    disabled={!this.state.loading}
-                                    content='Loading...' />
-                            </Dimmer>
-                        }
-                    </Segment>}
+                                    </Segment.Inline>
+                                    {
+                                        (this.state.loading) &&
+                                        <Dimmer active inverted>
+                                            <Loader
+                                                inverted
+                                                disabled={!this.state.loading}
+                                                content='Loading...' />
+                                        </Dimmer>
+                                    }
+                                </Segment>
 
-                { (activeItem === 'link_output') &&
-                    <Segment
-                        attached='bottom'
-                        textAlign='center'
-                        placeholder>
-                        <Header>
-                            원하는 사진만 체크해 주세요.
+                            }
+
+                            {(activeItem === 'link_output') &&
+                                <Segment
+                                    attached='bottom'
+                                    textAlign='center'
+                                    placeholder>
+                                    <Header>
+                                        원하는 사진만 체크해 주세요.
                 </Header>
-                        <Segment>
-                            <Card.Group itemsPerRow={4}>
-                                {this.state.result.map(
-                                    card => <Card fluid>
-                                        <Image src={card.key} />
-                                        <Card.Content>
-                                            <Checkbox
-                                                name='result.url'
-                                                checked={card.props.check}
-                                                onClick={() => this.handleCheck(card.key)}
-                                            />
-                                        </Card.Content>
-                                    </Card>
-                                )}
-                            </Card.Group>
-                        </Segment>
-                        <Button color='teal' onClick={this.geturlReport}>
-                            선택 후 결과 보기
-                        </Button>
-                        {
-                            (this.state.loading) &&
-                            <Dimmer active inverted>
-                                <Loader
-                                    inverted
-                                    disabled={!this.state.loading}
-                                    content='Loading...' />
-                            </Dimmer>
-                        }
-                    </Segment>}
-
-                { (activeItem === 'result') &&
-                    <Segment
-                        attached='bottom'
-                        textAlign='center'
-                        placeholder>
-                        <Header> 결과를 확인하세요.
-                        마이 드레스룸에서 저장된 결과를 다시 볼 수 있어요.
-                             </Header>
-                        <Segment>
-                            <Card.Group itemsPerRow={4}>
-                                {this.state.saved.map(
-                                    card => <Card fluid>
-                                        <Image src={card.props.src} />
-                                        <Card.Content>
-                                            {card.props.colors.map(
-                                                color => <Card.Description>
-                                                    color: {color.key} ratio: {color.props.ratio}
-                                                </Card.Description>
+                                    <Segment>
+                                        <Card.Group itemsPerRow={4}>
+                                            {this.state.result.map(
+                                                card => <Card fluid>
+                                                    <Image src={card.key} />
+                                                    <Card.Content>
+                                                        <Checkbox
+                                                            name='result.url'
+                                                            checked={card.props.check}
+                                                            onClick={() => this.handleCheck(card.key)}
+                                                        />
+                                                    </Card.Content>
+                                                </Card>
                                             )}
-                                        </Card.Content>
-                                    </Card>
-                                )}
-                            </Card.Group>
-                        </Segment>
+                                        </Card.Group>
+                                    </Segment>
+                                    <Button color='teal' onClick={this.geturlReport}>
+                                        선택 후 결과 보기
+                        </Button>
+                                    {
+                                        (this.state.loading) &&
+                                        <Dimmer active inverted>
+                                            <Loader
+                                                inverted
+                                                disabled={!this.state.loading}
+                                                content='Loading...' />
+                                        </Dimmer>
+                                    }
+                                </Segment>}
 
-                    </Segment>
-                }
+                            {(activeItem === 'result') &&
+                                <Segment
+                                    attached='bottom'
+                                    textAlign='center'
+                                    placeholder>
+                                    <Header> 결과를 확인하세요.
+                                    마이 드레스룸에서 저장된 결과를 다시 볼 수 있어요.
+                             </Header>
+                                    <Segment>
+                                        <Card.Group itemsPerRow={4}>
+                                            {this.state.saved.map(
+                                                card => <Card fluid>
+                                                    <Image src={card.props.src} />
+                                                    <Card.Content>
+                                                        {card.props.colors.map(
+                                                            color => <Card.Description>
+                                                                color: {color.key} ratio: {color.props.ratio}
+                                                            </Card.Description>
+                                                        )}
+                                                    </Card.Content>
+                                                </Card>
+                                            )}
+                                        </Card.Group>
+                                    </Segment>
 
-                { (activeItem === 'upload_input') &&
-                    <Segment
-                        attached='bottom'
-                        textAlign='center'
-                        placeholder>
-                        <Header style={{
-                            fontSize: '1.3em',
-                            fontFamily: ['Inter', 'NotoSansKR']
-                        }}
-                            textAlign='center'>
-                            <Image circular src={uploadimage} />
+                                </Segment>
+                            }
+
+                            {(activeItem === 'upload_input') &&
+                                <Segment
+                                    attached='bottom'
+                                    textAlign='center'
+                                    placeholder>
+                                    <Header>
+                                        <Image circular src={uploadimage} />
                             분석할 사진 파일을 업로드 하세요
                     </Header>
 
-                        <div className="content">
-                            <Form>
-                                <form onSubmit={this.onFormSubmit}>
-                                    <input type="file"
-                                        name="myImage"
-                                        onChange={this.onChange} />
-                                </form>
-                            </Form>
-                        </div>
-                        <Button
-                            fluid
-                            size='large'
-                            color='teal'
-                            onClick={this.onFormSubmit}
-                        >
-                            분석하기
-                    </Button>
-                        {
-                            (this.state.loading) &&
-                            <Dimmer active inverted>
-                                <Loader
-                                    inverted
-                                    disabled={!this.state.loading}
-                                    content='Loading...' />
-                            </Dimmer>
-                        }
-                    </Segment>
-                }
+                                    <div className="content">
+                                        <Form>
+                                            <form onSubmit={this.onFormSubmit}>
+                                                <input type="file"
+                                                    name="myImage"
+                                                    onChange={this.onChange} />
+                                            </form>
+                                        </Form>
+                                    </div>
+                                    <Button
+                                        fluid
+                                        size='large'
+                                        color='teal'
+                                        onClick={this.onFormSubmit}
+                                    >
+                                        분석하기
+                        </Button>
+                                    {
+                                        (this.state.loading) &&
+                                        <Dimmer active inverted>
+                                            <Loader
+                                                inverted
+                                                disabled={!this.state.loading}
+                                                content='Loading...' />
+                                        </Dimmer>
+                                    }
+                                </Segment>
+                            }
+                        </Grid.Column>
+                    </Grid.Row>
+                    <Grid.Row>
+                        <Grid.Column>
+                            {
+                                (this.state.loading) &&
+                                <Segment
+                                    attached='bottom'
+                                    textAlign='center'
+                                    placeholder>
+                                    <Header> 컬러별 팁!</Header>
+                                    <Image src={this.state.loadingImage} />
+                                </Segment>
+                            }
 
+                        </Grid.Column>
+                    </Grid.Row>
+                    </Grid>
             </div>
         )
     }
@@ -687,30 +725,30 @@ class AnalysisMain extends Component {
 //progress 못짠거
 {
                     <Progress
-                    active={this.state.loading}
-                    disabled={!this.state.loading}
-                    percent={this.state.percent}
-                    color='blue'
+                        active={this.state.loading}
+                        disabled={!this.state.loading}
+                        percent={this.state.percent}
+                        color='blue'
                     />
                 }
 
-//chart 사용 예시
+                //chart 사용 예시
                 <div>
-        <CanvasJSChart options = {options}
-        />
-      </div>
+                    <CanvasJSChart options={options}
+                    />
+                </div>
 
-//dreapdrop 초안
-<DragDrop handleDrop={this.handleDrop}>
-                                {this.state.files.length === 0 &&
-                                    <div textAlign='center'>
-                                        이 창에 이미지 파일들을 드래그해서 업로드하세요
+                //dreapdrop 초안
+                <DragDrop handleDrop={this.handleDrop}>
+                    {this.state.files.length === 0 &&
+                        <div textAlign='center'>
+                            이 창에 이미지 파일들을 드래그해서 업로드하세요
                             </div>}
-                                <div style={{ height: 300, width: 250 }}>
-                                    {this.state.files.map((file, i) =>
-                                        <div key={i}>{file}</div>)}
-                                </div>
-                            </DragDrop>
+                    <div style={{ height: 300, width: 250 }}>
+                        {this.state.files.map((file, i) =>
+                            <div key={i}>{file}</div>)}
+                    </div>
+                </DragDrop>
 */
 
 export default withRouter(AnalysisMain);
