@@ -20,8 +20,10 @@ class App extends Component {
       memberId : 0,
       id: '',
       logged: false,
+      colorType: 0,
       onLogin: this.onLogin,
-      onLogout: this.onLogout
+      onLogout: this.onLogout,
+      onChangeColor: this.onChangeColor
     }
   }
 
@@ -41,9 +43,14 @@ class App extends Component {
     });
   }
 
+  onChangeColor = (newcolor) => {
+    this.setState({
+      colorType: newcolor
+    });
+  }
   
   render() {
-    const {memberId, id, logged, onLogin, onLogout} = this.state;
+    const {memberId, id, logged, colorType, onLogin, onLogout, onChangeColor} = this.state;
     const style = {
       fontFamily: ['Inter', 'NotoSansKR'],
     }

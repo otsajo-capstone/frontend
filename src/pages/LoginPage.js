@@ -17,7 +17,9 @@ class LoginPage extends Component {
                         style={style}
                         memberId={Store.memberId}
                         logged={Store.logged}
-                        onLogin={Store.onLogin}/>
+                        onLogin={Store.onLogin}
+                        colorType={Store.colorType}
+                        onChangeColor={Store.onChangeColor}/>
                     )}
                 </Store.Consumer>
             </Layout>

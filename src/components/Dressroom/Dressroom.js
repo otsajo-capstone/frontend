@@ -7,6 +7,7 @@ import {
   Container, Item
 } from 'semantic-ui-react';
 import CanvasJSReact from '../react-canvasjs-chart-samples/react-canvasjs-chart-samples/src/assets/canvasjs.react';
+
 var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
@@ -138,7 +139,10 @@ class Dressroom extends Component {
                 <Modal.Header>상세 정보 보기</Modal.Header>
                 <Modal.Content image scrolling>
                   <Image size='huge'
-                  style={{ position: 'relative', alignSelf: 'center', justifyContent: 'center', alignItems: 'center'}}
+                  style={{ position: 'relative', 
+                  alignSelf: 'center', 
+                  justifyContent: 'center', 
+                  alignItems: 'center'}}
                   src={this.state.clickedCard.props.dress_img_org} wrapped />
                   <Modal.Description>
                     <Container>

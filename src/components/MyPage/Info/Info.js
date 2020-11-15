@@ -13,7 +13,8 @@ import Axios from 'axios';
 const style = {
   base: {
     margin: '0.5rem',
-    padding: '0.5rem'
+    padding: '0.5rem',
+    backgroundColor: "#deeaf7"
   },
   paddinglr: {
     paddingLeft: '6%',
@@ -34,8 +35,7 @@ class Info extends Component {
       mb_email: 'noemail',
       mb_type: 0,
       password: '',
-      pw_check: '',
-      buttonColor: ['teal', 'teal', 'teal', 'teal']
+      pw_check: ''
     };
   }
 
@@ -56,16 +56,13 @@ class Info extends Component {
   }
 
   handleButtonClick = (e) => {
-    const nextColor = ['teal', 'teal', 'teal', 'teal'];
     var nextType = 0;
 
-    if (this.state.buttonColor[e.target.value - 1] !== 'pink') {
-      nextColor[e.target.value - 1] = 'pink';
+    if (e.target.value != this.state.type) {
       nextType = e.target.value;
     }
     this.setState({
       mb_type: nextType,
-      buttonColor: nextColor
     });
   }
 
@@ -150,40 +147,105 @@ class Info extends Component {
                 <Grid.Row>
                   <Grid.Column>
                     <Segment>
-                      <Button fluid value='1' color={this.state.mb_type == 1 && 'pink' || !(this.state.mb_type == 1) && 'teal'} onClick={this.handleButtonClick}>봄 웜</Button>
+                      {this.state.mb_type === '1' &&
+                        <Button fluid value='1'
+                          style={{ backgroundColor: "#c4ca2e" }}
+                          onClick={this.handleButtonClick}>
+                          <div
+                            style={{
+                              fontFamily: ['Inter', 'NotoSansKR'],
+                              color: 'white'
+                            }}>
+                            봄 웜</div>
+                        </Button>}
+                      {this.state.mb_type !== '1' &&
+                        <Button fluid value='1'
+                          onClick={this.handleButtonClick}
+                          color='grey'>
+                          봄 웜
+                                            </Button>}
                     </Segment>
                   </Grid.Column>
                   <Grid.Column>
                     <Segment>
-                      <Button fluid value='2' color={this.state.mb_type == 2 && 'pink' || !(this.state.mb_type == 2) && 'teal'} onClick={this.handleButtonClick}>여름 쿨</Button>
+                      {this.state.mb_type === '2' &&
+                        <Button fluid value='2'
+                          style={{ backgroundColor: "#e74f72" }}
+                          onClick={this.handleButtonClick}>
+                          <div
+                            style={{
+                              fontFamily: ['Inter', 'NotoSansKR'],
+                              color: 'white'
+                            }}>
+                            여름 쿨</div>
+                        </Button>}
+                      {this.state.mb_type !== '2' &&
+                        <Button fluid value='2'
+                          onClick={this.handleButtonClick}
+                          color='grey'>
+                          여름 쿨
+                                            </Button>}
                     </Segment>
                   </Grid.Column>
                 </Grid.Row>
                 <Grid.Row>
                   <Grid.Column>
                     <Segment>
-                      <Button fluid value='3' color={this.state.mb_type == 3 && 'pink' || !(this.state.mb_type == 3) && 'teal'} onClick={this.handleButtonClick}>가을 웜</Button>
-                    </Segment>
+                      {this.state.mb_type === '3' &&
+                        <Button fluid value='3'
+                          style={{ backgroundColor: "#875f37" }}
+                          onClick={this.handleButtonClick}>
+                          <div
+                            style={{
+                              fontFamily: ['Inter', 'NotoSansKR'],
+                              color: 'white'
+                            }}>
+                            가을 웜</div>
+                        </Button>}
+                      {this.state.mb_type !== '3' &&
+                        <Button fluid value='3'
+                          onClick={this.handleButtonClick}
+                          color='grey'>
+                          가을 웜
+                                            </Button>}                                    </Segment>
                   </Grid.Column>
                   <Grid.Column>
                     <Segment>
-                      <Button fluid value='4' color={this.state.mb_type == 4 && 'pink' || !(this.state.mb_type == 4) && 'teal'} onClick={this.handleButtonClick}>겨울 쿨</Button>
-                    </Segment>
+                      {this.state.mb_type === '4' &&
+                        <Button fluid value='4'
+                          style={{ backgroundColor: "#293686" }}
+                          onClick={this.handleButtonClick}>
+                          <div
+                            style={{
+                              fontFamily: ['Inter', 'NotoSansKR'],
+                              color: 'white'
+                            }}>
+                            겨울 쿨</div>
+                        </Button>}
+                      {this.state.mb_type !== '4' &&
+                        <Button fluid value='4'
+                          onClick={this.handleButtonClick}
+                          color='grey'>
+                          겨울 쿨
+                                            </Button>}                                    </Segment>
                   </Grid.Column>
                 </Grid.Row>
               </Grid>
             </Segment>
 
             <Button
-              color='teal'
               fluid size='large'
               onClick={this.update}
               disabled={this.state.mb_name.length < 1
                 || this.state.password.length < 4
-                || (this.state.password != this.state.pw_check)
-              }>
-              수정하기
-              </Button>
+                || (this.state.password != this.state.pw_check)}
+              style={{ backgroundColor: "#5c92d7" }}>
+              <div style={{
+                fontFamily: ['Inter', 'NotoSansKR'],
+                color: 'white'
+              }}>
+                수정하기</div>
+            </Button>
           </Form>
         </Container>
       </div>

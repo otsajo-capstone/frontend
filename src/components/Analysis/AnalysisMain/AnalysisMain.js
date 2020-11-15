@@ -187,7 +187,7 @@ class AnalysisMain extends Component {
     setRandomImage() {
         const min = 0;
         const max = images.length;
-        const rand = min + Math.floor(Math.random() * (max-min));
+        const rand = min + Math.floor(Math.random() * (max - min));
 
         this.setState({
             loadingImage: images[rand]
@@ -218,7 +218,7 @@ class AnalysisMain extends Component {
                 'content-type': 'multipart/form-data'
             }
         };
-        
+
         this.setRandomImage();
 
         const response = await Axios.post(
@@ -410,8 +410,6 @@ class AnalysisMain extends Component {
         };
         newArr[elementsIndex] = newElement;
 
-
-
         this.setState({
             result: newArr
         });
@@ -506,7 +504,6 @@ class AnalysisMain extends Component {
                     dbrequest,
                 )
             }
-
             console.timeEnd('DB');
 
             this.setState({
@@ -545,23 +542,25 @@ class AnalysisMain extends Component {
                 <Grid container style={{ padding: '5em 0em' }}>
                     <Grid.Row>
                         <Grid.Column>
-                            <Menu attached='top' tabular color='teal'>
+                            <Menu attached='top' tabular
+                            >
                                 <Menu.Item
                                     name='link_input'
                                     active={activeItem === 'link_input'
                                         || activeItem === 'link_output'
                                         || activeItem === 'link_result'}
-                                    onClick={this.handleItemClick}>
+                                    onClick={this.handleItemClick}
+                                    style={{ color: "#5c92d7" }}>
                                     사이트 링크로 분석하기
                     </Menu.Item>
                                 <Menu.Item
                                     name='upload_input'
                                     active={activeItem === 'upload_input'}
-                                    onClick={this.handleItemClick}>
+                                    onClick={this.handleItemClick}
+                                    style={{ color: "#5c92d7" }}>
                                     이미지 파일로 분석하기
                     </Menu.Item>
                             </Menu>
-
                             {(activeItem === 'link_input') &&
                                 <Segment
                                     attached='bottom'
@@ -576,23 +575,29 @@ class AnalysisMain extends Component {
                                             value={this.state.url}
                                             onChange={this.handleChange}
                                             placeholder='http://...' />
-                                        <Button color='teal' onClick={this.handleLinkAnalysisClick}>
-                                            입력 후 클릭
-                        </Button>
+                                        <Button
+                                            style={{ backgroundColor: "#5c92d7" }}
+                                            onClick={this.handleLinkAnalysisClick}>
+                                            <div style={{
+                                                fontFamily: ['Inter', 'NotoSansKR'],
+                                                color: 'white'
+                                            }}>
+                                                입력 후 클릭
+                                            </div>
+                                        </Button>
                                     </Segment.Inline>
                                     {
                                         (this.state.loading) &&
                                         <Dimmer active inverted>
                                             <Loader
                                                 inverted
+                                                style={{ color: "#5c92d7" }}
                                                 disabled={!this.state.loading}
                                                 content='Loading...' />
                                         </Dimmer>
                                     }
                                 </Segment>
-
                             }
-
                             {(activeItem === 'link_output') &&
                                 <Segment
                                     attached='bottom'
@@ -617,20 +622,26 @@ class AnalysisMain extends Component {
                                             )}
                                         </Card.Group>
                                     </Segment>
-                                    <Button color='teal' onClick={this.geturlReport}>
-                                        선택 후 결과 보기
-                        </Button>
+                                    <Button
+                                        style={{ backgroundColor: "#5c92d7" }}
+                                        onClick={this.geturlReport}>
+                                        <div style={{
+                                            fontFamily: ['Inter', 'NotoSansKR'],
+                                            color: 'white'
+                                        }}>
+                                            선택 후 결과 보기</div>
+                                    </Button>
                                     {
                                         (this.state.loading) &&
                                         <Dimmer active inverted>
                                             <Loader
                                                 inverted
                                                 disabled={!this.state.loading}
+                                                style={{ color: "#5c92d7" }}
                                                 content='Loading...' />
                                         </Dimmer>
                                     }
                                 </Segment>}
-
                             {(activeItem === 'result') &&
                                 <Segment
                                     attached='bottom'
@@ -668,7 +679,6 @@ class AnalysisMain extends Component {
                                         <Image circular src={uploadimage} />
                             분석할 사진 파일을 업로드 하세요
                     </Header>
-
                                     <div className="content">
                                         <Form>
                                             <form onSubmit={this.onFormSubmit}>
@@ -681,17 +691,22 @@ class AnalysisMain extends Component {
                                     <Button
                                         fluid
                                         size='large'
-                                        color='teal'
+                                        style={{ backgroundColor: "#5c92d7" }}
                                         onClick={this.onFormSubmit}
                                     >
-                                        분석하기
-                        </Button>
+                                        <div style={{
+                                            fontFamily: ['Inter', 'NotoSansKR'],
+                                            color: 'white'
+                                        }}>
+                                            분석하기</div>
+                                    </Button>
                                     {
                                         (this.state.loading) &&
                                         <Dimmer active inverted>
                                             <Loader
                                                 inverted
                                                 disabled={!this.state.loading}
+                                                style={{ color: "#5c92d7" }}
                                                 content='Loading...' />
                                         </Dimmer>
                                     }
@@ -714,7 +729,7 @@ class AnalysisMain extends Component {
 
                         </Grid.Column>
                     </Grid.Row>
-                    </Grid>
+                </Grid>
             </div>
         )
     }

@@ -7,7 +7,8 @@ import Axios from 'axios';
 const style = {
   base: {
     margin: '0.5rem',
-    padding: '0.5rem'
+    padding: '0.5rem',
+    backgroundColor: "#deeaf7"
   },
   paddinglr: {
     paddingLeft: '3%',
@@ -102,10 +103,11 @@ class Find extends Component {
               <Button
                 disabled={this.state.name1.length < 1
                   || this.state.email1.length < 1}
-                color='teal'
+                  style={{ backgroundColor: "#5c92d7"}}
                 fluid size='large'
                 onClick={this.findId}>
-                아이디 찾기
+                <div style={{fontFamily: ['Inter', 'NotoSansKR'],
+                  color: 'white'}}>아이디 찾기</div>
                     </Button>
             </Segment>
           </Form>
@@ -142,10 +144,12 @@ class Find extends Component {
                 disabled={this.state.id2.length < 1
                   || this.state.name2.length < 1
                   || this.state.email2.length < 1}
-                color='teal'
+                  style={{ backgroundColor: "#5c92d7"}}
                 fluid size='large'
                 onClick={this.findPw}>
-                이메일 주소로 임시 비밀번호 보내기
+                <div style={{fontFamily: ['Inter', 'NotoSansKR'],
+                  color: 'white'}}>
+                이메일 주소로 임시 비밀번호 보내기</div>
                     </Button>
             </Segment>
           </Form>

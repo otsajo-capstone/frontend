@@ -8,15 +8,21 @@ class DressroomPage extends Component {
     render() {
         return (
             <Layout>
-                <Header style={{ fontSize: '3em', fontFamily: ['Inter', 'NotoSansKR'], padding: '1rem' }}
-                    color='teal'
+                <Header style={{
+                    fontSize: '3em',
+                    fontFamily: ['Inter', 'NotoSansKR'],
+                    padding: '1rem',
+                    color: "#5c92d7"
+                }}
                     textAlign='center'>
                     Dress Room
                 </Header>
                 <Store.Consumer>
                     {Store =>
                         <Dressroom
-                            memberId={Store.memberId} />}
+                            memberId={Store.memberId}
+                            colorType={Store.colorType}
+                            onChangeColor={Store.onChangeColor} />}
                 </Store.Consumer>
             </Layout>
         )

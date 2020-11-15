@@ -70,10 +70,11 @@ class Login extends Component {
         `}</style>
           <Grid textAlign='center' style={{ height: '100%' }} verticalAlign='middle'>
             <Grid.Column style={{ maxWidth: 450 }}>
-              <Header style={{ fontSize: '3em', fontFamily: ['Inter', 'NotoSansKR'] }}
-                color='teal'
+              <Header style={{ fontSize: '3em',
+              fontFamily: ['Inter', 'NotoSansKR'],
+              color: "#5c92d7" }}
                 textAlign='center'>
-                COLOR FIT
+                LOG IN
               </Header>
               <Form size='large'>
                 <Segment stacked>
@@ -95,12 +96,14 @@ class Login extends Component {
                     name="password"
                   />
                   <Button
-                    color='teal'
                     fluid
                     size='large'
                     onClick={this.checkLogin}
-                    style={font}>
-                    로그인
+                    style={{ backgroundColor: "#5c92d7"}}>
+                    <div style={{fontFamily: ['Inter', 'NotoSansKR'],
+                  color: 'white'}}>
+                      로그인
+                      </div>
                   </Button>
                 </Segment>
               </Form>

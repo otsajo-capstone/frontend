@@ -12,7 +12,8 @@ import Axios from 'axios';
 const style = {
     base: {
         margin: '0.5rem',
-        padding: '0.5rem'
+        padding: '0.5rem',
+        backgroundColor: "#deeaf7"
     },
     paddinglr: {
         paddingLeft: '6%',
@@ -33,8 +34,7 @@ class PersonalInput extends Component {
             email: '',
             password: '',
             pw_check: '',
-            type: 0,
-            buttonColor: ['teal', 'teal', 'teal', 'teal']
+            type: 0
         }
     }
 
@@ -45,16 +45,13 @@ class PersonalInput extends Component {
     }
 
     handleButtonClick = (e) => {
-        const nextColor = ['teal', 'teal', 'teal', 'teal'];
         var nextType = 0;
 
-        if (this.state.buttonColor[e.target.value - 1] !== 'pink') {
-            nextColor[e.target.value - 1] = 'pink';
+        if (e.target.value != this.state.type){
             nextType = e.target.value;
         }
         this.setState({
             type: nextType,
-            buttonColor: nextColor
         });
     }
 
@@ -94,7 +91,7 @@ class PersonalInput extends Component {
             <div>
                 <Form>
                     <Segment piled style={style.paddinglr}>
-                        <Label style={style.base}> 아이디 </Label>
+                        <Label style={style.base}>아이디</Label>
                         <Form.Input
                             name='id'
                             placeholder='아이디 (5자 이상)'
@@ -142,25 +139,87 @@ class PersonalInput extends Component {
                             <Grid.Row>
                                 <Grid.Column>
                                     <Segment>
-                                        <Button fluid value='1' color={this.state.buttonColor[0]} onClick={this.handleButtonClick}>봄 웜</Button>
+                                        {this.state.type === '1' &&
+                                            <Button fluid value='1'
+                                                style={{ backgroundColor: "#c4ca2e" }}
+                                                onClick={this.handleButtonClick}>
+                                                <div
+                                                    style={{
+                                                        fontFamily: ['Inter', 'NotoSansKR'],
+                                                        color: 'white'
+                                                    }}>
+                                                    봄 웜</div>
+                                            </Button>}
+                                        {this.state.type !== '1' &&
+                                            <Button fluid value='1'
+                                                onClick={this.handleButtonClick}
+                                                color='grey'>
+                                                봄 웜
+                                            </Button>}
                                     </Segment>
                                 </Grid.Column>
                                 <Grid.Column>
                                     <Segment>
-                                        <Button fluid value='2' color={this.state.buttonColor[1]} onClick={this.handleButtonClick}>여름 쿨</Button>
+                                    {this.state.type === '2' &&
+                                            <Button fluid value='2'
+                                                style={{ backgroundColor: "#e74f72" }}
+                                                onClick={this.handleButtonClick}>
+                                                <div
+                                                    style={{
+                                                        fontFamily: ['Inter', 'NotoSansKR'],
+                                                        color: 'white'
+                                                    }}>
+                                                    여름 쿨</div>
+                                            </Button>}
+                                        {this.state.type !== '2' &&
+                                            <Button fluid value='2'
+                                                onClick={this.handleButtonClick}
+                                                color='grey'>
+                                                여름 쿨
+                                            </Button>}
                                     </Segment>
                                 </Grid.Column>
                             </Grid.Row>
                             <Grid.Row>
                                 <Grid.Column>
                                     <Segment>
-                                        <Button fluid value='3' color={this.state.buttonColor[2]} onClick={this.handleButtonClick}>가을 웜</Button>
-                                    </Segment>
+                                    {this.state.type === '3' &&
+                                            <Button fluid value='3'
+                                                style={{ backgroundColor: "#875f37" }}
+                                                onClick={this.handleButtonClick}>
+                                                <div
+                                                    style={{
+                                                        fontFamily: ['Inter', 'NotoSansKR'],
+                                                        color: 'white'
+                                                    }}>
+                                                    가을 웜</div>
+                                            </Button>}
+                                        {this.state.type !== '3' &&
+                                            <Button fluid value='3'
+                                                onClick={this.handleButtonClick}
+                                                color='grey'>
+                                                가을 웜
+                                            </Button>}                                    </Segment>
                                 </Grid.Column>
                                 <Grid.Column>
                                     <Segment>
-                                        <Button fluid value='4' color={this.state.buttonColor[3]} onClick={this.handleButtonClick}>겨울 쿨</Button>
-                                    </Segment>
+                                    {this.state.type === '4' &&
+                                            <Button fluid value='4'
+                                                style={{ backgroundColor: "#293686" }}
+                                                onClick={this.handleButtonClick}>
+                                                <div
+                                                    style={{
+                                                        fontFamily: ['Inter', 'NotoSansKR'],
+                                                        color: 'white'
+                                                    }}>
+                                                    겨울 쿨</div>
+                                            </Button>}
+                                        {this.state.type !== '4' &&
+                                            <Button fluid value='4'
+                                                onClick={this.handleButtonClick}
+                                                color='grey'>
+                                                겨울 쿨
+                                            </Button>}                                    </Segment>
                                 </Grid.Column>
                             </Grid.Row>
                             <Grid.Row>
@@ -179,10 +238,15 @@ class PersonalInput extends Component {
                             || this.state.email.length < 1
                             || this.state.password.length < 5
                             || (this.state.password != this.state.pw_check)}
-                        color='teal'
+                        style={{ backgroundColor: "#5c92d7" }}
                         fluid size='large'
                         onClick={this.checkRegister}>
-                        가입하기
+                        <div style={{
+                            fontFamily: ['Inter', 'NotoSansKR'],
+                            color: 'white'
+                        }}>
+                            가입하기
+                        </div>
                     </Button>
                 </Form>
             </div>

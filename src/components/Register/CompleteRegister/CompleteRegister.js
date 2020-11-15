@@ -24,8 +24,9 @@ class CompleteRegister extends Component {
                         </p>
                     </Grid.Column >
                     <Grid.Column textAlign='center' width={5}>
-                        <Button size='massive' color={'teal'} as={Link} to='/login'>
-                            로그인
+                        <Button size='massive' style={{ backgroundColor: "#5c92d7" }} as={Link} to='/login'>
+                        <div style={{fontFamily: ['Inter', 'NotoSansKR'],
+                  color: 'white'}}>로그인</div>
                         </Button>
                     </Grid.Column>
                     </Grid.Row>

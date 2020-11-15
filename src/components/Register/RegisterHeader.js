@@ -43,10 +43,11 @@ class RegisterHeader extends Component {
         return (
             <div>
               <Container>
-              <Header style={{ fontSize: '3em', fontFamily: ['Inter', 'NotoSansKR']}}
-               color='teal'
+              <Header style={{ fontSize: '3em',
+                color: "#5c92d7",
+               fontFamily: ['Inter', 'NotoSansKR']}}
                textAlign='center'>
-                  COLOR FIT
+                  SIGN UP
                 </Header>
               </Container>
             </div>
