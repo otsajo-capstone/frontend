@@ -45,7 +45,7 @@ class Info extends Component {
         && this.setState({
           mb_name: res.data.mdto.mb_name,
           mb_email: res.data.mdto.mb_email,
-          mb_type: res.data.mdto.mb_type,
+          mb_type: String(res.data.mdto.mb_type),
         }))
   }
 
@@ -96,6 +96,7 @@ class Info extends Component {
   }
 
   render() {
+    console.log(this.state)
     return (
       <div>
         <Container>
@@ -114,7 +115,6 @@ class Info extends Component {
                 fluid icon='at'
                 value={this.state.mb_email}
                 onChange={this.handleChange} />
-
 
               <Label style={style.base}> 이름 </Label>
               <Form.Input
