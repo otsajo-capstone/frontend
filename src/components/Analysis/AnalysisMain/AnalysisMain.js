@@ -27,6 +27,9 @@ function importAll(r) {
 }
 const images = importAll(require.context('../image/loading/', false, /\.(png|jpe?g|svg)$/));
 
+const season = ["봄 웜", "여름 쿨", "가을 웜", "겨울 쿨"]
+const seasonColor = ["#c4ca2e", "#e74f72", "#875f37", "#293686"]
+
 /*
 class DragDrop extends Component {
     state = {
@@ -676,12 +679,20 @@ class AnalysisMain extends Component {
                                                         {card.props.colors.map(
                                                             color => <Card.Description>
                                                                 <div style={{ color: color.key }}>
-                                                                    <Icon name='square full' />
-                                                                    {color.key} : { (color.props.ratio*100).toFixed(2)}%
+                                                                    <Icon name='square full' /> : { (color.props.ratio*100).toFixed(2)}%
                                                                 </div>
                                                             </Card.Description>
                                                         )}
                                                     </Card.Content>
+                                                    <Card.Content>
+                                                    {card.props.result.map(
+                                                            s => <Card.Description>
+                                                                <div style={{ color: seasonColor[season.indexOf(s.key)] }}>
+                                                                    {s.key} : { (s.props.ratio*100).toFixed(2)}%
+                                                                </div>
+                                                            </Card.Description>
+                                                        )}
+                                                        </Card.Content>
                                                 </Card>
                                             )}
                                         </Card.Group>
