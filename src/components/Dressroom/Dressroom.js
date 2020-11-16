@@ -4,7 +4,7 @@ import Axios from 'axios';
 import {
   Segment, Header, Card, Image, Icon,
   Dimmer, Modal, Button, Grid, List,
-  Container, Item
+  Container, Item, Form, Label, Radio
 } from 'semantic-ui-react';
 import CanvasJSReact from '../react-canvasjs-chart-samples/react-canvasjs-chart-samples/src/assets/canvasjs.react';
 
@@ -14,6 +14,14 @@ var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 const season = ["봄 웜", "여름 쿨", "가을 웜", "겨울 쿨"]
 const seasonColor = ["#c4ca2e", "#e74f72", "#875f37", "#293686"]
 
+const style = {
+  base: {
+    margin: '0.5rem',
+    padding: '0.5rem',
+    backgroundColor: "#deeaf7"
+  }
+};
+
 class Dressroom extends Component {
   constructor(props) {
     super(props);
@@ -21,9 +29,13 @@ class Dressroom extends Component {
     this.state = {
       mylist: [],
       clicked: false,
+      update_state: false,
       del_state: false,
       clickedCard: [],
-      shoplink: ""
+      shoplink: "",
+      new_name: "",
+      new_memo: "",
+      new_type: 0,
     };
   }
 
@@ -79,14 +91,117 @@ class Dressroom extends Component {
       this.setState({
         clicked: !this.state.clicked,
         clickedCard: card,
+        new_name: card.props.dress_name,
+        new_memo: card.props.dress_memo,
+        new_type: card.props.share_type
       })
     }
+  }
+
+  handleChange = (e) => {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+  }
+
+  handleToggleChange = () => {
+    var type = this.state.new_type;
+    if (type == 1) {
+      type = 0;
+    }
+    else {
+      type = 1;
+    }
+
+    this.setState({
+      new_type: type
+    });
   }
 
   closeDimmer = async e => {
     this.setState({
       clicked: !this.state.clicked
     })
+  }
+
+  handleClickUpdate = async () => {
+    this.setState({
+      update_state: true
+    })
+  }
+
+  closeUpdate = async e => {
+    this.setState({
+      update_state: false
+    })
+  }
+
+  updateFile = async () => {
+    var formdata = new FormData();
+    formdata.append('dress_uid', this.state.clickedCard.key);
+    formdata.append('dress_name', this.state.new_name);
+    formdata.append('dress_memo', this.state.new_memo);
+    formdata.append('share_type', this.state.new_type);
+
+    const response = await Axios.post(
+      "http://localhost:8080/colorfit/myDressRoom/update/",
+      formdata
+    );
+
+    const dbresponse =
+      await Axios.get("http://localhost:8080/colorfit/myDressRoom/"
+        + String(this.props.memberId))
+    const { data } = dbresponse;
+
+    if (data.status === 200) {
+      const Items = data.dlist.map((item) =>
+        <li
+          key={item.dress_uid}
+          spring={item.spring}
+          summer={item.summer}
+          autumn={item.autumn}
+          winter={item.winter}
+          color={(JSON.parse(item.color)).map(c =>
+            <li
+              key={c.hex}
+              ratio={parseFloat(c.ratio)}
+            />)}
+          dress_name={item.dress_name}
+          dress_memo={item.dress_memo}
+          dress_link={item.dress_link}
+          dress_regDate={item.dress_regDate}
+          dress_img_org={item.dress_img_org}
+          dress_img_sav={item.dress_img_sav}
+          share_type={item.share_type}
+          likes={item.likes}
+          type={[item.spring, item.summer, item.autumn, item.winter].indexOf(Math.max(...[item.spring, item.summer, item.autumn, item.winter]))}
+        />
+      )
+
+      var card = <li
+          key={this.state.clickedCard.key}
+          spring={this.state.clickedCard.props.spring}
+          summer={this.state.clickedCard.props.summer}
+          autumn={this.state.clickedCard.props.autumn}
+          winter={this.state.clickedCard.props.winter}
+          color={this.state.clickedCard.props.color}
+          dress_name={this.state.new_name}
+          dress_memo={this.state.new_memo}
+          dress_link={this.state.clickedCard.props.dress_link}
+          dress_regDate={this.state.clickedCard.props.dress_regDate}
+          dress_img_org={this.state.clickedCard.props.dress_img_org}
+          dress_img_sav={this.state.clickedCard.props.dress_img_sav}
+          share_type={this.state.new_type}
+          likes={this.state.clickedCard.props.likes}
+          type={this.state.clickedCard.props.type}
+        />
+
+      this.setState({
+        mylist: Items,
+        clickedCard: card,
+        update_state: false
+      })
+    }
   }
 
   handleClickDeletion = async () => {
@@ -141,10 +256,10 @@ class Dressroom extends Component {
         mylist: Items,
         clicked: false,
         del_state: false
-
       })
     }
   }
+
 
   render() {
     const { activeItem } = this.state
@@ -332,9 +447,9 @@ class Dressroom extends Component {
                               <Icon name='lock open' color='grey' />
                               공개 여부</Item.Header>
                             <Item.Description>
-                              {(this.state.clickedCard.props.share_type === 1) &&
-                                <div>공개 중</div>}
                               {(this.state.clickedCard.props.share_type === 0) &&
+                                <div>공개 중</div>}
+                              {(this.state.clickedCard.props.share_type === 1) &&
                                 <div>나만 보는 중</div>}
                             </Item.Description>
                           </Item.Content>
@@ -349,6 +464,7 @@ class Dressroom extends Component {
                     labelPosition='right'
                     icon='edit'
                     color='blue'
+                    onClick={this.handleClickUpdate}
                   />
                   <Button
                     content="삭제하기"
@@ -358,6 +474,50 @@ class Dressroom extends Component {
                     onClick={this.handleClickDeletion}
                   />
                 </Modal.Actions>
+
+                {(this.state.update_state) &&
+                  <Modal
+                    style={{ position: 'relative', height: '800px' }}
+                    closeIcon={{ style: { top: '1.0535rem', right: '1rem' }, color: 'black', name: 'close' }}
+                    open={this.state.update_state}
+                    onClose={this.closeUpdate}
+                  >
+                    <Modal.Header>수정하기</Modal.Header>
+                    <Modal.Content scrolling>
+                      <Form size='large'>
+                        <Segment stacked>
+                          <Label style={style.base}>이름</Label>
+                          <Form.Input
+                            fluid
+                            value={this.state.new_name}
+                            onChange={this.handleChange}
+                            name="new_name" />
+
+                          <Label style={style.base}>메모</Label>
+                          <Form.Input
+                            fluid
+                            value={this.state.new_memo}
+                            onChange={this.handleChange}
+                            name="new_memo" />
+
+                          <div>
+                            <Label style={style.base}>공개 여부</Label>
+                            <Radio toggle
+                              onChange={this.handleToggleChange}
+                              checked={this.state.new_type === 0}
+                            />
+                          </div>
+                        </Segment>
+                      </Form>
+                    </Modal.Content>
+                    <Modal.Actions>
+                      <Button
+                        icon='check'
+                        content='저장하기'
+                        onClick={this.updateFile}
+                      />
+                    </Modal.Actions>
+                  </Modal>}
 
                 {(this.state.del_state) &&
                   <Modal
