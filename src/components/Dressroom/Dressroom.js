@@ -21,6 +21,7 @@ class Dressroom extends Component {
     this.state = {
       mylist: [],
       clicked: false,
+      del_state: false,
       clickedCard: [],
       shoplink: ""
     };
@@ -88,7 +89,65 @@ class Dressroom extends Component {
     })
   }
 
+  handleClickDeletion = async () => {
+    this.setState({
+      del_state: true
+    })
+  }
+
+  closeDeletion = async e => {
+    this.setState({
+      del_state: false
+    })
+  }
+
+  deleteFile = async () => {
+    console.log(this.state.clickedCard.key);
+    const response = await Axios.post(
+      "http://localhost:8080/colorfit/myDressRoom/delete/" + String(this.state.clickedCard.key),
+    );
+    //200 확인..
+
+    const dbresponse =
+      await Axios.get("http://localhost:8080/colorfit/myDressRoom/"
+        + String(this.props.memberId))
+    const { data } = dbresponse;
+
+    if (data.status === 200) {
+      const Items = data.dlist.map((item) =>
+        <li
+          key={item.dress_uid}
+          spring={item.spring}
+          summer={item.summer}
+          autumn={item.autumn}
+          winter={item.winter}
+          color={(JSON.parse(item.color)).map(c =>
+            <li
+              key={c.hex}
+              ratio={parseFloat(c.ratio)}
+            />)}
+          dress_name={item.dress_name}
+          dress_memo={item.dress_memo}
+          dress_link={item.dress_link}
+          dress_regDate={item.dress_regDate}
+          dress_img_org={item.dress_img_org}
+          dress_img_sav={item.dress_img_sav}
+          share_type={item.share_type}
+          likes={item.likes}
+          type={[item.spring, item.summer, item.autumn, item.winter].indexOf(Math.max(...[item.spring, item.summer, item.autumn, item.winter]))}
+        />
+      )
+      this.setState({
+        mylist: Items,
+        clicked: false,
+        del_state: false
+
+      })
+    }
+  }
+
   render() {
+    const { activeItem } = this.state
     return (
       <div>
         <Segment
@@ -156,7 +215,7 @@ class Dressroom extends Component {
                         <Item>
                           <Item.Content>
                             <Item.Header>
-                              <Icon name='file' color='grey'/>
+                              <Icon name='file' color='grey' />
                               이름</Item.Header>
                             <Item.Description>
                               {this.state.clickedCard.props.dress_name}
@@ -166,7 +225,7 @@ class Dressroom extends Component {
                         <Item>
                           <Item.Content>
                             <Item.Header>
-                            <Icon name='chart pie' color='grey'/>
+                              <Icon name='chart pie' color='grey' />
                               컬러 정보</Item.Header>
                             <CanvasJSChart options={{
                               title: {
@@ -239,7 +298,7 @@ class Dressroom extends Component {
                         <Item>
                           <Item.Content>
                             <Item.Header>
-                            <Icon name='calendar' color='grey'/>
+                              <Icon name='calendar' color='grey' />
                               저장한 날짜, 시간</Item.Header>
                             <Item.Description>
                               {this.state.clickedCard.props.dress_regDate}
@@ -249,7 +308,7 @@ class Dressroom extends Component {
                         <Item>
                           <Item.Content>
                             <Item.Header>
-                            <Icon name='linkify' color='grey'/>
+                              <Icon name='linkify' color='grey' />
                               쇼핑몰 링크</Item.Header>
                             <Item.Description>
                               <a onClick={() => window.open(this.state.clickedCard.props.dress_link, "_blank")}>
@@ -260,7 +319,7 @@ class Dressroom extends Component {
                         <Item>
                           <Item.Content>
                             <Item.Header>
-                            <Icon name='sticky note' color='grey'/>
+                              <Icon name='sticky note' color='grey' />
                               메모</Item.Header>
                             <Item.Description>
                               {this.state.clickedCard.props.dress_memo}
@@ -270,7 +329,7 @@ class Dressroom extends Component {
                         <Item>
                           <Item.Content>
                             <Item.Header>
-                            <Icon name='lock open' color='grey'/>
+                              <Icon name='lock open' color='grey' />
                               공개 여부</Item.Header>
                             <Item.Description>
                               {(this.state.clickedCard.props.share_type === 1) &&
@@ -289,14 +348,37 @@ class Dressroom extends Component {
                     content="수정하기"
                     labelPosition='right'
                     icon='edit'
-                    color='blue' />
+                    color='blue'
+                  />
                   <Button
                     content="삭제하기"
                     labelPosition='right'
                     icon='trash alternate'
                     color='black'
+                    onClick={this.handleClickDeletion}
                   />
                 </Modal.Actions>
+
+                {(this.state.del_state) &&
+                  <Modal
+                    style={{ position: 'relative', height: '200px' }}
+                    closeIcon={{ style: { top: '1.0535rem', right: '1rem' }, color: 'black', name: 'close' }}
+                    open={this.state.del_state}
+                    onClose={this.closeDeletion}
+                  >
+                    <Modal.Header>삭제하기</Modal.Header>
+                    <Modal.Content>
+                      <p>정말 삭제하시겠습니까?</p>
+                    </Modal.Content>
+                    <Modal.Actions>
+                      <Button
+                        icon='check'
+                        content='확인'
+                        onClick={this.deleteFile}
+                      />
+                    </Modal.Actions>
+                  </Modal>}
+
               </Modal>
             }
           </Segment>
