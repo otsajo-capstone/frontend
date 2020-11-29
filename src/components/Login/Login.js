@@ -36,10 +36,10 @@ class Login extends Component {
 
       const { status, data } = response;
       if (data.status === 200) {
-        //(토큰 저장)
+        const type_response = await Axios.get(
+          "http://localhost:8080/colorfit/member/mypage/" + String(data.intResult));
 
-        this.props.onLogin(data.intResult, this.state.id);
-        console.log('logged:', this.props.logged)
+        this.props.onLogin(data.intResult, this.state.id, type_response.data.mdto.mb_type);
         this.props.history.push('/');
       }
       else {

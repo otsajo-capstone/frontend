@@ -27,10 +27,11 @@ class App extends Component {
     }
   }
 
-  onLogin = (memberId, id) => {
+  onLogin = (memberId, id, type) => {
     this.setState({
       memberId: memberId,
       id: id,
+      colorType: type,
       logged: true
     });
   }

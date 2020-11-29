@@ -82,6 +82,8 @@ class Info extends Component {
         formdata,
       );
 
+      this.props.onChangeColor(this.state.mb_type);
+
       const { data } = response;
       if (data.status === 200) {
         alert("정보 업데이트 되었습니다.");

@@ -12,7 +12,7 @@ import {
     Form,
     Progress,
     Dimmer,
-    Loader, Divider, Grid,Icon
+    Loader, Divider, Grid, Icon
 } from 'semantic-ui-react';
 import Axios from 'axios';
 import { useDropzone } from 'react-dropzone';
@@ -224,7 +224,7 @@ class AnalysisMain extends Component {
         this.setRandomImage();
 
         const response = await Axios.post(
-            "http://34.105.97.231:5000/image/analyze",
+            "http://34.82.241.230:5000/image/analyze",
             formData,
             config
         );
@@ -255,8 +255,10 @@ class AnalysisMain extends Component {
                     result={
                         item.result.map(season =>
                             <li
-                                key={season.type}
+                                key={season.type + "-" + season.subtype}
+                                type={season.type}
                                 ratio={season.ratio.toFixed(3)}
+                                subtype={season.subtype}
                             />)
                     }
                 />
@@ -274,31 +276,39 @@ class AnalysisMain extends Component {
                 var summer = 0;
                 var autumn = 0;
                 var winter = 0;
+                var dbresult = new String("[");
                 for (var season of item.props.result) {
-                    if (season.key.includes("봄")){
-                        spring = parseInt(season.props.ratio*100);
+                    if (season.key.includes("봄")) {
+                        spring += parseInt(season.props.ratio * 100);
                     }
-                    if (season.key.includes("여름")){
-                        summer = parseInt(season.props.ratio*100);
+                    if (season.key.includes("여름")) {
+                        summer += parseInt(season.props.ratio * 100);
                     }
-                    if (season.key.includes("가을")){
-                        autumn = parseInt(season.props.ratio*100);
+                    if (season.key.includes("가을")) {
+                        autumn += parseInt(season.props.ratio * 100);
                     }
-                    if (season.key.includes("겨울")){
-                        winter = parseInt(season.props.ratio*100);
+                    if (season.key.includes("겨울")) {
+                        winter += parseInt(season.props.ratio * 100);
                     }
+
+                    dbresult += "{\"type\": \"" + String(season.props.type) +
+                        "\", \"ratio\": \"" + String(season.props.ratio) +
+                        "\", \"subtype\": \"" + String(season.props.subtype) + 
+                        "\"},"
                 }
+                dbresult = dbresult.slice(0, -1) + "]"
 
                 var dbrequest = new FormData();
                 dbrequest.append('mb_uid', this.props.memberId);
-                dbrequest.append('spring', spring); 
-                dbrequest.append('summer', summer); 
-                dbrequest.append('autumn', autumn); 
-                dbrequest.append('winter', winter); 
+                dbrequest.append('spring', spring);
+                dbrequest.append('summer', summer);
+                dbrequest.append('autumn', autumn);
+                dbrequest.append('winter', winter);
                 dbrequest.append('color', dbcolor);
                 dbrequest.append('dress_img_org', item.props.src)
                 dbrequest.append('dress_img_sav', item.props.src)
-                dbrequest.append('dress_name', item.key); //바꿀 수 있게
+                dbrequest.append('dress_name', item.key);
+                dbrequest.append('result', dbresult);
 
                 //console.log(dbrequest.get('mb_uid'))
                 this.setRandomImage();
@@ -340,8 +350,6 @@ class AnalysisMain extends Component {
 
     handleLinkAnalysisClick = async (e) => {
         if (true) {
-            console.time('크롤링');
-
             this.setState({
                 loading: true,
                 progressActive: true
@@ -356,8 +364,8 @@ class AnalysisMain extends Component {
                 },
                 onDownloadProgress: (progressEvent) => {
                     let percentCompleted = Math.round(90 + (progressEvent.loaded * 10) / progressEvent.total);
-                    console.log(progressEvent.lengthComputable)
-                    console.log(percentCompleted);
+                    //console.log(progressEvent.lengthComputable)
+                    //console.log(percentCompleted);
                 }
             };
 
@@ -368,14 +376,12 @@ class AnalysisMain extends Component {
             this.setRandomImage();
 
             const response = await Axios.post(
-                "http://34.105.97.231:5000/url",
+                "http://34.82.241.230:5000/url",
                 formdata,
                 config
             );
 
             const { data } = response;
-
-            console.timeEnd('크롤링');
 
             if (data.status === "success") {
                 const Items = data.src_list.map((item) =>
@@ -453,21 +459,22 @@ class AnalysisMain extends Component {
                 src_list.push(item.key);
             }
         }
- 
+
         var jsondata = JSON.stringify({
             src_list: src_list
         })
- 
+
         this.setRandomImage();
-        console.time('분석');
+        //console.time('분석');
         const response = await Axios.post(
-            "http://34.105.97.231:5000/url/analyze",
+            "http://34.82.241.230:5000/url/analyze",
             jsondata,
             config
         );
 
         const { data } = response;
-        console.timeEnd('분석');
+        //console.timeEnd('분석');
+        console.log(response.data)
 
         if (data.status === "success") {
             const Items = data.analysis_result.map((item) =>
@@ -484,14 +491,17 @@ class AnalysisMain extends Component {
                     result={
                         item.result.map(season =>
                             <li
-                                key={season.type}
+                                key={season.type + "-" + season.subtype}
+                                type={season.type}
                                 ratio={season.ratio.toFixed(3)}
+                                subtype={season.subtype}
                             />)
                     }
                 />
             )
-
-            console.time('DB');
+            
+            console.log(Items)
+            //console.time('DB');
             for (var item of Items) {
                 var dbcolor = new String("[");
                 for (var color of item.props.colors) {
@@ -504,32 +514,40 @@ class AnalysisMain extends Component {
                 var summer = 0;
                 var autumn = 0;
                 var winter = 0;
+                var dbresult =  new String("[");
                 for (var season of item.props.result) {
-                    if (season.key.includes("봄")){
-                        spring = parseInt(season.props.ratio*100);
+                    if (season.key.includes("봄")) {
+                        spring = parseInt(season.props.ratio * 100);
                     }
-                    if (season.key.includes("여름")){
-                        summer = parseInt(season.props.ratio*100);
+                    if (season.key.includes("여름")) {
+                        summer = parseInt(season.props.ratio * 100);
                     }
-                    if (season.key.includes("가을")){
-                        autumn = parseInt(season.props.ratio*100);
+                    if (season.key.includes("가을")) {
+                        autumn = parseInt(season.props.ratio * 100);
                     }
-                    if (season.key.includes("겨울")){
-                        winter = parseInt(season.props.ratio*100);
+                    if (season.key.includes("겨울")) {
+                        winter = parseInt(season.props.ratio * 100);
                     }
+
+                    dbresult += "{\"type\": \"" + String(season.props.type) +
+                        "\", \"ratio\": \"" + String(season.props.ratio) +
+                        "\", \"subtype\": \"" + String(season.props.subtype) + 
+                        "\"},"
                 }
+                dbresult = dbresult.slice(0, -1) + "]"
 
                 var dbrequest = new FormData();
                 dbrequest.append('mb_uid', this.props.memberId);
-                dbrequest.append('spring', spring); 
-                dbrequest.append('summer', summer); 
-                dbrequest.append('autumn', autumn); 
-                dbrequest.append('winter', winter); 
+                dbrequest.append('spring', spring);
+                dbrequest.append('summer', summer);
+                dbrequest.append('autumn', autumn);
+                dbrequest.append('winter', winter);
                 dbrequest.append('color', dbcolor);
                 dbrequest.append('dress_link', this.state.url);
                 dbrequest.append('dress_img_org', item.props.src);
                 dbrequest.append('dress_img_sav', item.props.src);
                 dbrequest.append('dress_name', item.key);
+                dbrequest.append('result', dbresult);
 
                 //console.log(dbrequest.get('mb_uid'))
                 this.setRandomImage();
@@ -538,7 +556,7 @@ class AnalysisMain extends Component {
                     dbrequest,
                 )
             }
-            console.timeEnd('DB');
+            //console.timeEnd('DB');
 
             this.setState({
                 saved: Items,
@@ -628,8 +646,8 @@ class AnalysisMain extends Component {
                                         <Card.Group itemsPerRow={4}>
                                             {this.state.result.map(
                                                 card => <Card fluid>
-                                                    <Image src={card.key} 
-                                                    style={{ objectFit: 'cover'}}/>
+                                                    <Image src={card.key}
+                                                        style={{ objectFit: 'cover' }} />
                                                     <Card.Content>
                                                         <Checkbox
                                                             name='result.url'
@@ -674,24 +692,37 @@ class AnalysisMain extends Component {
                                             {this.state.saved.map(
                                                 card => <Card fluid>
                                                     <Image src={card.props.src}
-                                                    style={{ objectFit: 'cover'}} />
+                                                        style={{ objectFit: 'cover' }} />
                                                     <Card.Content>
                                                         {card.props.colors.map(
                                                             color => <Card.Description>
                                                                 <div style={{ color: color.key }}>
-                                                                    <Icon name='square full' /> : { (color.props.ratio*100).toFixed(2)}%
+                                                                    <Icon name='square full' /> : {(color.props.ratio * 100).toFixed(2)}%
                                                                 </div>
                                                             </Card.Description>
                                                         )}
                                                     </Card.Content>
                                                     <Card.Content>
-                                                    {card.props.result.map(
+                                                        {card.props.result.map(
                                                             s => <Card.Description>
-                                                                <div style={{ color: seasonColor[season.indexOf(s.key)] }}>
-                                                                    {s.key} : { (s.props.ratio*100).toFixed(2)}%
+                                                                <div style={{ color: seasonColor[season.indexOf(s.props.type)] }}>
+                                                                    {s.key} : {(s.props.ratio * 100).toFixed(2)}%
                                                                 </div>
                                                             </Card.Description>
                                                         )}
+                                                    </Card.Content>
+                                                    <Card.Content>
+                                                        <Card.Description>
+                                                            나와 어울리는 정도 : {
+                                                            parseFloat((season.indexOf(card.props.result[0].props.type) + 1 === this.props.colorType) *
+                                                            (parseFloat(card.props.result[0].props.ratio) * 100).toFixed(2)) +
+                                                            parseFloat((season.indexOf(card.props.result[1].props.type) + 1 === this.props.colorType) * 
+                                                            (parseFloat(card.props.result[1].props.ratio) * 100).toFixed(2)) +
+                                                            (card.props.result.length === 3) && (
+                                                            parseFloat((season.indexOf(card.props.result[2].props.type) + 1 === this.props.colorType) * 
+                                                            (parseFloat(card.props.result[2].props.ratio) * 100).toFixed(2)))                                                                                                                       
+                                                            }%
+                                                            </Card.Description>
                                                         </Card.Content>
                                                 </Card>
                                             )}

@@ -16,10 +16,10 @@ class UserInfoPage extends Component {
                 <Store.Consumer>                    
                     {Store => (
                         (number === '1' || number === undefined) &&
-                        <Info memberId={Store.memberId} id={Store.id}/>
-                        ||
-                        (number === '2') &&
-                        <Check memberId={Store.memberId} id={Store.id}/>
+                        <Info 
+                        memberId={Store.memberId}
+                        id={Store.id}
+                        colorType={Store.colorType}/>
                     )}
                 </Store.Consumer>
             </Layout>
