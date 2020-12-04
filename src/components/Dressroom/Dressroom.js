@@ -321,180 +321,201 @@ class Dressroom extends Component {
 
             {(this.state.clicked) &&
               <Modal
-                style={{ position: 'relative' }}
+                style={{ position: 'relative', width: '80%', maxHeight: '100%' }}
                 closeIcon={{ style: { top: '1.0535rem', right: '1rem' }, color: 'black', name: 'close' }}
                 dimmer='inverted'
                 open={this.state.clicked}
                 onClose={this.closeDimmer}
               >
                 <Modal.Header>상세 정보 보기</Modal.Header>
+
                 <Modal.Content image scrolling>
-                  <Image size='huge'
-                    style={{
-                      position: 'relative',
-                      alignSelf: 'center',
-                      justifyContent: 'center',
-                      alignItems: 'center'
-                    }}
-                    src={this.state.clickedCard.props.dress_img_org} wrapped />
-                  <Modal.Description>
-                    <Container>
-                      <Item.Group divided>
-                        <Item>
-                          <Item.Content>
-                            <Item.Header>
-                              <Icon name='file' color='grey' />
+                  <Grid fluid>
+
+                    <Grid.Row columns={2}>
+                      <Grid.Column>
+                        <Image size='huge'
+                          style={{
+                            position: 'relative',
+                            alignSelf: 'center',
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                          }}
+                          src={this.state.clickedCard.props.dress_img_org} wrapped />
+                      </Grid.Column>
+                      <Grid.Column>
+                        <Modal.Description>
+                          <Container>
+                            <Item.Group divided>
+                              <Item>
+                                <Item.Content>
+                                  <Item.Header>
+                                    <Icon name='file' color='grey' />
                               이름</Item.Header>
-                            <Item.Description>
-                              {this.state.clickedCard.props.dress_name}
-                            </Item.Description>
-                          </Item.Content>
-                        </Item>
-                        <Item>
-                          <Item.Content>
-                            <Item.Header>
-                              <Icon name='chart pie' color='grey' />
+                                  <Item.Description>
+                                    {this.state.clickedCard.props.dress_name}
+                                  </Item.Description>
+                                </Item.Content>
+                              </Item>
+                              <Item>
+                                <Item.Content>
+                                  <Item.Header>
+                                    <Icon name='chart pie' color='grey' />
                               컬러 정보</Item.Header>
-                            <CanvasJSChart options={{
-                              title: {
-                                text: "옷에서 추출한 컬러",
-                                fontFamily: "Inter, NotoSansKR",
-                                fontSize: 15
-                              },
-                              animationEnabled: true,
-                              height: 260,
-                              data: [{
-                                type: "pie",
-                                animationEnabled: true,
-                                dataPoints: [
-                                  {
-                                    label: this.state.clickedCard.props.color[0].key,
-                                    y: this.state.clickedCard.props.color[0].props.ratio,
-                                    color: this.state.clickedCard.props.color[0].key
-                                  },
-                                  {
-                                    label: this.state.clickedCard.props.color[1].key,
-                                    y: this.state.clickedCard.props.color[1].props.ratio,
-                                    color: this.state.clickedCard.props.color[1].key
-                                  },
-                                  {
-                                    label: this.state.clickedCard.props.color[2].key,
-                                    y: this.state.clickedCard.props.color[2].props.ratio,
-                                    color: this.state.clickedCard.props.color[2].key
-                                  },
-                                ]
-                              }]
-                            }} />
+                                  <CanvasJSChart options={{
+                                    title: {
+                                      text: "옷에서 추출한 컬러",
+                                      fontFamily: "Inter, NotoSansKR",
+                                      fontSize: 15
+                                    },
+                                    animationEnabled: true,
+                                    height: 260,
+                                    data: [{
+                                      type: "pie",
+                                      animationEnabled: true,
+                                      dataPoints: [
+                                        {
+                                          label: this.state.clickedCard.props.color[0].key,
+                                          y: this.state.clickedCard.props.color[0].props.ratio,
+                                          color: this.state.clickedCard.props.color[0].key
+                                        },
+                                        {
+                                          label: this.state.clickedCard.props.color[1].key,
+                                          y: this.state.clickedCard.props.color[1].props.ratio,
+                                          color: this.state.clickedCard.props.color[1].key
+                                        },
+                                        {
+                                          label: this.state.clickedCard.props.color[2].key,
+                                          y: this.state.clickedCard.props.color[2].props.ratio,
+                                          color: this.state.clickedCard.props.color[2].key
+                                        },
+                                      ]
+                                    }]
+                                  }} />
                             나와 어울리는 정도 : {
-                              ((((season.indexOf(this.state.clickedCard.props.result[0].props.type) + 1 === this.props.colorType) &&
-                                (parseFloat(this.state.clickedCard.props.result[0].props.ratio) * 100))
-                                ||
-                                (((season.indexOf(this.state.clickedCard.props.result[0].props.type) + 2) % 4 + 1 === this.props.colorType) &&
-                                (parseFloat(this.state.clickedCard.props.result[0].props.ratio) * 70))
-                                ||
-                                0.0
-                              )
-                              +
-                              (((season.indexOf(this.state.clickedCard.props.result[1].props.type) + 1 === this.props.colorType) &&
-                                (parseFloat(this.state.clickedCard.props.result[1].props.ratio) * 100))
-                                ||
-                                (((season.indexOf(this.state.clickedCard.props.result[1].props.type) + 2) % 4 + 1 === this.props.colorType) &&
-                                (parseFloat(this.state.clickedCard.props.result[1].props.ratio) * 70))
-                                ||
-                                0.0
-                              )
-                              +
-                              (
-                                (this.state.clickedCard.props.result.length === 3) && (
-                                  (((season.indexOf(this.state.clickedCard.props.result[2].props.type) + 1 === this.props.colorType) &&
-                                    (parseFloat(this.state.clickedCard.props.result[2].props.ratio) * 100))
-                                  ||
-                                  (((season.indexOf(this.state.clickedCard.props.result[2].props.type) + 2) % 4 + 1 === this.props.colorType) &&
-                                    (parseFloat(this.state.clickedCard.props.result[2].props.ratio) * 70))
-                                  ||
-                                  0.0)
-                              )
-                                || 0.0)).toFixed(2)
-                            }%
+                                    ((((season.indexOf(this.state.clickedCard.props.result[0].props.type) + 1 === this.props.colorType) &&
+                                      (parseFloat(this.state.clickedCard.props.result[0].props.ratio) * 100))
+                                      ||
+                                      (((season.indexOf(this.state.clickedCard.props.result[0].props.type) + 2) % 4 + 1 === this.props.colorType) &&
+                                        (parseFloat(this.state.clickedCard.props.result[0].props.ratio) * 70))
+                                      ||
+                                      0.0
+                                    )
+                                      +
+                                      (((season.indexOf(this.state.clickedCard.props.result[1].props.type) + 1 === this.props.colorType) &&
+                                        (parseFloat(this.state.clickedCard.props.result[1].props.ratio) * 100))
+                                        ||
+                                        (((season.indexOf(this.state.clickedCard.props.result[1].props.type) + 2) % 4 + 1 === this.props.colorType) &&
+                                          (parseFloat(this.state.clickedCard.props.result[1].props.ratio) * 70))
+                                        ||
+                                        0.0
+                                      )
+                                      +
+                                      (
+                                        (this.state.clickedCard.props.result.length === 3) && (
+                                          (((season.indexOf(this.state.clickedCard.props.result[2].props.type) + 1 === this.props.colorType) &&
+                                            (parseFloat(this.state.clickedCard.props.result[2].props.ratio) * 100))
+                                            ||
+                                            (((season.indexOf(this.state.clickedCard.props.result[2].props.type) + 2) % 4 + 1 === this.props.colorType) &&
+                                              (parseFloat(this.state.clickedCard.props.result[2].props.ratio) * 70))
+                                            ||
+                                            0.0)
+                                        )
+                                        || 0.0)).toFixed(2)
+                                  }%
                             <Item.Description>
-                            </Item.Description>
-                          </Item.Content>
-                        </Item>
-                        <Item>
-                          <Item.Content>
-                            <Item.Header>
-                              <Icon name='calendar' color='grey' />
+                                  </Item.Description>
+                                </Item.Content>
+                              </Item>
+                              <Item>
+                                <Item.Content>
+                                  <Item.Header>
+                                    <Icon name='calendar' color='grey' />
                               저장한 날짜, 시간</Item.Header>
-                            <Item.Description>
-                              {this.state.clickedCard.props.dress_regDate.slice(0, 16)}
-                            </Item.Description>
-                          </Item.Content>
-                        </Item>
-                        {(this.state.clickedCard.props.dress_link != null) &&
-                          <Item>
-                            <Item.Content>
-                              <Item.Header>
-                                <Icon name='linkify' color='grey' />
+                                  <Item.Description>
+                                    {this.state.clickedCard.props.dress_regDate.slice(0, 16)}
+                                  </Item.Description>
+                                </Item.Content>
+                              </Item>
+                              {(this.state.clickedCard.props.dress_link != null) &&
+                                <Item>
+                                  <Item.Content>
+                                    <Item.Header>
+                                      <Icon name='linkify' color='grey' />
                               쇼핑몰 링크</Item.Header>
-                              <Item.Description>
-                                <a onClick={() => window.open(this.state.clickedCard.props.dress_link, "_blank")}>
-                                  {this.state.clickedCard.props.dress_link}</a>
-                              </Item.Description>
-                            </Item.Content>
-                          </Item>
-                        }
-                        <Item>
-                          <Item.Content>
-                            <Item.Header>
-                              <Icon name='sticky note' color='grey' />
+                                    <Item.Description>
+                                      <a onClick={() => window.open(this.state.clickedCard.props.dress_link, "_blank")}>
+                                        {this.state.clickedCard.props.dress_link}</a>
+                                    </Item.Description>
+                                  </Item.Content>
+                                </Item>
+                              }
+                              <Item>
+                                <Item.Content>
+                                  <Item.Header>
+                                    <Icon name='sticky note' color='grey' />
                               메모</Item.Header>
-                            <Item.Description>
-                              {this.state.clickedCard.props.dress_memo}
-                            </Item.Description>
-                          </Item.Content>
-                        </Item>
+                                  <Item.Description>
+                                    {this.state.clickedCard.props.dress_memo}
+                                  </Item.Description>
+                                </Item.Content>
+                              </Item>
+                              <Item>
+                                <Item.Content>
+                                  <Item.Header>
+                                    <Icon name='lock open' color='grey' />
+                              공개 여부</Item.Header>
+                                  <Item.Description>
+                                    {(this.state.clickedCard.props.share_type === 0) &&
+                                      <div>공개 중</div>}
+                                    {(this.state.clickedCard.props.share_type === 1) &&
+                                      <div>나만 보는 중</div>}
+                                  </Item.Description>
+                                </Item.Content>
+                              </Item>
+                            </Item.Group>
+                          </Container>
+                        </Modal.Description>
+                      </Grid.Column>
+                    </Grid.Row>
+
+                    <Grid.Row>
+                      <Grid.Column width={12} />
+                      <Grid.Column width={2}>
+                        <Button
+                          content="수정하기"
+                          labelPosition='right'
+                          icon='edit'
+                          color='blue'
+                          onClick={this.handleClickUpdate}
+                        />
+                      </Grid.Column>
+                      <Grid.Column width={2}>
+                        <Button
+                          content="삭제하기"
+                          labelPosition='right'
+                          icon='trash alternate'
+                          color='black'
+                          onClick={this.handleClickDeletion}
+                        />
+                      </Grid.Column>
+                    </Grid.Row>
+
+                    <Grid.Row>
+                      <Container wrapped>
                         <Item>
                           <Item.Content>
                             <Item.Header>
-                              <Icon name='lock open' color='grey' />
-                              공개 여부</Item.Header>
-                            <Item.Description>
-                              {(this.state.clickedCard.props.share_type === 0) &&
-                                <div>공개 중</div>}
-                              {(this.state.clickedCard.props.share_type === 1) &&
-                                <div>나만 보는 중</div>}
-                            </Item.Description>
+                              <Icon name='heart' color='red' />
+                              {this.state.clickedCard.props.likes} 좋아요 &nbsp;
+                      <Icon name='comment alternate' color='olive' />
+                              { } 댓글
+                    </Item.Header>
                           </Item.Content>
                         </Item>
-                      </Item.Group>
-                    </Container>
-                  </Modal.Description>
-                </Modal.Content>
-                <Modal.Actions>
-                  <Button
-                    content="수정하기"
-                    labelPosition='right'
-                    icon='edit'
-                    color='blue'
-                    onClick={this.handleClickUpdate}
-                  />
-                  <Button
-                    content="삭제하기"
-                    labelPosition='right'
-                    icon='trash alternate'
-                    color='black'
-                    onClick={this.handleClickDeletion}
-                  />
-                </Modal.Actions>
-                <Modal.Content>
-                  <Item>
-                    <Item.Content>
-                      <Item.Header>
-                        <Icon name='heart' color='red' />
-                        {this.state.clickedCard.props.likes} 좋아요 &nbsp;
-                      <Icon name='comment alternate' color='olive' />
-                        { } 댓글
-                    </Item.Header></Item.Content></Item>
+                      </Container>
+                    </Grid.Row>
+                  </Grid>
                 </Modal.Content>
 
                 {(this.state.update_state) &&
