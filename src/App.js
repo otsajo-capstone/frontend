@@ -6,7 +6,8 @@ import {
   DressroomPage, 
   SearchPage, 
   AnalysisPage,
-  UserInfoPage } from 'pages';
+  UserInfoPage,
+  CommunityPage } from 'pages';
 import Layout from './components/Layout'
 import { Route, Switch, withRouter, Router } from 'react-router-dom';
 import Store from './store/store';
@@ -74,7 +75,8 @@ class App extends Component {
             <Route exact path="/analysis/:number" component={AnalysisPage} />
             <Route exact path="/analysis" component={AnalysisPage} />
           </Switch>
-          <Route exact path="/dressroom" component={DressroomPage} />        
+          <Route exact path="/dressroom" component={DressroomPage} />
+          <Route exact path="/community" component={CommunityPage} />        
         </div>
         </Layout>
       </Store.Provider>

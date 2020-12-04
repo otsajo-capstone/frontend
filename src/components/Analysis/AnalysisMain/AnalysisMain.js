@@ -639,9 +639,7 @@ class AnalysisMain extends Component {
                                     attached='bottom'
                                     textAlign='center'
                                     placeholder>
-                                    <Header>
-                                        원하는 사진만 체크해 주세요.
-                </Header>
+                                    <Header> 원하는 사진만 체크해 주세요. </Header>
                                     <Segment>
                                         <Card.Group itemsPerRow={4}>
                                             {this.state.result.map(
@@ -714,14 +712,36 @@ class AnalysisMain extends Component {
                                                     <Card.Content>
                                                         <Card.Description>
                                                             나와 어울리는 정도 : {
-                                                            parseFloat((season.indexOf(card.props.result[0].props.type) + 1 === this.props.colorType) *
-                                                            (parseFloat(card.props.result[0].props.ratio) * 100).toFixed(2)) +
-                                                            parseFloat((season.indexOf(card.props.result[1].props.type) + 1 === this.props.colorType) * 
-                                                            (parseFloat(card.props.result[1].props.ratio) * 100).toFixed(2)) +
-                                                            (card.props.result.length === 3) && (
-                                                            parseFloat((season.indexOf(card.props.result[2].props.type) + 1 === this.props.colorType) * 
-                                                            (parseFloat(card.props.result[2].props.ratio) * 100).toFixed(2)))                                                                                                                       
-                                                            }%
+                              ((((season.indexOf(card.props.result[0].props.type) + 1 === this.props.colorType) &&
+                                (parseFloat(card.props.result[0].props.ratio) * 100))
+                                ||
+                                (((season.indexOf(card.props.result[0].props.type) + 2) % 4 + 1 === this.props.colorType) &&
+                                (parseFloat(card.props.result[0].props.ratio) * 70))
+                                ||
+                                0.0
+                              )
+                              +
+                              (((season.indexOf(card.props.result[1].props.type) + 1 === this.props.colorType) &&
+                                (parseFloat(card.props.result[1].props.ratio) * 100))
+                                ||
+                                (((season.indexOf(card.props.result[1].props.type) + 2) % 4 + 1 === this.props.colorType) &&
+                                (parseFloat(card.props.result[1].props.ratio) * 70))
+                                ||
+                                0.0
+                              )
+                              +
+                              (
+                                (card.props.result.length === 3) && (
+                                  (((season.indexOf(card.props.result[2].props.type) + 1 === this.props.colorType) &&
+                                    (parseFloat(card.props.result[2].props.ratio) * 100))
+                                  ||
+                                  (((season.indexOf(card.result[2].props.type) + 2) % 4 + 1 === this.props.colorType) &&
+                                    (parseFloat(card.props.result[2].props.ratio) * 70))
+                                  ||
+                                  0.0)
+                              )
+                                || 0.0)).toFixed(2)
+                            }%
                                                             </Card.Description>
                                                         </Card.Content>
                                                 </Card>

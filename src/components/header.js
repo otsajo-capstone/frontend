@@ -25,6 +25,7 @@ class Header extends Component{
 
                     { this.props.logged && <Menu.Item as={Link} name ='의류 컬러분석' to='/analysis'/>}
                     { this.props.logged && <Menu.Item as={Link} name ='드레스 룸' to='/dressroom'/>}
+                    { this.props.logged && <Menu.Item as={Link} name ='둘러보기' to='/community'/>}
 
                     <Menu.Menu position='right'>
                         { !this.props.logged && <Menu.Item as={Link} name='로그인' to='/login'/>}
