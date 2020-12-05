@@ -87,6 +87,51 @@ class Commu extends Component {
     }
   }
 
+  updateDressList = async () => {
+    const response = await Axios.get("http://localhost:8080/colorfit/yourDressRoom/select/"
+        + String(this.props.colorType));
+    const { data } = response;
+
+    if (data.status === 200) {
+      const Items = data.dlist.map((item) =>
+        <li
+          key={item.dress_uid}
+          mb_id={item.mb_id}
+          mb_name={item.mb_name}
+          mb_type={item.mb_type}
+          spring={item.spring}
+          summer={item.summer}
+          autumn={item.autumn}
+          winter={item.winter}
+          color={(JSON.parse(item.color)).map(c =>
+            <li
+              key={c.hex}
+              ratio={parseFloat(c.ratio)}
+            />)}
+          dress_name={item.dress_name}
+          dress_memo={item.dress_memo}
+          dress_link={item.dress_link}
+          dress_regDate={item.dress_regDate}
+          dress_img_org={item.dress_img_org}
+          dress_img_sav={item.dress_img_sav}
+          share_type={item.share_type}
+          likes={item.likes}
+          type={[item.spring, item.summer, item.autumn, item.winter].indexOf(Math.max(...[item.spring, item.summer, item.autumn, item.winter]))}
+          result={(JSON.parse(item.result)).map(r =>
+            <li
+              key={r.type + "-" + r.subtype}
+              type={r.type}
+              ratio={parseFloat(r.ratio)}
+              subtype={r.subtype}
+            />)}
+        />
+      )
+      this.setState({
+        dresslist: Items
+      })
+    }
+  }
+
   handleClickCardEvent = async (card) => {
     const response = await Axios.get("http://localhost:8080/colorfit/DressRoom/selectDress/"
       + String(card.key) + "/" + String(this.props.memberId));
@@ -100,6 +145,44 @@ class Commu extends Component {
         rlist: data.rlist,
         like: data.intResult
       })
+    }
+  }
+
+  handleClickHeartEvent = async () => {
+    var cardKey = this.state.clickedCard.key
+    var formdata = new FormData();
+    formdata.append('dress_uid', cardKey);
+    formdata.append('mb_uid', this.props.memberId);
+    
+    var response;
+    if (this.state.like === 0){
+      response = await Axios.post("http://localhost:8080/colorfit/yourDressRoom/likeDress/",
+      formdata);
+
+      this.setState({
+        like: 1
+      })
+    }
+    else {
+      response = await Axios.post("http://localhost:8080/colorfit/yourDressRoom/unlikeDress/",
+      formdata);
+
+      this.setState({
+        like: 0
+      })
+    }
+
+    if (response.data.status === 200){
+      await this.updateDressList();
+      var newCard = this.state.dresslist.find(d => d.key === cardKey);
+      console.log(cardKey)
+      console.log(newCard)
+      this.setState({
+        clickedCard: newCard
+      })
+    }
+    else{
+
     }
   }
 
@@ -162,7 +245,7 @@ class Commu extends Component {
 
                   {(this.state.clicked) &&
                     <Modal
-                      style={{ position: 'relative', width: '80%', maxHeight: '100%' }}
+                      style={{ position: 'relative', width: '80%', maxHeight: '80%' }}
                       closeIcon={{ style: { top: '1.0535rem', right: '1rem' }, color: 'black', name: 'close' }}
                       dimmer='inverted'
                       open={this.state.clicked}
@@ -307,9 +390,9 @@ class Commu extends Component {
                                 <Item.Content>
                                   <Item.Header>
                                     {this.state.like === 1 &&
-                                      <Icon name='heart' color='red' />}
+                                      <Icon name='heart' color='red' link onClick={this.handleClickHeartEvent}/>}
                                     {this.state.like === 0 &&
-                                      <Icon name='heart outline' color='red' />}
+                                      <Icon name='heart outline' color='red' link onClick={this.handleClickHeartEvent}/>}
                                     {this.state.clickedCard.props.likes} 좋아요 &nbsp;
                                                             <Icon name='comment alternate' color='olive' />
                                     {this.state.rlist.length} 댓글
