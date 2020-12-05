@@ -10,8 +10,7 @@ import {
   Header,
   Card,
   Container,
-  Dimmer,
-  Loader, Divider, Grid, Icon, Accordion, Comment, Form
+  Dimmer, Grid, Icon, Comment, Form
 } from 'semantic-ui-react';
 import CanvasJSReact from '../react-canvasjs-chart-samples/react-canvasjs-chart-samples/src/assets/canvasjs.react';
 
@@ -32,7 +31,12 @@ class Commu extends Component {
       clickedCard: [],
       ddto: [],
       rlist: [],
-      like: 0
+      like: 0,
+      reply: "",
+      update_state: false,
+      new_reply: "",
+      del_state: false,
+      rid: null
     };
   }
 
@@ -87,9 +91,14 @@ class Commu extends Component {
     }
   }
 
+  handleChange = (e) => {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+  }
   updateDressList = async () => {
     const response = await Axios.get("http://localhost:8080/colorfit/yourDressRoom/select/"
-        + String(this.props.colorType));
+      + String(this.props.colorType));
     const { data } = response;
 
     if (data.status === 200) {
@@ -153,11 +162,11 @@ class Commu extends Component {
     var formdata = new FormData();
     formdata.append('dress_uid', cardKey);
     formdata.append('mb_uid', this.props.memberId);
-    
+
     var response;
-    if (this.state.like === 0){
+    if (this.state.like === 0) {
       response = await Axios.post("http://localhost:8080/colorfit/yourDressRoom/likeDress/",
-      formdata);
+        formdata);
 
       this.setState({
         like: 1
@@ -165,25 +174,109 @@ class Commu extends Component {
     }
     else {
       response = await Axios.post("http://localhost:8080/colorfit/yourDressRoom/unlikeDress/",
-      formdata);
+        formdata);
 
       this.setState({
         like: 0
       })
     }
 
-    if (response.data.status === 200){
+    if (response.data.status === 200) {
       await this.updateDressList();
       var newCard = this.state.dresslist.find(d => d.key === cardKey);
-      console.log(cardKey)
-      console.log(newCard)
       this.setState({
         clickedCard: newCard
       })
     }
-    else{
-
+    else {
     }
+  }
+
+  handleAddReplyEvent = async () => {
+    var cardKey = this.state.clickedCard.key
+    var formdata = new FormData();
+    formdata.append('dress_uid', cardKey);
+    formdata.append('mb_uid', this.props.memberId);
+    formdata.append('reply_content', this.state.reply);
+
+    const response = await Axios.post("http://localhost:8080/colorfit/yourDressRoom/insertReply/", formdata);
+
+    if (response.data.status === 200) {
+      const dbresponse = await Axios.get("http://localhost:8080/colorfit/DressRoom/selectDress/"
+        + String(cardKey) + "/" + String(this.props.memberId));
+
+      this.setState({
+        rlist: dbresponse.data.rlist,
+        reply: ""
+      })
+    }
+    else {
+    }
+  }
+
+  handleUpdateReplyEvent = async () => {
+    var formdata = new FormData();
+    formdata.append('reply_uid', this.state.rid);
+    formdata.append('reply_content', this.state.new_reply);
+
+    const response = await Axios.post("http://localhost:8080/colorfit/yourDressRoom/updateReply/", formdata);
+
+    if (response.data.status === 200) {
+      const dbresponse = await Axios.get("http://localhost:8080/colorfit/DressRoom/selectDress/"
+        + String(this.state.clickedCard.key) + "/" + String(this.props.memberId));
+
+      this.setState({
+        rlist: dbresponse.data.rlist,
+        update_state: false,
+        new_reply: ""
+      })
+    }
+    else {
+    }
+  }
+
+  handleClickUpdate = async (reply_uid, reply_content) => {
+    this.setState({
+      update_state: true,
+      rid: reply_uid,
+      new_reply: reply_content
+    })
+  }
+
+  closeUpdate = async e => {
+    this.setState({
+      update_state: false
+    })
+  }
+
+  handleDeleteReplyEvent = async () => {
+    const response = await Axios.post("http://localhost:8080/colorfit/yourDressRoom/deleteReply/"
+      + String(this.state.rid));
+
+    if (response.data.status === 200) {
+      const dbresponse = await Axios.get("http://localhost:8080/colorfit/DressRoom/selectDress/"
+        + String(this.state.clickedCard.key) + "/" + String(this.props.memberId));
+
+      this.setState({
+        rlist: dbresponse.data.rlist,
+        del_state: false
+      })
+    }
+    else {
+    }
+  }
+
+  handleClickDeletion = async (reply_uid) => {
+    this.setState({
+      del_state: true,
+      rid: reply_uid
+    })
+  }
+
+  closeDeletion = async e => {
+    this.setState({
+      del_state: false
+    })
   }
 
   closeDimmer = async e => {
@@ -202,15 +295,11 @@ class Commu extends Component {
                 attached='bottom'
                 textAlign='center'
                 placeholder>
-                <Header>
+                <Header style={{ fontFamily: ['Inter', 'NotoSansKR'] }}>
                   <div>
                     <Button style={{ backgroundColor: seasonColor[1] }}>
-                      <div style={{
-                        fontFamily: ['Inter', 'NotoSansKR'],
-                        color: 'white'
-                      }}>{season[1]}</div></Button>
-                             사용자들의 옷장입니다.
-                                    </div>
+                      <div style={{ color: 'white' }}>{season[1]}</div></Button>
+                             사용자들의 옷장입니다.</div>
                 </Header>
 
                 <Segment.Inline>
@@ -220,7 +309,7 @@ class Commu extends Component {
                         onClick={() => this.handleClickCardEvent(card)}
                         style={{ textDecoration: 'none' }}>
                         <Card.Content>
-                          <Card.Header textAlign='left'>
+                          <Card.Header textAlign='left' style={{ fontFamily: ['Inter', 'NotoSansKR'] }}>
                             <Icon name='user circle' />
                             {card.props.mb_name}</Card.Header>
                         </Card.Content>
@@ -245,7 +334,7 @@ class Commu extends Component {
 
                   {(this.state.clicked) &&
                     <Modal
-                      style={{ position: 'relative', width: '80%', maxHeight: '80%' }}
+                      style={{ position: 'relative', width: '80%', maxHeight: '80%', fontFamily: ['Inter', 'NotoSansKR'] }}
                       closeIcon={{ style: { top: '1.0535rem', right: '1rem' }, color: 'black', name: 'close' }}
                       dimmer='inverted'
                       open={this.state.clicked}
@@ -265,7 +354,7 @@ class Commu extends Component {
                                 }}
                                 src={this.state.clickedCard.props.dress_img_org} wrapped />
                             </Grid.Column>
-                            <Grid.Column >
+                            <Grid.Column>
                               <Modal.Description>
                                 <Container>
                                   <Item.Group divided>
@@ -390,9 +479,9 @@ class Commu extends Component {
                                 <Item.Content>
                                   <Item.Header>
                                     {this.state.like === 1 &&
-                                      <Icon name='heart' color='red' link onClick={this.handleClickHeartEvent}/>}
+                                      <Icon name='heart' color='red' link onClick={this.handleClickHeartEvent} />}
                                     {this.state.like === 0 &&
-                                      <Icon name='heart outline' color='red' link onClick={this.handleClickHeartEvent}/>}
+                                      <Icon name='heart outline' color='red' link onClick={this.handleClickHeartEvent} />}
                                     {this.state.clickedCard.props.likes} 좋아요 &nbsp;
                                                             <Icon name='comment alternate' color='olive' />
                                     {this.state.rlist.length} 댓글
@@ -405,15 +494,29 @@ class Commu extends Component {
                                           <Comment.Text>{reply.reply_content}</Comment.Text>
                                           <Comment.Actions>
                                             <Comment.Action>대댓글달기</Comment.Action>
-                                            {reply.mb_uid === this.props.memberId && <Comment.Action>수정하기</Comment.Action>}
-                                            {reply.mb_uid === this.props.memberId && <Comment.Action>삭제하기</Comment.Action>}
+                                            {reply.mb_uid === this.props.memberId &&
+                                              <Comment.Action
+                                              onClick={() => this.handleClickUpdate(reply.reply_uid, reply.reply_content)}
+                                              >수정하기</Comment.Action>}
+                                            {reply.mb_uid === this.props.memberId &&
+                                              <Comment.Action
+                                                onClick={() => this.handleClickDeletion(reply.reply_uid)}
+                                              >삭제하기</Comment.Action>}
                                           </Comment.Actions>
                                         </Comment.Content>
                                       </Comment>
                                     )}
                                     <Form reply>
-                                      <Form.TextArea />
-                                      <Button content='저장' labelPosition='left' icon='edit' primary />
+                                      <Form.TextArea
+                                        name='reply'
+                                        value={this.state.reply}
+                                        onChange={this.handleChange} />
+                                      <Button
+                                        content='저장'
+                                        labelPosition='left'
+                                        icon='edit'
+                                        primary
+                                        onClick={this.handleAddReplyEvent} />
                                     </Form>
                                   </Comment.Group>
                                 </Item.Content>
@@ -422,6 +525,53 @@ class Commu extends Component {
                           </Grid.Row>
                         </Grid>
                       </Modal.Content>
+
+                      {(this.state.update_state) &&
+                        <Modal
+                          style={{ position: 'relative', maxHeight: '30%' }}
+                          closeIcon={{ style: { top: '1.0535rem', right: '1rem' }, color: 'black', name: 'close' }}
+                          open={this.state.update_state}
+                          onClose={this.closeUpdate}
+                        >
+                          <Modal.Header>댓글 수정하기</Modal.Header>
+                          <Modal.Content scrolling>
+                            <Form reply>
+                              <Form.TextArea
+                                name='new_reply'
+                                value={this.state.new_reply}
+                                onChange={this.handleChange} />
+                            </Form>
+                          </Modal.Content>
+                          <Modal.Actions>
+                            <Button
+                              icon='check'
+                              content='저장하기'
+                              onClick={this.handleUpdateReplyEvent}
+                            />
+                          </Modal.Actions>
+                        </Modal>}
+
+                      {(this.state.del_state) &&
+                        <Modal
+                          style={{ position: 'relative', height: '200px' }}
+                          closeIcon={{ style: { top: '1.0535rem', right: '1rem' }, color: 'black', name: 'close' }}
+                          open={this.state.del_state}
+                          onClose={this.closeDeletion}
+                        >
+                          <Modal.Header>댓글 삭제하기</Modal.Header>
+                          <Modal.Content>
+                            <p>'{this.state.rlist.find(r => r.reply_uid === this.state.rid).reply_content}'
+                      댓글을 삭제하시겠습니까?</p>
+                          </Modal.Content>
+                          <Modal.Actions>
+                            <Button
+                              icon='check'
+                              content='확인'
+                              onClick={this.handleDeleteReplyEvent}
+                            />
+                          </Modal.Actions>
+                        </Modal>}
+
                     </Modal>}
                 </Segment.Inline>
               </Segment>
