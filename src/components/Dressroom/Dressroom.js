@@ -942,7 +942,7 @@ class Dressroom extends Component {
 
                       {(this.state.r_del_state) &&
                         <Modal
-                          style={{ position: 'relative', height: '200px' }}
+                          style={{ position: 'relative', height: '250px' }}
                           closeIcon={{ style: { top: '1.0535rem', right: '1rem' }, color: 'black', name: 'close' }}
                           open={this.state.r_del_state}
                           onClose={this.closeDeletionReply}
@@ -951,6 +951,7 @@ class Dressroom extends Component {
                           <Modal.Content>
                             <p>'{this.state.rlist.find(r => r.reply_uid === this.state.rid).reply_content}'
                       댓글을 삭제하시겠습니까?</p>
+                      <p>댓글에 달린 다른 댓글들도 삭제됩니다.</p>
                           </Modal.Content>
                           <Modal.Actions>
                             <Button
