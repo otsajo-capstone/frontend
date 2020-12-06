@@ -10,7 +10,7 @@ import {
   Header,
   Card,
   Container,
-  Dimmer, Grid, Icon, Comment, Form
+  Dimmer, Grid, Icon, Comment, Form, Label
 } from 'semantic-ui-react';
 import CanvasJSReact from '../react-canvasjs-chart-samples/react-canvasjs-chart-samples/src/assets/canvasjs.react';
 
@@ -31,20 +31,22 @@ class Commu extends Component {
       clickedCard: [],
       ddto: [],
       rlist: [],
+      r_rlist: [],
       like: 0,
       reply: "",
       update_state: false,
       new_reply: "",
       del_state: false,
-      rid: null
+      rid: null,
+      clickedReply: null,
+      rrply_state: false,
     };
   }
 
   componentDidMount = async e => {
     const response =
       await Axios.get("http://localhost:8080/colorfit/yourDressRoom/select/"
-        + String(2));
-    //+ String(this.props.colorType))
+      + String(this.props.colorType));
     const { data } = response;
 
     if (data.status === 200) {
@@ -96,6 +98,7 @@ class Commu extends Component {
       [e.target.name]: e.target.value
     });
   }
+
   updateDressList = async () => {
     const response = await Axios.get("http://localhost:8080/colorfit/yourDressRoom/select/"
       + String(this.props.colorType));
@@ -152,7 +155,9 @@ class Commu extends Component {
         clickedCard: card,
         ddto: data.ddto,
         rlist: data.rlist,
-        like: data.intResult
+        like: data.intResult,
+        r_rlist: data.rrlist,
+        rrply_state: false
       })
     }
   }
@@ -193,24 +198,50 @@ class Commu extends Component {
   }
 
   handleAddReplyEvent = async () => {
-    var cardKey = this.state.clickedCard.key
-    var formdata = new FormData();
-    formdata.append('dress_uid', cardKey);
-    formdata.append('mb_uid', this.props.memberId);
-    formdata.append('reply_content', this.state.reply);
+    //reply
+    if (!this.state.rrply_state) {
+      var cardKey = this.state.clickedCard.key
+      var formdata = new FormData();
+      formdata.append('dress_uid', cardKey);
+      formdata.append('mb_uid', this.props.memberId);
+      formdata.append('reply_content', this.state.reply);
 
-    const response = await Axios.post("http://localhost:8080/colorfit/yourDressRoom/insertReply/", formdata);
+      const response = await Axios.post("http://localhost:8080/colorfit/yourDressRoom/insertReply/", formdata);
 
-    if (response.data.status === 200) {
-      const dbresponse = await Axios.get("http://localhost:8080/colorfit/DressRoom/selectDress/"
-        + String(cardKey) + "/" + String(this.props.memberId));
+      if (response.data.status === 200) {
+        const dbresponse = await Axios.get("http://localhost:8080/colorfit/DressRoom/selectDress/"
+          + String(cardKey) + "/" + String(this.props.memberId));
 
-      this.setState({
-        rlist: dbresponse.data.rlist,
-        reply: ""
-      })
+        this.setState({
+          rlist: dbresponse.data.rlist,
+          reply: ""
+        })
+      }
+      else {
+      }
     }
+
+    //re-reply
     else {
+      var formdata = new FormData();
+      formdata.append('reply_uid', this.state.clickedReply.reply_uid);
+      formdata.append('mb_uid', this.props.memberId);
+      formdata.append('rereply_content', this.state.reply);
+
+      const response = await Axios.post("http://localhost:8080/colorfit/yourDressRoom/insertRereply/", formdata);
+
+      if (response.data.status === 200) {
+        const dbresponse = await Axios.get("http://localhost:8080/colorfit/DressRoom/selectDress/"
+          + String(cardKey) + "/" + String(this.props.memberId));
+
+        this.setState({
+          reply: "",
+          clickedReply: null,
+          rrply_state: false
+        })
+      }
+      else {
+      }
     }
   }
 
@@ -277,6 +308,21 @@ class Commu extends Component {
     this.setState({
       del_state: false
     })
+  }
+
+  handleClickReply = async (reply) => {
+    if (this.state.clickedReply === null || this.state.clickedReply.reply_uid !== reply.reply_uid) {
+      this.setState({
+        clickedReply: reply,
+        rrply_state: true
+      })
+    }
+    else {
+      this.setState({
+        clickedReply: null,
+        rrply_state: false
+      })
+    }
   }
 
   closeDimmer = async e => {
@@ -493,10 +539,12 @@ class Commu extends Component {
                                           <Comment.Author>{reply.mb_name}</Comment.Author>
                                           <Comment.Text>{reply.reply_content}</Comment.Text>
                                           <Comment.Actions>
-                                            <Comment.Action>대댓글달기</Comment.Action>
+                                            <Comment.Action
+                                              onClick={() => this.handleClickReply(reply)}
+                                            >댓글달기</Comment.Action>
                                             {reply.mb_uid === this.props.memberId &&
                                               <Comment.Action
-                                              onClick={() => this.handleClickUpdate(reply.reply_uid, reply.reply_content)}
+                                                onClick={() => this.handleClickUpdate(reply.reply_uid, reply.reply_content)}
                                               >수정하기</Comment.Action>}
                                             {reply.mb_uid === this.props.memberId &&
                                               <Comment.Action
@@ -504,13 +552,34 @@ class Commu extends Component {
                                               >삭제하기</Comment.Action>}
                                           </Comment.Actions>
                                         </Comment.Content>
+                                        {this.state.r_rlist !== null &&
+                                          <Comment.Group>
+                                            {this.state.r_rlist.map((rereply) =>
+                                              <Comment>
+                                                <Comment.Content>
+                                                  <Comment.Author>{rereply.mb_name}</Comment.Author>
+                                                  <Comment.Text>{rereply.rereply_content}</Comment.Text>
+                                                </Comment.Content>
+                                              </Comment>
+                                            )}
+                                          </Comment.Group>}
                                       </Comment>
                                     )}
                                     <Form reply>
+                                      {this.state.rrply_state &&
+                                        <Label style={{
+                                          padding: '0.6rem', margin: '0.3rem',
+                                          backgroundColor: '#dfe5ed', color: '#3386f5'
+                                        }}>
+                                          @{this.state.clickedReply.mb_name}
+                                        </Label>
+                                      }
                                       <Form.TextArea
                                         name='reply'
                                         value={this.state.reply}
-                                        onChange={this.handleChange} />
+                                        onChange={this.handleChange}>
+
+                                      </Form.TextArea>
                                       <Button
                                         content='저장'
                                         labelPosition='left'
