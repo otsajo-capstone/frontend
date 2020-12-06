@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import Info from '../components/MyPage/Info'
-import Check from '../components/MyPage/Check'
 import Store from '../store/store';
 import Layout from '../components/Layout';
 import InfoHeader from '../components/MyPage/InfoHeader'
@@ -19,7 +18,8 @@ class UserInfoPage extends Component {
                         <Info 
                         memberId={Store.memberId}
                         id={Store.id}
-                        colorType={Store.colorType}/>
+                        colorType={Store.colorType}
+                        onChangeColor={Store.onChangeColor}/>
                     )}
                 </Store.Consumer>
             </Layout>

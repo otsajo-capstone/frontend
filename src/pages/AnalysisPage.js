@@ -18,14 +18,13 @@ class AnalysisPage extends Component {
         return (
             <Layout>
                 <AnalysisHeader />
-
                 <Store.Consumer>{
                     Store => (
                         <Container style={{ marginBottom: '2rem' }}>
                             { (number === '1' || number === undefined) &&
                             <AnalysisMain 
-                            memberId={Store.memberId} />}
-                            { (number === '2') && <Result />}
+                            memberId={Store.memberId}
+                            colorType={Store.colorType} />}
                         </Container>
                     )}
                 </Store.Consumer>

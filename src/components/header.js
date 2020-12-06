@@ -16,7 +16,7 @@ class Header extends Component{
 
     render(){
         return(
-            <Menu fixed='top'>
+            <Menu fixed='top' stackable>
                 <Container>
                     <Menu.Item header as={Link} to=''>
                         <Image size='mini' src={logo} style={{ marginRight: '1.5em' }} />

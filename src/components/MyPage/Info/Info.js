@@ -98,7 +98,6 @@ class Info extends Component {
   }
 
   render() {
-    console.log(this.state)
     return (
       <div>
         <Container>

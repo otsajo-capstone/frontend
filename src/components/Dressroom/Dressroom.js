@@ -254,9 +254,6 @@ class Dressroom extends Component {
   }
 
   render() {
-    console.log(this.props.colorType)
-    console.log(this.state.mylist)
-    console.log(this.state.clickedCard)
     const { activeItem } = this.state
     return (
       <div>

@@ -9,7 +9,6 @@ import {Link} from 'react-router-dom';
 
 class CompleteRegister extends Component {
     render () {
-        const myColor = 'rgb(59, 143, 217)';
         return (
             <div>
                 <Segment style={{ padding: '6em 0em' }} vertical>
