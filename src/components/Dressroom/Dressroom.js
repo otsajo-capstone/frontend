@@ -311,10 +311,8 @@ class Dressroom extends Component {
                 onClose={this.closeDimmer}
               >
                 <Modal.Header>상세 정보 보기</Modal.Header>
-
                 <Modal.Content image scrolling>
                   <Grid fluid>
-
                     <Grid.Row columns={2}>
                       <Grid.Column className="segment centered">
                         <Image size='huge'
@@ -327,7 +325,8 @@ class Dressroom extends Component {
                             justifyContent: 'center',
                             alignItems: 'center'
                           }}
-                          src={this.state.clickedCard.props.dress_img_org} wrapped />
+                          src={this.state.clickedCard.props.dress_img_org}
+                          wrapped />
                       </Grid.Column>
                       <Grid.Column>
                         <Modal.Description>
@@ -336,8 +335,7 @@ class Dressroom extends Component {
                               <Item>
                                 <Item.Content>
                                   <Item.Header>
-                                    <Icon name='file' color='grey' />
-                              이름</Item.Header>
+                                    <Icon name='file' style={{color: '#fcdada'}}/>이름</Item.Header>
                                   <Item.Description>
                                     {this.state.clickedCard.props.dress_name}
                                   </Item.Description>
@@ -346,7 +344,7 @@ class Dressroom extends Component {
                               <Item>
                                 <Item.Content>
                                   <Item.Header>
-                                    <Icon name='chart pie' color='grey' />
+                                    <Icon name='chart pie' style={{color: '#ffa5a5'}} />
                               컬러 정보</Item.Header>
                                   <CanvasJSChart options={{
                                     title: {
@@ -359,6 +357,7 @@ class Dressroom extends Component {
                                     data: [{
                                       type: "pie",
                                       animationEnabled: true,
+                                      indexLabelFontSize: 16,
                                       dataPoints: [
                                         {
                                           label: this.state.clickedCard.props.color[0].props.type + "-" + this.state.clickedCard.props.color[0].props.subtype,
@@ -378,6 +377,7 @@ class Dressroom extends Component {
                                       ]
                                     }]
                                   }} />
+
                             나와 어울리는 정도 : {
                                     ((((season.indexOf(this.state.clickedCard.props.result[0].key) + 1 === this.props.colorType) &&
                                       (parseFloat(this.state.clickedCard.props.result[0].props.ratio) * 100))
@@ -418,7 +418,7 @@ class Dressroom extends Component {
                               <Item>
                                 <Item.Content>
                                   <Item.Header>
-                                    <Icon name='calendar' color='grey' />
+                                    <Icon name='calendar' style={{color: '#5c969e'}}/>
                               저장한 날짜, 시간</Item.Header>
                                   <Item.Description>
                                     {this.state.clickedCard.props.dress_regDate.slice(0, 16)}
@@ -429,7 +429,7 @@ class Dressroom extends Component {
                                 <Item>
                                   <Item.Content>
                                     <Item.Header>
-                                      <Icon name='linkify' color='grey' />
+                                      <Icon name='linkify' style={{color: '#3d7ea6'}}/>
                               쇼핑몰 링크</Item.Header>
                                     <Item.Description>
                                       <a onClick={() => window.open(this.state.clickedCard.props.dress_link, "_blank")}>
@@ -441,7 +441,7 @@ class Dressroom extends Component {
                               <Item>
                                 <Item.Content>
                                   <Item.Header>
-                                    <Icon name='sticky note' color='grey' />
+                                    <Icon name='sticky note' style={{color: '#fff3a5'}} />
                               메모</Item.Header>
                                   <Item.Description>
                                     {this.state.clickedCard.props.dress_memo}

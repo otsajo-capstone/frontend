@@ -411,7 +411,7 @@ class Commu extends Component {
                                     <Item>
                                       <Item.Content>
                                         <Item.Header>
-                                          <Icon name='file' color='grey' /> 이름</Item.Header>
+                                          <Icon name='file' style={{color: '#fcdada'}} /> 이름</Item.Header>
                                         <Item.Description>
                                           {this.state.clickedCard.props.dress_name}
                                         </Item.Description>
@@ -420,7 +420,7 @@ class Commu extends Component {
                                     <Item>
                                       <Item.Content>
                                         <Item.Header>
-                                          <Icon name='chart pie' color='grey' />컬러 정보</Item.Header>
+                                          <Icon name='chart pie' style={{color: '#ffa5a5'}} />컬러 정보</Item.Header>
                                         <Item.Description>
                                           <CanvasJSChart options={{
                                             title: {
@@ -433,6 +433,7 @@ class Commu extends Component {
                                             data: [{
                                               type: "pie",
                                               animationEnabled: true,
+                                              indexLabelFontSize: 16,
                                               dataPoints: [
                                                 {
                                                   label: this.state.clickedCard.props.color[0].props.type + "-" + this.state.clickedCard.props.color[0].props.subtype,
@@ -490,7 +491,7 @@ class Commu extends Component {
                                     <Item>
                                       <Item.Content>
                                         <Item.Header>
-                                          <Icon name='calendar' color='grey' />
+                                          <Icon name='calendar' style={{color: '#5c969e'}} />
                               저장한 날짜, 시간</Item.Header>
                                         <Item.Description>
                                           {this.state.clickedCard.props.dress_regDate.slice(0, 16)}
@@ -501,7 +502,7 @@ class Commu extends Component {
                                       <Item>
                                         <Item.Content>
                                           <Item.Header>
-                                            <Icon name='linkify' color='grey' />
+                                            <Icon name='linkify' style={{color: '#3d7ea6'}} />
                               쇼핑몰 링크</Item.Header>
                                           <Item.Description>
                                             <a onClick={() => window.open(this.state.clickedCard.props.dress_link, "_blank")}>
