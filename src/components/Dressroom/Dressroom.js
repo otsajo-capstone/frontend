@@ -518,7 +518,7 @@ class Dressroom extends Component {
     })
   }
 
-  closeUpdateRerp = async e => {
+  closeDeletionRerp = async e => {
     this.setState({
       rr_del_state: false
     })
