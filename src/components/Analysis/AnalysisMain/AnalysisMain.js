@@ -362,8 +362,6 @@ class AnalysisMain extends Component {
                 },
                 onDownloadProgress: (progressEvent) => {
                     let percentCompleted = Math.round(90 + (progressEvent.loaded * 10) / progressEvent.total);
-                    //console.log(progressEvent.lengthComputable)
-                    //console.log(percentCompleted);
                 }
             };
 
@@ -463,7 +461,6 @@ class AnalysisMain extends Component {
         })
 
         this.setRandomImage();
-        //console.time('분석');
         const response = await Axios.post(
             "http://34.82.241.230:5000/url/analyze",
             jsondata,
@@ -471,8 +468,7 @@ class AnalysisMain extends Component {
         );
 
         const { data } = response;
-        //console.timeEnd('분석');
-        console.log(response.data)
+        console.log(response.data);
 
         if (data.status === "success") {
             const Items = data.analysis_result.map((item) =>
@@ -718,7 +714,8 @@ class AnalysisMain extends Component {
                                                                     0.0
                                                                 )
                                                                     +
-                                                                    (card.props.result.length >= 2) &&
+                                                                    (
+                                                                        (card.props.result.length >= 2) &&
                                                                     (((season.indexOf(card.props.result[1].key) + 1 === this.props.colorType) &&
                                                                         (parseFloat(card.props.result[1].props.ratio) * 100))
                                                                         ||
@@ -726,6 +723,8 @@ class AnalysisMain extends Component {
                                                                             (parseFloat(card.props.result[1].props.ratio) * 70))
                                                                         ||
                                                                         0.0
+                                                                    )
+                                                                    || 0.0
                                                                     )
                                                                     +
                                                                     (

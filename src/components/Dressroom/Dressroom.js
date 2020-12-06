@@ -251,11 +251,12 @@ class Dressroom extends Component {
       clicked: false,
       del_state: false
     })
-
   }
 
-
   render() {
+    console.log(this.props.colorType)
+    console.log(this.state.mylist)
+    console.log(this.state.clickedCard)
     const { activeItem } = this.state
     return (
       <div>
@@ -384,15 +385,16 @@ class Dressroom extends Component {
                                       0.0
                                     )
                                       +
-                                      (this.state.clickedCard.props.result.length >= 2) &&
+                                      (
+                                        ((this.state.clickedCard.props.result.length >= 2) &&
                                       (((season.indexOf(this.state.clickedCard.props.result[1].key) + 1 === this.props.colorType) &&
                                         (parseFloat(this.state.clickedCard.props.result[1].props.ratio) * 100))
                                         ||
                                         (((season.indexOf(this.state.clickedCard.props.result[1].key) + 2) % 4 + 1 === this.props.colorType) &&
                                           (parseFloat(this.state.clickedCard.props.result[1].props.ratio) * 70))
-                                        ||
-                                        0.0
-                                      )
+                                        || 0.0
+                                      ))
+                                      || 0.0)
                                       +
                                       (
                                         (this.state.clickedCard.props.result.length === 3) && (
