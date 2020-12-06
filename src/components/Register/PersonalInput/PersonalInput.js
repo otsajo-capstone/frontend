@@ -47,7 +47,7 @@ class PersonalInput extends Component {
     handleButtonClick = (e) => {
         var nextType = 0;
 
-        if (e.target.value != this.state.type){
+        if (e.target.value !== this.state.type){
             nextType = e.target.value;
         }
         this.setState({
@@ -72,7 +72,7 @@ class PersonalInput extends Component {
                 formdata,
             );
 
-            const { status, data } = response;
+            const { data } = response;
             if (data.status === 200) {
                 this.props.history.push('/signup/2');
             }
@@ -85,7 +85,7 @@ class PersonalInput extends Component {
     }
 
     render() {
-        const emailRegex = /^(([^<>()\[\].,;:\s@"]+(\.[^<>()\[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
+        //const emailRegex = /^(([^<>()\[\].,;:\s@"]+(\.[^<>()\[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
 
         return (
             <div>
@@ -132,7 +132,7 @@ class PersonalInput extends Component {
                             type='password'
                             value={this.state.pw_check}
                             onChange={this.handleChange}
-                            error={!(this.state.password == this.state.pw_check)} />
+                            error={!(this.state.password === this.state.pw_check)} />
 
                         <Label style={style.base}> 퍼스널 컬러 선택 </Label>
                         <Grid style={style.button} columns='equal'>
@@ -237,7 +237,7 @@ class PersonalInput extends Component {
                             || this.state.name.length < 1
                             || this.state.email.length < 1
                             || this.state.password.length < 5
-                            || (this.state.password != this.state.pw_check)}
+                            || (this.state.password !== this.state.pw_check)}
                         style={{ backgroundColor: "#5c92d7" }}
                         fluid size='large'
                         onClick={this.checkRegister}>

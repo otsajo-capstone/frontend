@@ -1,4 +1,4 @@
-import React, { Component, useContext } from 'react';
+import React, { Component } from 'react';
 import {Link, withRouter} from 'react-router-dom';
 import {
     Container,
@@ -10,7 +10,6 @@ import logo from '../image/temp_logo.png'
 class Header extends Component{
     handleClick = async e =>{
         this.props.onLogout();
-        console.log('logged:', this.props.logged)
         this.props.history.push('/');
     }
 

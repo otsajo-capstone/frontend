@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import logo from 'image/temp_logo.png';
 import { Link, withRouter } from 'react-router-dom';
 import { Button, Container, Form, Grid, Header, Message, Segment } from 'semantic-ui-react'
 import Axios from 'axios';
@@ -34,7 +33,7 @@ class Login extends Component {
         formdata
       );
 
-      const { status, data } = response;
+      const { data } = response;
       if (data.status === 200) {
         const type_response = await Axios.get(
           "http://localhost:8080/colorfit/member/mypage/" + String(data.intResult));
@@ -55,9 +54,6 @@ class Login extends Component {
   }
 
   render() {
-    const font = {
-      fontFamily: ['Inter', 'NotoSansKR'],
-    }
     return (
       <Container>
         <div className='login-form'>

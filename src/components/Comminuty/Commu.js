@@ -10,13 +10,11 @@ import {
   Header,
   Card,
   Container,
-  Dimmer, Grid, Icon, Comment, Form, Label
+  Grid, Icon, Comment, Form, Label
 } from 'semantic-ui-react';
 import CanvasJSReact from '../react-canvasjs-chart-samples/react-canvasjs-chart-samples/src/assets/canvasjs.react';
 
-var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
-
 
 const season = ["봄 웜", "여름 쿨", "가을 웜", "겨울 쿨"]
 const seasonColor = ["#c4ca2e", "#e74f72", "#875f37", "#293686"]

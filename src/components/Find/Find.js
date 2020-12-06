@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-import logo from 'image/temp_logo.png';
-import { Link, withRouter } from 'react-router-dom';
-import { Button, Container, Form, Segment, Label, Header } from 'semantic-ui-react'
+import { withRouter } from 'react-router-dom';
+import { Button, Form, Segment, Label, Header } from 'semantic-ui-react'
 import Axios from 'axios';
 
 const style = {
@@ -41,7 +40,7 @@ class Find extends Component {
         + this.state.email1 + "/"
       );
 
-      const { status, data } = response;
+      const { data } = response;
       if (data.status === 200) {
         alert("아이디는 " + data.stringResult + " 입니다.");
       }
@@ -63,7 +62,7 @@ class Find extends Component {
         + this.state.name2 + "/" + this.state.email2 + "/"
       );
 
-      const { status, data } = response;
+      const { data } = response;
       if (data.status === 200) {
         alert("이메일로 임시 비밀번호가 발송되었습니다.");
         this.props.history.push('/login');

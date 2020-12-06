@@ -1,14 +1,13 @@
 import React, { Component } from 'react'
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import Axios from 'axios';
 import {
   Segment, Header, Card, Image, Icon,
-  Dimmer, Modal, Button, Grid, List,
-  Container, Item, Form, Label, Radio, Tab, Feed
+  Modal, Button, Grid,
+  Container, Item, Form, Label, Radio
 } from 'semantic-ui-react';
 import CanvasJSReact from '../react-canvasjs-chart-samples/react-canvasjs-chart-samples/src/assets/canvasjs.react';
 
-var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 const season = ["봄 웜", "여름 쿨", "가을 웜", "겨울 쿨"]
@@ -154,7 +153,7 @@ class Dressroom extends Component {
 
   handleToggleChange = () => {
     var type = this.state.new_type;
-    if (type == 1) {
+    if (type === 1) {
       type = 0;
     }
     else {
@@ -193,7 +192,7 @@ class Dressroom extends Component {
     }
     formdata.append('share_type', this.state.new_type);
 
-    const response = await Axios.post(
+    await Axios.post(
       "http://localhost:8080/colorfit/myDressRoom/update/",
       formdata
     );
@@ -239,7 +238,6 @@ class Dressroom extends Component {
   }
 
   deleteFile = async () => {
-    console.log(this.state.clickedCard.key);
     const response = await Axios.post(
       "http://localhost:8080/colorfit/myDressRoom/delete/" + String(this.state.clickedCard.key),
     );
@@ -254,7 +252,6 @@ class Dressroom extends Component {
   }
 
   render() {
-    const { activeItem } = this.state
     return (
       <div>
         <Segment
@@ -292,7 +289,7 @@ class Dressroom extends Component {
                     </Card.Description>
                   </Card.Content>
                   <Card.Content extra>
-                    <a><Icon name='heart' color='red' />
+                    <a><Icon name='heart' color='red'/>
                       {card.props.likes} 좋아요 </a>
                   </Card.Content>
                 </Card>

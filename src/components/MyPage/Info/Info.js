@@ -58,7 +58,7 @@ class Info extends Component {
   handleButtonClick = (e) => {
     var nextType = 0;
 
-    if (e.target.value != this.state.type) {
+    if (e.target.value !== this.state.type) {
       nextType = e.target.value;
     }
     this.setState({
@@ -141,7 +141,7 @@ class Info extends Component {
                 type='password'
                 value={this.state.pw_check}
                 onChange={this.handleChange}
-                error={!(this.state.password == this.state.pw_check)} />
+                error={!(this.state.password === this.state.pw_check)} />
 
               <Label style={style.base}> 퍼스널 컬러 </Label>
               <Grid style={style.button} columns='equal'>
@@ -208,7 +208,8 @@ class Info extends Component {
                           onClick={this.handleButtonClick}
                           color='grey'>
                           가을 웜
-                                            </Button>}                                    </Segment>
+                                            </Button>}
+                    </Segment>
                   </Grid.Column>
                   <Grid.Column>
                     <Segment>
@@ -228,7 +229,8 @@ class Info extends Component {
                           onClick={this.handleButtonClick}
                           color='grey'>
                           겨울 쿨
-                                            </Button>}                                    </Segment>
+                                            </Button>}
+                    </Segment>
                   </Grid.Column>
                 </Grid.Row>
               </Grid>
@@ -239,7 +241,7 @@ class Info extends Component {
               onClick={this.update}
               disabled={this.state.mb_name.length < 1
                 || this.state.password.length < 4
-                || (this.state.password != this.state.pw_check)}
+                || (this.state.password !== this.state.pw_check)}
               style={{ backgroundColor: "#5c92d7" }}>
               <div style={{
                 fontFamily: ['Inter', 'NotoSansKR'],
