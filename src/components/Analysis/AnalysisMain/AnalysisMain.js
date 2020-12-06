@@ -450,7 +450,7 @@ class AnalysisMain extends Component {
                       {this.state.result.map(
                         card => <Card fluid>
                           <Image src={card.key}
-                            style={{ objectFit: 'cover' }} />
+                            style={{ objectFit: 'cover', height: '400px' }} />
                           <Card.Content>
                             <Checkbox
                               name='result.url'
@@ -496,7 +496,7 @@ class AnalysisMain extends Component {
                       {this.state.saved.map(
                         card => <Card fluid>
                           <Image src={card.props.src}
-                            style={{ objectFit: 'cover' }} />
+                            style={{ objectFit: 'cover', height: '400px' }} />
                           <Card.Content>
                             {card.props.colors.map(
                               color => <Card.Description>

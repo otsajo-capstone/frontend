@@ -539,7 +539,7 @@ class Dressroom extends Component {
                 card => <Card fluid
                   onClick={() => this.handleClickCardEvent(card)}
                   style={{ textDecoration: 'none' }}>
-                  <Image src={card.props.dress_img_org} style={{ objectFit: 'cover' }} />
+                  <Image src={card.props.dress_img_org} style={{ objectFit: 'cover', height: '400px' }} />
                   <Card.Header style={{ fontFamily: ['Inter', 'NotoSansKR'] }}>{card.props.dress_name}</Card.Header>
                   <Card.Meta>
                     <span className='date'>{card.props.dress_regDate.slice(5, 10)}</span>
@@ -876,12 +876,13 @@ class Dressroom extends Component {
                             onChange={this.handleChange}
                             name="new_memo" />
 
+                          <Label style={style.base}>공개 여부</Label>
                           <div>
-                            <Label style={style.base}>공개 여부</Label>
-                            <Radio toggle
+                          <Radio toggle
                               onChange={this.handleToggleChange}
                               checked={this.state.new_type === 0}
-                            />
+                              style={{paddingLeft: '10px'}}
+                          />
                           </div>
                         </Segment>
                       </Form>

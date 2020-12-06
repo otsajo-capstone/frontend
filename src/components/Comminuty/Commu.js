@@ -441,7 +441,7 @@ class Commu extends Component {
                             {card.props.mb_name}</Card.Header>
                         </Card.Content>
                         <Image src={card.props.dress_img_org}
-                          style={{ objectFit: 'cover' }} />
+                          style={{ objectFit: 'cover', height: '400px' }} />
                         <Card.Content>
                           <Card.Description>
                             <div>
