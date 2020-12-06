@@ -1,5 +1,5 @@
-import React, { Component, useCallback, useState } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import {
     Input,
     Button,
@@ -10,15 +10,12 @@ import {
     Card,
     Checkbox,
     Form,
-    Progress,
     Dimmer,
-    Loader, Divider, Grid, Icon
+    Loader, Grid, Icon
 } from 'semantic-ui-react';
 import Axios from 'axios';
 import { useDropzone } from 'react-dropzone';
-import CanvasJSReact from '../../react-canvasjs-chart-samples/react-canvasjs-chart-samples/src/assets/canvasjs.react';
-var CanvasJS = CanvasJSReact.CanvasJS;
-var CanvasJSChart = CanvasJSReact.CanvasJSChart;
+
 const linkimage = require('../image/linkimage.png')
 const uploadimage = require('../image/uploadimage.png')
 
@@ -250,15 +247,15 @@ class AnalysisMain extends Component {
                             <li
                                 key={color.hex}
                                 ratio={color.ratio.toFixed(3)}
+                                type={color.type}
+                                subtype={color.subtype}
                             />)
                     }
                     result={
                         item.result.map(season =>
                             <li
-                                key={season.type + "-" + season.subtype}
-                                type={season.type}
+                                key={season.type}
                                 ratio={season.ratio.toFixed(3)}
-                                subtype={season.subtype}
                             />)
                     }
                 />
@@ -268,7 +265,10 @@ class AnalysisMain extends Component {
                 var dbcolor = new String("[");
                 for (var color of item.props.colors) {
                     dbcolor += "{\"hex\": \"" + String(color.key) +
-                        "\", \"ratio\": \"" + String(color.props.ratio) + "\"},"
+                        "\", \"ratio\": \"" + String(color.props.ratio) +
+                        "\", \"type\": \"" + String(color.props.type) +
+                        "\", \"subtype\": \"" + String(color.props.subtype) +
+                        "\"},"
                 }
                 dbcolor = dbcolor.slice(0, -1) + "]"
 
@@ -291,9 +291,8 @@ class AnalysisMain extends Component {
                         winter += parseInt(season.props.ratio * 100);
                     }
 
-                    dbresult += "{\"type\": \"" + String(season.props.type) +
+                    dbresult += "{\"type\": \"" + String(season.key) +
                         "\", \"ratio\": \"" + String(season.props.ratio) +
-                        "\", \"subtype\": \"" + String(season.props.subtype) + 
                         "\"},"
                 }
                 dbresult = dbresult.slice(0, -1) + "]"
@@ -310,7 +309,6 @@ class AnalysisMain extends Component {
                 dbrequest.append('dress_name', item.key);
                 dbrequest.append('result', dbresult);
 
-                //console.log(dbrequest.get('mb_uid'))
                 this.setRandomImage();
 
                 const dbresponse = await Axios.post(
@@ -486,27 +484,28 @@ class AnalysisMain extends Component {
                             <li
                                 key={color.hex}
                                 ratio={color.ratio.toFixed(3)}
+                                type={color.type}
+                                subtype={color.subtype}
                             />)
                     }
                     result={
                         item.result.map(season =>
                             <li
-                                key={season.type + "-" + season.subtype}
-                                type={season.type}
+                                key={season.type}
                                 ratio={season.ratio.toFixed(3)}
-                                subtype={season.subtype}
                             />)
                     }
                 />
             )
-            
-            console.log(Items)
-            //console.time('DB');
+
             for (var item of Items) {
                 var dbcolor = new String("[");
                 for (var color of item.props.colors) {
                     dbcolor += "{\"hex\": \"" + String(color.key) +
-                        "\", \"ratio\": \"" + String(color.props.ratio) + "\"},"
+                        "\", \"ratio\": \"" + String(color.props.ratio) +
+                        "\", \"type\": \"" + String(color.props.type) +
+                        "\", \"subtype\": \"" + String(color.props.subtype) +
+                        "\"},"
                 }
                 dbcolor = dbcolor.slice(0, -1) + "]"
 
@@ -514,7 +513,7 @@ class AnalysisMain extends Component {
                 var summer = 0;
                 var autumn = 0;
                 var winter = 0;
-                var dbresult =  new String("[");
+                var dbresult = new String("[");
                 for (var season of item.props.result) {
                     if (season.key.includes("봄")) {
                         spring = parseInt(season.props.ratio * 100);
@@ -529,9 +528,8 @@ class AnalysisMain extends Component {
                         winter = parseInt(season.props.ratio * 100);
                     }
 
-                    dbresult += "{\"type\": \"" + String(season.props.type) +
+                    dbresult += "{\"type\": \"" + String(season.key) +
                         "\", \"ratio\": \"" + String(season.props.ratio) +
-                        "\", \"subtype\": \"" + String(season.props.subtype) + 
                         "\"},"
                 }
                 dbresult = dbresult.slice(0, -1) + "]"
@@ -549,14 +547,12 @@ class AnalysisMain extends Component {
                 dbrequest.append('dress_name', item.key);
                 dbrequest.append('result', dbresult);
 
-                //console.log(dbrequest.get('mb_uid'))
                 this.setRandomImage();
                 const dbresponse = await Axios.post(
                     "http://localhost:8080/colorfit/analysis/saveLinkResult",
                     dbrequest,
                 )
             }
-            //console.timeEnd('DB');
 
             this.setState({
                 saved: Items,
@@ -578,8 +574,7 @@ class AnalysisMain extends Component {
                 <Grid container style={{ padding: '5em 0em' }}>
                     <Grid.Row>
                         <Grid.Column>
-                            <Menu attached='top' tabular
-                            >
+                            <Menu attached='top' tabular>
                                 <Menu.Item
                                     name='link_input'
                                     active={activeItem === 'link_input'
@@ -622,18 +617,17 @@ class AnalysisMain extends Component {
                                             </div>
                                         </Button>
                                     </Segment.Inline>
-                                    {
-                                        (this.state.loading) &&
+
+                                    {(this.state.loading) &&
                                         <Dimmer active inverted>
                                             <Loader
                                                 inverted
                                                 style={{ color: "#5c92d7" }}
                                                 disabled={!this.state.loading}
                                                 content='Loading...' />
-                                        </Dimmer>
-                                    }
-                                </Segment>
-                            }
+                                        </Dimmer>}
+                                </Segment>}
+
                             {(activeItem === 'link_output') &&
                                 <Segment
                                     attached='bottom'
@@ -677,6 +671,7 @@ class AnalysisMain extends Component {
                                         </Dimmer>
                                     }
                                 </Segment>}
+
                             {(activeItem === 'result') &&
                                 <Segment
                                     attached='bottom'
@@ -700,50 +695,53 @@ class AnalysisMain extends Component {
                                                             </Card.Description>
                                                         )}
                                                     </Card.Content>
+
                                                     <Card.Content>
-                                                        {card.props.result.map(
-                                                            s => <Card.Description>
-                                                                <div style={{ color: seasonColor[season.indexOf(s.props.type)] }}>
-                                                                    {s.key} : {(s.props.ratio * 100).toFixed(2)}%
+                                                        {card.props.colors.map(
+                                                            color => <Card.Description>
+                                                                <div style={{ color: seasonColor[season.indexOf(color.props.type)] }}>
+                                                                    {color.props.type}-{color.props.subtype} : {(color.props.ratio * 100).toFixed(2)}%
                                                                 </div>
                                                             </Card.Description>
                                                         )}
                                                     </Card.Content>
+
                                                     <Card.Content>
                                                         <Card.Description>
                                                             나와 어울리는 정도 : {
-                              ((((season.indexOf(card.props.result[0].props.type) + 1 === this.props.colorType) &&
-                                (parseFloat(card.props.result[0].props.ratio) * 100))
-                                ||
-                                (((season.indexOf(card.props.result[0].props.type) + 2) % 4 + 1 === this.props.colorType) &&
-                                (parseFloat(card.props.result[0].props.ratio) * 70))
-                                ||
-                                0.0
-                              )
-                              +
-                              (((season.indexOf(card.props.result[1].props.type) + 1 === this.props.colorType) &&
-                                (parseFloat(card.props.result[1].props.ratio) * 100))
-                                ||
-                                (((season.indexOf(card.props.result[1].props.type) + 2) % 4 + 1 === this.props.colorType) &&
-                                (parseFloat(card.props.result[1].props.ratio) * 70))
-                                ||
-                                0.0
-                              )
-                              +
-                              (
-                                (card.props.result.length === 3) && (
-                                  (((season.indexOf(card.props.result[2].props.type) + 1 === this.props.colorType) &&
-                                    (parseFloat(card.props.result[2].props.ratio) * 100))
-                                  ||
-                                  (((season.indexOf(card.result[2].props.type) + 2) % 4 + 1 === this.props.colorType) &&
-                                    (parseFloat(card.props.result[2].props.ratio) * 70))
-                                  ||
-                                  0.0)
-                              )
-                                || 0.0)).toFixed(2)
-                            }%
+                                                                ((((season.indexOf(card.props.result[0].key) + 1 === this.props.colorType) &&
+                                                                    (parseFloat(card.props.result[0].props.ratio) * 100))
+                                                                    ||
+                                                                    (((season.indexOf(card.props.result[0].key) + 2) % 4 + 1 === this.props.colorType) &&
+                                                                        (parseFloat(card.props.result[0].props.ratio) * 70))
+                                                                    ||
+                                                                    0.0
+                                                                )
+                                                                    +
+                                                                    (card.props.result.length >= 2) &&
+                                                                    (((season.indexOf(card.props.result[1].key) + 1 === this.props.colorType) &&
+                                                                        (parseFloat(card.props.result[1].props.ratio) * 100))
+                                                                        ||
+                                                                        (((season.indexOf(card.props.result[1].key) + 2) % 4 + 1 === this.props.colorType) &&
+                                                                            (parseFloat(card.props.result[1].props.ratio) * 70))
+                                                                        ||
+                                                                        0.0
+                                                                    )
+                                                                    +
+                                                                    (
+                                                                        (card.props.result.length === 3) && (
+                                                                            (((season.indexOf(card.props.result[2].key) + 1 === this.props.colorType) &&
+                                                                                (parseFloat(card.props.result[2].props.ratio) * 100))
+                                                                                ||
+                                                                                (((season.indexOf(card.props.result[2].key) + 2) % 4 + 1 === this.props.colorType) &&
+                                                                                    (parseFloat(card.props.result[2].props.ratio) * 70))
+                                                                                ||
+                                                                                0.0)
+                                                                        )
+                                                                        || 0.0)).toFixed(2)
+                                                            }%
                                                             </Card.Description>
-                                                        </Card.Content>
+                                                    </Card.Content>
                                                 </Card>
                                             )}
                                         </Card.Group>

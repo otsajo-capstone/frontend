@@ -32,6 +32,7 @@ class Dressroom extends Component {
       update_state: false,
       del_state: false,
       clickedCard: [],
+      rlist: [],
       shoplink: "",
       new_name: "",
       new_memo: "",
@@ -57,6 +58,8 @@ class Dressroom extends Component {
             <li
               key={c.hex}
               ratio={parseFloat(c.ratio)}
+              type={c.type}
+              subtype={c.subtype}
             />)}
           dress_name={item.dress_name}
           dress_memo={item.dress_memo}
@@ -69,20 +72,60 @@ class Dressroom extends Component {
           type={[item.spring, item.summer, item.autumn, item.winter].indexOf(Math.max(...[item.spring, item.summer, item.autumn, item.winter]))}
           result={(JSON.parse(item.result)).map(r =>
             <li
-              key={r.type + "-" + r.subtype}
-              type={r.type}
+              key={r.type}
               ratio={parseFloat(r.ratio)}
-              subtype={r.subtype}
             />)}
         />
       )
       this.setState({
         mylist: Items
       })
-      console.log('list:', this.state.mylist);
     }
     else {
       alert('로그인 여부를 확인해주세요.');
+    }
+  }
+
+  updateDressList = async () => {
+    const response =
+      await Axios.get("http://localhost:8080/colorfit/myDressRoom/"
+        + String(this.props.memberId))
+    const { data } = response;
+
+    if (data.status === 200) {
+      const Items = data.dlist.map((item) =>
+        <li
+          key={item.dress_uid}
+          spring={item.spring}
+          summer={item.summer}
+          autumn={item.autumn}
+          winter={item.winter}
+          color={(JSON.parse(item.color)).map(c =>
+            <li
+              key={c.hex}
+              ratio={parseFloat(c.ratio)}
+              type={c.type}
+              subtype={c.subtype}
+            />)}
+          dress_name={item.dress_name}
+          dress_memo={item.dress_memo}
+          dress_link={item.dress_link}
+          dress_regDate={item.dress_regDate}
+          dress_img_org={item.dress_img_org}
+          dress_img_sav={item.dress_img_sav}
+          share_type={item.share_type}
+          likes={item.likes}
+          type={[item.spring, item.summer, item.autumn, item.winter].indexOf(Math.max(...[item.spring, item.summer, item.autumn, item.winter]))}
+          result={(JSON.parse(item.result)).map(r =>
+            <li
+              key={r.type}
+              ratio={parseFloat(r.ratio)}
+            />)}
+        />
+      )
+      this.setState({
+        mylist: Items
+      })
     }
   }
 
@@ -92,17 +135,13 @@ class Dressroom extends Component {
     const { data } = response;
 
     if (data.status === 200) {
-      //console.log(data.ddto) //옷
-      //console.log(data.rlist) //댓글
-
       this.setState({
         clicked: true,
         clickedCard: card,
         new_name: card.props.dress_name,
         new_memo: card.props.dress_memo,
-        new_type: card.props.share_type
-        //ddto
-        //rlist
+        new_type: card.props.share_type,
+        rlist: data.rlist
       })
     }
   }
@@ -159,61 +198,32 @@ class Dressroom extends Component {
       formdata
     );
 
-    const dbresponse =
-      await Axios.get("http://localhost:8080/colorfit/myDressRoom/"
-        + String(this.props.memberId))
-    const { data } = dbresponse;
+    await this.updateDressList();
 
-    if (data.status === 200) {
-      const Items = data.dlist.map((item) =>
-        <li
-          key={item.dress_uid}
-          spring={item.spring}
-          summer={item.summer}
-          autumn={item.autumn}
-          winter={item.winter}
-          color={(JSON.parse(item.color)).map(c =>
-            <li
-              key={c.hex}
-              ratio={parseFloat(c.ratio)}
-            />)}
-          dress_name={item.dress_name}
-          dress_memo={item.dress_memo}
-          dress_link={item.dress_link}
-          dress_regDate={item.dress_regDate}
-          dress_img_org={item.dress_img_org}
-          dress_img_sav={item.dress_img_sav}
-          share_type={item.share_type}
-          likes={item.likes}
-          type={[item.spring, item.summer, item.autumn, item.winter].indexOf(Math.max(...[item.spring, item.summer, item.autumn, item.winter]))}
-        />
-      )
+    var card = <li
+      key={this.state.clickedCard.key}
+      spring={this.state.clickedCard.props.spring}
+      summer={this.state.clickedCard.props.summer}
+      autumn={this.state.clickedCard.props.autumn}
+      winter={this.state.clickedCard.props.winter}
+      color={this.state.clickedCard.props.color}
+      dress_name={this.state.new_name}
+      dress_memo={this.state.new_memo}
+      dress_link={this.state.clickedCard.props.dress_link}
+      dress_regDate={this.state.clickedCard.props.dress_regDate}
+      dress_img_org={this.state.clickedCard.props.dress_img_org}
+      dress_img_sav={this.state.clickedCard.props.dress_img_sav}
+      share_type={this.state.new_type}
+      likes={this.state.clickedCard.props.likes}
+      type={this.state.clickedCard.props.type}
+      result={this.state.clickedCard.props.result}
+    />
 
-      var card = <li
-        key={this.state.clickedCard.key}
-        spring={this.state.clickedCard.props.spring}
-        summer={this.state.clickedCard.props.summer}
-        autumn={this.state.clickedCard.props.autumn}
-        winter={this.state.clickedCard.props.winter}
-        color={this.state.clickedCard.props.color}
-        dress_name={this.state.new_name}
-        dress_memo={this.state.new_memo}
-        dress_link={this.state.clickedCard.props.dress_link}
-        dress_regDate={this.state.clickedCard.props.dress_regDate}
-        dress_img_org={this.state.clickedCard.props.dress_img_org}
-        dress_img_sav={this.state.clickedCard.props.dress_img_sav}
-        share_type={this.state.new_type}
-        likes={this.state.clickedCard.props.likes}
-        type={this.state.clickedCard.props.type}
-        result={this.state.clickedCard.props.result}
-      />
+    this.setState({
+      clickedCard: card,
+      update_state: false
+    })
 
-      this.setState({
-        mylist: Items,
-        clickedCard: card,
-        update_state: false
-      })
-    }
   }
 
   handleClickDeletion = async () => {
@@ -235,41 +245,13 @@ class Dressroom extends Component {
     );
     //200 확인..
 
-    const dbresponse =
-      await Axios.get("http://localhost:8080/colorfit/myDressRoom/"
-        + String(this.props.memberId))
-    const { data } = dbresponse;
+    await this.updateDressList();
 
-    if (data.status === 200) {
-      const Items = data.dlist.map((item) =>
-        <li
-          key={item.dress_uid}
-          spring={item.spring}
-          summer={item.summer}
-          autumn={item.autumn}
-          winter={item.winter}
-          color={(JSON.parse(item.color)).map(c =>
-            <li
-              key={c.hex}
-              ratio={parseFloat(c.ratio)}
-            />)}
-          dress_name={item.dress_name}
-          dress_memo={item.dress_memo}
-          dress_link={item.dress_link}
-          dress_regDate={item.dress_regDate}
-          dress_img_org={item.dress_img_org}
-          dress_img_sav={item.dress_img_sav}
-          share_type={item.share_type}
-          likes={item.likes}
-          type={[item.spring, item.summer, item.autumn, item.winter].indexOf(Math.max(...[item.spring, item.summer, item.autumn, item.winter]))}
-        />
-      )
-      this.setState({
-        mylist: Items,
-        clicked: false,
-        del_state: false
-      })
-    }
+    this.setState({
+      clicked: false,
+      del_state: false
+    })
+
   }
 
 
@@ -281,7 +263,7 @@ class Dressroom extends Component {
           attached='bottom'
           textAlign='center'
           placeholder>
-          <Header>
+          <Header style={{ fontFamily: ['NotoSansKR'] }}>
             나의 드레스룸</Header>
           <Segment>
             <Card.Group itemsPerRow={4}>
@@ -290,7 +272,7 @@ class Dressroom extends Component {
                   onClick={() => this.handleClickCardEvent(card)}
                   style={{ textDecoration: 'none' }}>
                   <Image src={card.props.dress_img_org} style={{ objectFit: 'cover' }} />
-                  <Card.Header>{card.props.dress_name}</Card.Header>
+                  <Card.Header style={{ fontFamily: ['Inter', 'NotoSansKR'] }}>{card.props.dress_name}</Card.Header>
                   <Card.Meta>
                     <span className='date'>{card.props.dress_regDate.slice(5, 10)}</span>
                   </Card.Meta>
@@ -321,7 +303,7 @@ class Dressroom extends Component {
 
             {(this.state.clicked) &&
               <Modal
-                style={{ position: 'relative', width: '80%', maxHeight: '100%' }}
+                style={{ position: 'relative', width: '80%', maxHeight: '80%', fontFamily: ['Inter', 'NotoSansKR'] }}
                 closeIcon={{ style: { top: '1.0535rem', right: '1rem' }, color: 'black', name: 'close' }}
                 dimmer='inverted'
                 open={this.state.clicked}
@@ -375,17 +357,17 @@ class Dressroom extends Component {
                                       animationEnabled: true,
                                       dataPoints: [
                                         {
-                                          label: this.state.clickedCard.props.color[0].key,
+                                          label: this.state.clickedCard.props.color[0].props.type + "-" + this.state.clickedCard.props.color[0].props.subtype,
                                           y: this.state.clickedCard.props.color[0].props.ratio,
                                           color: this.state.clickedCard.props.color[0].key
                                         },
                                         {
-                                          label: this.state.clickedCard.props.color[1].key,
+                                          label: this.state.clickedCard.props.color[1].props.type + "-" + this.state.clickedCard.props.color[1].props.subtype,
                                           y: this.state.clickedCard.props.color[1].props.ratio,
                                           color: this.state.clickedCard.props.color[1].key
                                         },
                                         {
-                                          label: this.state.clickedCard.props.color[2].key,
+                                          label: this.state.clickedCard.props.color[2].props.type + "-" + this.state.clickedCard.props.color[2].props.subtype,
                                           y: this.state.clickedCard.props.color[2].props.ratio,
                                           color: this.state.clickedCard.props.color[2].key
                                         },
@@ -393,19 +375,20 @@ class Dressroom extends Component {
                                     }]
                                   }} />
                             나와 어울리는 정도 : {
-                                    ((((season.indexOf(this.state.clickedCard.props.result[0].props.type) + 1 === this.props.colorType) &&
+                                    ((((season.indexOf(this.state.clickedCard.props.result[0].key) + 1 === this.props.colorType) &&
                                       (parseFloat(this.state.clickedCard.props.result[0].props.ratio) * 100))
                                       ||
-                                      (((season.indexOf(this.state.clickedCard.props.result[0].props.type) + 2) % 4 + 1 === this.props.colorType) &&
+                                      (((season.indexOf(this.state.clickedCard.props.result[0].key) + 2) % 4 + 1 === this.props.colorType) &&
                                         (parseFloat(this.state.clickedCard.props.result[0].props.ratio) * 70))
                                       ||
                                       0.0
                                     )
                                       +
-                                      (((season.indexOf(this.state.clickedCard.props.result[1].props.type) + 1 === this.props.colorType) &&
+                                      (this.state.clickedCard.props.result.length >= 2) &&
+                                      (((season.indexOf(this.state.clickedCard.props.result[1].key) + 1 === this.props.colorType) &&
                                         (parseFloat(this.state.clickedCard.props.result[1].props.ratio) * 100))
                                         ||
-                                        (((season.indexOf(this.state.clickedCard.props.result[1].props.type) + 2) % 4 + 1 === this.props.colorType) &&
+                                        (((season.indexOf(this.state.clickedCard.props.result[1].key) + 2) % 4 + 1 === this.props.colorType) &&
                                           (parseFloat(this.state.clickedCard.props.result[1].props.ratio) * 70))
                                         ||
                                         0.0
@@ -413,10 +396,10 @@ class Dressroom extends Component {
                                       +
                                       (
                                         (this.state.clickedCard.props.result.length === 3) && (
-                                          (((season.indexOf(this.state.clickedCard.props.result[2].props.type) + 1 === this.props.colorType) &&
+                                          (((season.indexOf(this.state.clickedCard.props.result[2].key) + 1 === this.props.colorType) &&
                                             (parseFloat(this.state.clickedCard.props.result[2].props.ratio) * 100))
                                             ||
-                                            (((season.indexOf(this.state.clickedCard.props.result[2].props.type) + 2) % 4 + 1 === this.props.colorType) &&
+                                            (((season.indexOf(this.state.clickedCard.props.result[2].key) + 2) % 4 + 1 === this.props.colorType) &&
                                               (parseFloat(this.state.clickedCard.props.result[2].props.ratio) * 70))
                                             ||
                                             0.0)
@@ -509,7 +492,8 @@ class Dressroom extends Component {
                               <Icon name='heart' color='red' />
                               {this.state.clickedCard.props.likes} 좋아요 &nbsp;
                       <Icon name='comment alternate' color='olive' />
-                              { } 댓글
+                              {this.state.rlist !== null &&
+                                this.state.rlist.length} 댓글
                     </Item.Header>
                           </Item.Content>
                         </Item>
@@ -571,7 +555,7 @@ class Dressroom extends Component {
                   >
                     <Modal.Header>삭제하기</Modal.Header>
                     <Modal.Content>
-                      <p>정말 삭제하시겠습니까?</p>
+                      <p>옷 데이터를 삭제하시겠습니까?</p>
                     </Modal.Content>
                     <Modal.Actions>
                       <Button
