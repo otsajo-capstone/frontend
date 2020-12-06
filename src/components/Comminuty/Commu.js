@@ -404,7 +404,11 @@ class Commu extends Component {
       del_state: false,
       rid: null,
       clickedReply: null,
-      rrply_state: false,
+      rrply_state: false,      
+      rrid: null,
+      rr_update_state: false,
+      new_r_reply: "",
+      rr_del_state: false,
     })
   }
 
