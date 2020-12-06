@@ -37,6 +37,10 @@ class Commu extends Component {
       rid: null,
       clickedReply: null,
       rrply_state: false,
+      rrid: null,
+      rr_update_state: false,
+      new_r_reply: "",
+      rr_del_state: false,
     };
   }
 
@@ -194,8 +198,8 @@ class Commu extends Component {
 
   handleAddReplyEvent = async () => {
     //reply
+    var cardKey = this.state.clickedCard.key
     if (!this.state.rrply_state) {
-      var cardKey = this.state.clickedCard.key
       var formdata = new FormData();
       formdata.append('dress_uid', cardKey);
       formdata.append('mb_uid', this.props.memberId);
@@ -229,11 +233,14 @@ class Commu extends Component {
         const dbresponse = await Axios.get("http://localhost:8080/colorfit/DressRoom/selectDress/"
           + String(cardKey) + "/" + String(this.props.memberId));
 
-        this.setState({
-          reply: "",
-          clickedReply: null,
-          rrply_state: false
-        })
+          if (dbresponse.data.status === 200){
+            this.setState({
+              reply: "",
+              clickedReply: null,
+              rrply_state: false,
+              r_rlist: dbresponse.data.rrlist
+            })
+          }
       }
       else {
       }
@@ -320,9 +327,84 @@ class Commu extends Component {
     }
   }
 
+  handleUpdateRereplyEvent = async () => {
+    var formdata = new FormData();
+    formdata.append('rereply_uid', this.state.rrid);
+    formdata.append('rereply_content', this.state.new_r_reply);
+
+    const response = await Axios.post("http://localhost:8080/colorfit/yourDressRoom/updateRereply/", formdata);
+
+    if (response.data.status === 200) {
+      const dbresponse = await Axios.get("http://localhost:8080/colorfit/DressRoom/selectDress/"
+        + String(this.state.clickedCard.key) + "/" + String(this.props.memberId));
+
+      this.setState({
+        r_rlist: dbresponse.data.rrlist,
+        rr_update_state: false,
+        new_r_reply: ""
+      })
+    }
+    else {
+    }
+  }
+
+  handleClickUpdateRerp = async (rereply_uid, rereply_content) => {
+    this.setState({
+      rr_update_state: true,
+      new_r_reply: rereply_content,
+      rrid: rereply_uid
+    })
+  }
+
+  closeUpdateRerp = async e => {
+    this.setState({
+      rr_update_state: false
+    })
+  }
+
+  handleDeleteRereplyEvent = async () => {
+    const response = await Axios.post("http://localhost:8080/colorfit/yourDressRoom/deleteRereply/"
+      + String(this.state.rrid));
+
+    if (response.data.status === 200) {
+      const dbresponse = await Axios.get("http://localhost:8080/colorfit/DressRoom/selectDress/"
+        + String(this.state.clickedCard.key) + "/" + String(this.props.memberId));
+
+      this.setState({
+        r_rlist: dbresponse.data.rrlist,
+        rr_del_state: false
+      })
+    }
+    else {
+    }
+  }
+
+  handleClickDeletionRerp = async (rereply_uid) => {
+    this.setState({
+      rr_del_state: true,
+      rrid: rereply_uid
+    })
+  }
+
+  closeUpdateRerp = async e => {
+    this.setState({
+      rr_del_state: false
+    })
+  }
+
   closeDimmer = async e => {
     this.setState({
-      clicked: !this.state.clicked
+      clicked: false,
+      clickedCard: [],
+      rlist: [],
+      r_rlist: [],
+      reply: "",
+      update_state: false,
+      new_reply: "",
+      del_state: false,
+      rid: null,
+      clickedReply: null,
+      rrply_state: false,
     })
   }
 
@@ -338,13 +420,13 @@ class Commu extends Component {
                 placeholder>
                 <Header style={{ fontFamily: ['Inter', 'NotoSansKR'] }}>
                   <div>
-                    <Button style={{ backgroundColor: seasonColor[1] }}>
-                      <div style={{ color: 'white' }}>{season[1]}</div></Button>
+                    <Button style={{ backgroundColor: seasonColor[this.props.colorType-1] }}>
+                      <div style={{ color: 'white' }}>{season[this.props.colorType-1]}</div></Button>
                              사용자들의 옷장입니다.</div>
                 </Header>
 
                 <Segment.Inline>
-                  <Card.Group itemsPerRow={4}>
+                  <Card.Group itemsPerRow={4} stackable>
                     {this.state.dresslist.map(
                       card => <Card fluid
                         onClick={() => this.handleClickCardEvent(card)}
@@ -420,7 +502,7 @@ class Commu extends Component {
                                           <CanvasJSChart options={{
                                             title: {
                                               text: "옷에서 추출한 컬러",
-                                              fontFamily: "Inter, NotoSansKR",
+                                              fontFamily: ["Inter", "NotoSansKR"],
                                               fontSize: 15
                                             },
                                             animationEnabled: true,
@@ -546,19 +628,33 @@ class Commu extends Component {
                                               >삭제하기</Comment.Action>}
                                           </Comment.Actions>
                                         </Comment.Content>
+                                        
                                         {this.state.r_rlist !== null &&
                                           <Comment.Group>
                                             {this.state.r_rlist.map((rereply) =>
+                                              reply.reply_uid === rereply.reply_uid &&
                                               <Comment>
                                                 <Comment.Content>
-                                                  <Comment.Author>{rereply.mb_name}</Comment.Author>
-                                                  <Comment.Text>{rereply.rereply_content}</Comment.Text>
+                                                  <Comment.Author><Icon name='level up' rotated='clockwise'/>{rereply.mb_name}</Comment.Author>
+                                                  <Comment.Text style={{paddingLeft: '18px'}}>{rereply.rereply_content}</Comment.Text>
+                                                  <Comment.Actions>
+                                                  {rereply.mb_uid === this.props.memberId &&
+                                              <Comment.Action
+                                              onClick={() => this.handleClickUpdateRerp(rereply.rereply_uid, rereply.rereply_content)}
+                                              >수정하기</Comment.Action>}
+                                            {rereply.mb_uid === this.props.memberId &&
+                                              <Comment.Action
+                                              onClick={() => this.handleClickDeletionRerp(rereply.rereply_uid)}
+                                              >삭제하기</Comment.Action>}
+                                                  </Comment.Actions>
                                                 </Comment.Content>
                                               </Comment>
                                             )}
                                           </Comment.Group>}
+
                                       </Comment>
                                     )}
+
                                     <Form reply>
                                       {this.state.rrply_state &&
                                         <Label style={{
@@ -630,6 +726,52 @@ class Commu extends Component {
                               icon='check'
                               content='확인'
                               onClick={this.handleDeleteReplyEvent}
+                            />
+                          </Modal.Actions>
+                        </Modal>}
+
+                        {(this.state.rr_update_state) &&
+                        <Modal
+                          style={{ position: 'relative', maxHeight: '30%' }}
+                          closeIcon={{ style: { top: '1.0535rem', right: '1rem' }, color: 'black', name: 'close' }}
+                          open={this.state.rr_update_state}
+                          onClose={this.closeUpdateRerp}
+                        >
+                          <Modal.Header>댓글 수정하기</Modal.Header>
+                          <Modal.Content scrolling>
+                            <Form reply>
+                              <Form.TextArea
+                                name='new_r_reply'
+                                value={this.state.new_r_reply}
+                                onChange={this.handleChange} />
+                            </Form>
+                          </Modal.Content>
+                          <Modal.Actions>
+                            <Button
+                              icon='check'
+                              content='저장하기'
+                              onClick={this.handleUpdateRereplyEvent}
+                            />
+                          </Modal.Actions>
+                        </Modal>}
+
+                        {(this.state.rr_del_state) &&
+                        <Modal
+                          style={{ position: 'relative', height: '200px' }}
+                          closeIcon={{ style: { top: '1.0535rem', right: '1rem' }, color: 'black', name: 'close' }}
+                          open={this.state.rr_del_state}
+                          onClose={this.closeDeletionRerp}
+                        >
+                          <Modal.Header>댓글 삭제하기</Modal.Header>
+                          <Modal.Content>
+                            <p>'{this.state.r_rlist.find(r => r.rereply_uid === this.state.rrid).rereply_content}'
+                      댓글을 삭제하시겠습니까?</p>
+                          </Modal.Content>
+                          <Modal.Actions>
+                            <Button
+                              icon='check'
+                              content='확인'
+                              onClick={this.handleDeleteRereplyEvent}
                             />
                           </Modal.Actions>
                         </Modal>}
