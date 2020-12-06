@@ -609,7 +609,7 @@ class Commu extends Component {
                                     {this.state.like === 0 &&
                                       <Icon name='heart outline' color='red' link onClick={this.handleClickHeartEvent} />}
                                     {this.state.clickedCard.props.likes} 좋아요 &nbsp;
-                                                            <Icon name='comment alternate' color='olive' />
+                                      <Icon name='comment alternate' color='olive' />
                                     {this.state.rlist.length} 댓글
                                                         </Item.Header>
                                   <Comment.Group>
@@ -633,7 +633,7 @@ class Commu extends Component {
                                           </Comment.Actions>
                                         </Comment.Content>
                                         
-                                        {this.state.r_rlist !== null &&
+                                        {this.state.r_rlist !== [] &&
                                           <Comment.Group>
                                             {this.state.r_rlist.map((rereply) =>
                                               reply.reply_uid === rereply.reply_uid &&
