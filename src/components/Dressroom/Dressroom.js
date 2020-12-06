@@ -46,7 +46,9 @@ class Dressroom extends Component {
     const { data } = response;
 
     if (data.status === 200) {
-      const Items = data.dlist.map((item) =>
+      var Items = data.dlist;
+      Items.sort((a, b) => b.dress_uid - a.dress_uid);
+      Items = Items.map((item) =>
         <li
           key={item.dress_uid}
           spring={item.spring}
@@ -92,7 +94,9 @@ class Dressroom extends Component {
     const { data } = response;
 
     if (data.status === 200) {
-      const Items = data.dlist.map((item) =>
+      var Items = data.dlist;
+      Items.sort((a, b) => b.dress_uid - a.dress_uid);
+      Items = Items.map((item) =>
         <li
           key={item.dress_uid}
           spring={item.spring}
@@ -261,7 +265,7 @@ class Dressroom extends Component {
           <Header style={{ fontFamily: ['NotoSansKR'] }}>
             나의 드레스룸</Header>
           <Segment>
-            <Card.Group itemsPerRow={4}>
+            <Card.Group itemsPerRow={4} stackable>
               {this.state.mylist.map(
                 card => <Card fluid
                   onClick={() => this.handleClickCardEvent(card)}
@@ -289,7 +293,7 @@ class Dressroom extends Component {
                     </Card.Description>
                   </Card.Content>
                   <Card.Content extra>
-                    <a><Icon name='heart' color='red'/>
+                    <a><Icon name='heart' color='red' />
                       {card.props.likes} 좋아요 </a>
                   </Card.Content>
                 </Card>
@@ -329,7 +333,7 @@ class Dressroom extends Component {
                               <Item>
                                 <Item.Content>
                                   <Item.Header>
-                                    <Icon name='file' style={{color: '#fcdada'}}/>이름</Item.Header>
+                                    <Icon name='file' style={{ color: '#fcdada' }} />이름</Item.Header>
                                   <Item.Description>
                                     {this.state.clickedCard.props.dress_name}
                                   </Item.Description>
@@ -338,12 +342,12 @@ class Dressroom extends Component {
                               <Item>
                                 <Item.Content>
                                   <Item.Header>
-                                    <Icon name='chart pie' style={{color: '#ffa5a5'}} />
+                                    <Icon name='chart pie' style={{ color: '#ffa5a5' }} />
                               컬러 정보</Item.Header>
                                   <CanvasJSChart options={{
                                     title: {
                                       text: "옷에서 추출한 컬러",
-                                      fontFamily: "Inter, NotoSansKR",
+                                      fontFamily: ["Inter", "NotoSansKR"],
                                       fontSize: 15
                                     },
                                     animationEnabled: true,
@@ -412,7 +416,7 @@ class Dressroom extends Component {
                               <Item>
                                 <Item.Content>
                                   <Item.Header>
-                                    <Icon name='calendar' style={{color: '#5c969e'}}/>
+                                    <Icon name='calendar' style={{ color: '#5c969e' }} />
                               저장한 날짜, 시간</Item.Header>
                                   <Item.Description>
                                     {this.state.clickedCard.props.dress_regDate.slice(0, 16)}
@@ -423,7 +427,7 @@ class Dressroom extends Component {
                                 <Item>
                                   <Item.Content>
                                     <Item.Header>
-                                      <Icon name='linkify' style={{color: '#3d7ea6'}}/>
+                                      <Icon name='linkify' style={{ color: '#3d7ea6' }} />
                               쇼핑몰 링크</Item.Header>
                                     <Item.Description>
                                       <a onClick={() => window.open(this.state.clickedCard.props.dress_link, "_blank")}>
@@ -435,7 +439,7 @@ class Dressroom extends Component {
                               <Item>
                                 <Item.Content>
                                   <Item.Header>
-                                    <Icon name='sticky note' style={{color: '#fff3a5'}} />
+                                    <Icon name='sticky note' style={{ color: '#fff3a5' }} />
                               메모</Item.Header>
                                   <Item.Description>
                                     {this.state.clickedCard.props.dress_memo}
@@ -444,9 +448,14 @@ class Dressroom extends Component {
                               </Item>
                               <Item>
                                 <Item.Content>
-                                  <Item.Header>
-                                    <Icon name='lock open' color='grey' />
-                              공개 여부</Item.Header>
+                                  {(this.state.clickedCard.props.share_type === 0) &&
+                                    <Item.Header>
+                                      <Icon name='lock open' color='grey' />
+                              공개 여부</Item.Header>}
+                                  {(this.state.clickedCard.props.share_type === 1) &&
+                                    <Item.Header>
+                                      <Icon name='lock' color='grey' />
+                              공개 여부</Item.Header>}
                                   <Item.Description>
                                     {(this.state.clickedCard.props.share_type === 0) &&
                                       <div>공개 중</div>}
