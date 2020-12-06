@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import Axios from 'axios';
 import {
   Segment, Header, Card, Image, Icon,
-  Modal, Button, Grid,
+  Modal, Button, Grid, Comment,
   Container, Item, Form, Label, Radio
 } from 'semantic-ui-react';
 import CanvasJSReact from '../react-canvasjs-chart-samples/react-canvasjs-chart-samples/src/assets/canvasjs.react';
@@ -32,10 +32,24 @@ class Dressroom extends Component {
       del_state: false,
       clickedCard: [],
       rlist: [],
+      r_rlist: [],
       shoplink: "",
       new_name: "",
       new_memo: "",
       new_type: 0,
+      like: 0,
+      
+      reply: "",
+      r_update_state: false,
+      new_reply: "",
+      r_del_state: false,
+      rid: null,
+      clickedReply: null,
+      rrply_state: false,
+      rrid: null,
+      rr_update_state: false,
+      new_r_reply: "",
+      rr_del_state: false,
     };
   }
 
@@ -144,7 +158,10 @@ class Dressroom extends Component {
         new_name: card.props.dress_name,
         new_memo: card.props.dress_memo,
         new_type: card.props.share_type,
-        rlist: data.rlist
+        rlist: data.rlist,
+        like: data.intResult,
+        r_rlist: data.rrlist,
+        rrply_state: false
       })
     }
   }
@@ -171,7 +188,28 @@ class Dressroom extends Component {
 
   closeDimmer = async e => {
     this.setState({
-      clicked: !this.state.clicked
+      clicked: false,
+      update_state: false,
+      del_state: false,
+      clickedCard: [],
+      rlist: [],
+      r_rlist: [],
+      shoplink: "",
+      new_name: "",
+      new_memo: "",
+      new_type: 0,
+      like: 0,
+      reply: "",
+      r_update_state: false,
+      new_reply: "",
+      r_del_state: false,
+      rid: null,
+      clickedReply: null,
+      rrply_state: false,
+      rrid: null,
+      rr_update_state: false,
+      new_r_reply: "",
+      rr_del_state: false,
     })
   }
 
@@ -252,6 +290,237 @@ class Dressroom extends Component {
     this.setState({
       clicked: false,
       del_state: false
+    })
+  }
+
+  handleClickHeartEvent = async () => {
+    var cardKey = this.state.clickedCard.key
+    var formdata = new FormData();
+    formdata.append('dress_uid', cardKey);
+    formdata.append('mb_uid', this.props.memberId);
+
+    var response;
+    if (this.state.like === 0) {
+      response = await Axios.post("http://localhost:8080/colorfit/yourDressRoom/likeDress/",
+        formdata);
+
+      this.setState({
+        like: 1
+      })
+    }
+    else {
+      response = await Axios.post("http://localhost:8080/colorfit/yourDressRoom/unlikeDress/",
+        formdata);
+
+      this.setState({
+        like: 0
+      })
+    }
+
+    if (response.data.status === 200) {
+      await this.updateDressList();
+      var newCard = this.state.mylist.find(d => d.key === cardKey);
+      this.setState({
+        clickedCard: newCard
+      })
+    }
+    else {
+    }
+  }
+
+  handleAddReplyEvent = async () => {
+    //reply
+    var cardKey = this.state.clickedCard.key
+    if (!this.state.rrply_state) {
+      var formdata = new FormData();
+      formdata.append('dress_uid', cardKey);
+      formdata.append('mb_uid', this.props.memberId);
+      formdata.append('reply_content', this.state.reply);
+
+      const response = await Axios.post("http://localhost:8080/colorfit/yourDressRoom/insertReply/", formdata);
+
+      if (response.data.status === 200) {
+        const dbresponse = await Axios.get("http://localhost:8080/colorfit/DressRoom/selectDress/"
+          + String(cardKey) + "/" + String(this.props.memberId));
+
+        this.setState({
+          rlist: dbresponse.data.rlist,
+          reply: ""
+        })
+      }
+      else {
+      }
+    }
+
+    //re-reply
+    else {
+      var formdata = new FormData();
+      formdata.append('reply_uid', this.state.clickedReply.reply_uid);
+      formdata.append('mb_uid', this.props.memberId);
+      formdata.append('rereply_content', this.state.reply);
+
+      const response = await Axios.post("http://localhost:8080/colorfit/yourDressRoom/insertRereply/", formdata);
+
+      if (response.data.status === 200) {
+        const dbresponse = await Axios.get("http://localhost:8080/colorfit/DressRoom/selectDress/"
+          + String(cardKey) + "/" + String(this.props.memberId));
+
+          if (dbresponse.data.status === 200){
+            this.setState({
+              reply: "",
+              clickedReply: null,
+              rrply_state: false,
+              r_rlist: dbresponse.data.rrlist
+            })
+          }
+      }
+      else {
+      }
+    }
+  }
+
+  handleUpdateReplyEvent = async () => {
+    var formdata = new FormData();
+    formdata.append('reply_uid', this.state.rid);
+    formdata.append('reply_content', this.state.new_reply);
+
+    const response = await Axios.post("http://localhost:8080/colorfit/yourDressRoom/updateReply/", formdata);
+
+    if (response.data.status === 200) {
+      const dbresponse = await Axios.get("http://localhost:8080/colorfit/DressRoom/selectDress/"
+        + String(this.state.clickedCard.key) + "/" + String(this.props.memberId));
+
+      this.setState({
+        rlist: dbresponse.data.rlist,
+        r_update_state: false,
+        new_reply: ""
+      })
+    }
+    else {
+    }
+  }
+
+  handleClickUpdateReply = async (reply_uid, reply_content) => {
+    this.setState({
+      r_update_state: true,
+      rid: reply_uid,
+      new_reply: reply_content
+    })
+  }
+
+  closeUpdateReply = async e => {
+    this.setState({
+      r_update_state: false
+    })
+  }
+
+  handleDeleteReplyEvent = async () => {
+    const response = await Axios.post("http://localhost:8080/colorfit/yourDressRoom/deleteReply/"
+      + String(this.state.rid));
+
+    if (response.data.status === 200) {
+      const dbresponse = await Axios.get("http://localhost:8080/colorfit/DressRoom/selectDress/"
+        + String(this.state.clickedCard.key) + "/" + String(this.props.memberId));
+
+      this.setState({
+        rlist: dbresponse.data.rlist,
+        r_del_state: false
+      })
+    }
+    else {
+    }
+  }
+
+  handleClickDeletionReply = async (reply_uid) => {
+    this.setState({
+      r_del_state: true,
+      rid: reply_uid
+    })
+  }
+
+  closeDeletionReply = async e => {
+    this.setState({
+      r_del_state: false
+    })
+  }
+
+  handleClickReply = async (reply) => {
+    if (this.state.clickedReply === null || this.state.clickedReply.reply_uid !== reply.reply_uid) {
+      this.setState({
+        clickedReply: reply,
+        rrply_state: true
+      })
+    }
+    else {
+      this.setState({
+        clickedReply: null,
+        rrply_state: false
+      })
+    }
+  }
+
+  handleUpdateRereplyEvent = async () => {
+    var formdata = new FormData();
+    formdata.append('rereply_uid', this.state.rrid);
+    formdata.append('rereply_content', this.state.new_r_reply);
+
+    const response = await Axios.post("http://localhost:8080/colorfit/yourDressRoom/updateRereply/", formdata);
+
+    if (response.data.status === 200) {
+      const dbresponse = await Axios.get("http://localhost:8080/colorfit/DressRoom/selectDress/"
+        + String(this.state.clickedCard.key) + "/" + String(this.props.memberId));
+
+      this.setState({
+        r_rlist: dbresponse.data.rrlist,
+        rr_update_state: false,
+        new_r_reply: ""
+      })
+    }
+    else {
+    }
+  }
+
+  handleClickUpdateRerp = async (rereply_uid, rereply_content) => {
+    this.setState({
+      rr_update_state: true,
+      new_r_reply: rereply_content,
+      rrid: rereply_uid
+    })
+  }
+
+  closeUpdateRerp = async e => {
+    this.setState({
+      rr_update_state: false
+    })
+  }
+
+  handleDeleteRereplyEvent = async () => {
+    const response = await Axios.post("http://localhost:8080/colorfit/yourDressRoom/deleteRereply/"
+      + String(this.state.rrid));
+
+    if (response.data.status === 200) {
+      const dbresponse = await Axios.get("http://localhost:8080/colorfit/DressRoom/selectDress/"
+        + String(this.state.clickedCard.key) + "/" + String(this.props.memberId));
+
+      this.setState({
+        r_rlist: dbresponse.data.rrlist,
+        rr_del_state: false
+      })
+    }
+    else {
+    }
+  }
+
+  handleClickDeletionRerp = async (rereply_uid) => {
+    this.setState({
+      rr_del_state: true,
+      rrid: rereply_uid
+    })
+  }
+
+  closeUpdateRerp = async e => {
+    this.setState({
+      rr_del_state: false
     })
   }
 
@@ -497,12 +766,84 @@ class Dressroom extends Component {
                         <Item>
                           <Item.Content>
                             <Item.Header>
-                              <Icon name='heart' color='red' />
-                              {this.state.clickedCard.props.likes} 좋아요 &nbsp;
+                            {this.state.like === 1 &&
+                                      <Icon name='heart' color='red' link onClick={this.handleClickHeartEvent} />}
+                                    {this.state.like === 0 &&
+                                      <Icon name='heart outline' color='red' link onClick={this.handleClickHeartEvent} />}
+                                    {this.state.clickedCard.props.likes} 좋아요 &nbsp;
                       <Icon name='comment alternate' color='olive' />
                               {this.state.rlist !== null &&
                                 this.state.rlist.length} 댓글
                     </Item.Header>
+                    <Comment.Group>
+                                    {this.state.rlist.map((reply) =>
+                                      <Comment>
+                                        <Comment.Content>
+                                          <Comment.Author>{reply.mb_name}</Comment.Author>
+                                          <Comment.Text>{reply.reply_content}</Comment.Text>
+                                          <Comment.Actions>
+                                            <Comment.Action
+                                              onClick={() => this.handleClickReply(reply)}
+                                            >댓글달기</Comment.Action>
+                                            {reply.mb_uid === this.props.memberId &&
+                                              <Comment.Action
+                                                onClick={() => this.handleClickUpdateReply(reply.reply_uid, reply.reply_content)}
+                                              >수정하기</Comment.Action>}
+                                            {reply.mb_uid === this.props.memberId &&
+                                              <Comment.Action
+                                                onClick={() => this.handleClickDeletionReply(reply.reply_uid)}
+                                              >삭제하기</Comment.Action>}
+                                          </Comment.Actions>
+                                        </Comment.Content>
+                                        
+                                        {this.state.r_rlist !== [] &&
+                                          <Comment.Group>
+                                            {this.state.r_rlist.map((rereply) =>
+                                              reply.reply_uid === rereply.reply_uid &&
+                                              <Comment>
+                                                <Comment.Content>
+                                                  <Comment.Author><Icon name='level up' rotated='clockwise'/>{rereply.mb_name}</Comment.Author>
+                                                  <Comment.Text style={{paddingLeft: '18px'}}>{rereply.rereply_content}</Comment.Text>
+                                                  <Comment.Actions>
+                                                  {rereply.mb_uid === this.props.memberId &&
+                                              <Comment.Action
+                                              onClick={() => this.handleClickUpdateRerp(rereply.rereply_uid, rereply.rereply_content)}
+                                              >수정하기</Comment.Action>}
+                                            {rereply.mb_uid === this.props.memberId &&
+                                              <Comment.Action
+                                              onClick={() => this.handleClickDeletionRerp(rereply.rereply_uid)}
+                                              >삭제하기</Comment.Action>}
+                                                  </Comment.Actions>
+                                                </Comment.Content>
+                                              </Comment>
+                                            )}
+                                          </Comment.Group>}
+
+                                      </Comment>
+                                    )}
+
+                                    <Form reply>
+                                      {this.state.rrply_state &&
+                                        <Label style={{
+                                          padding: '0.6rem', margin: '0.3rem',
+                                          backgroundColor: '#dfe5ed', color: '#3386f5'
+                                        }}>
+                                          @{this.state.clickedReply.mb_name}
+                                        </Label>
+                                      }
+                                      <Form.TextArea
+                                        name='reply'
+                                        value={this.state.reply}
+                                        onChange={this.handleChange}>
+                                      </Form.TextArea>
+                                      <Button
+                                        content='저장'
+                                        labelPosition='left'
+                                        icon='edit'
+                                        primary
+                                        onClick={this.handleAddReplyEvent} />
+                                    </Form>
+                                  </Comment.Group>
                           </Item.Content>
                         </Item>
                       </Container>
@@ -574,6 +915,97 @@ class Dressroom extends Component {
                     </Modal.Actions>
                   </Modal>}
 
+                  {(this.state.r_update_state) &&
+                        <Modal
+                          style={{ position: 'relative', maxHeight: '30%' }}
+                          closeIcon={{ style: { top: '1.0535rem', right: '1rem' }, color: 'black', name: 'close' }}
+                          open={this.state.r_update_state}
+                          onClose={this.closeUpdateReply}
+                        >
+                          <Modal.Header>댓글 수정하기</Modal.Header>
+                          <Modal.Content scrolling>
+                            <Form reply>
+                              <Form.TextArea
+                                name='new_reply'
+                                value={this.state.new_reply}
+                                onChange={this.handleChange} />
+                            </Form>
+                          </Modal.Content>
+                          <Modal.Actions>
+                            <Button
+                              icon='check'
+                              content='저장하기'
+                              onClick={this.handleUpdateReplyEvent}
+                            />
+                          </Modal.Actions>
+                        </Modal>}
+
+                      {(this.state.r_del_state) &&
+                        <Modal
+                          style={{ position: 'relative', height: '200px' }}
+                          closeIcon={{ style: { top: '1.0535rem', right: '1rem' }, color: 'black', name: 'close' }}
+                          open={this.state.r_del_state}
+                          onClose={this.closeDeletionReply}
+                        >
+                          <Modal.Header>댓글 삭제하기</Modal.Header>
+                          <Modal.Content>
+                            <p>'{this.state.rlist.find(r => r.reply_uid === this.state.rid).reply_content}'
+                      댓글을 삭제하시겠습니까?</p>
+                          </Modal.Content>
+                          <Modal.Actions>
+                            <Button
+                              icon='check'
+                              content='확인'
+                              onClick={this.handleDeleteReplyEvent}
+                            />
+                          </Modal.Actions>
+                        </Modal>}
+
+                        {(this.state.rr_update_state) &&
+                        <Modal
+                          style={{ position: 'relative', maxHeight: '30%' }}
+                          closeIcon={{ style: { top: '1.0535rem', right: '1rem' }, color: 'black', name: 'close' }}
+                          open={this.state.rr_update_state}
+                          onClose={this.closeUpdateRerp}
+                        >
+                          <Modal.Header>댓글 수정하기</Modal.Header>
+                          <Modal.Content scrolling>
+                            <Form reply>
+                              <Form.TextArea
+                                name='new_r_reply'
+                                value={this.state.new_r_reply}
+                                onChange={this.handleChange} />
+                            </Form>
+                          </Modal.Content>
+                          <Modal.Actions>
+                            <Button
+                              icon='check'
+                              content='저장하기'
+                              onClick={this.handleUpdateRereplyEvent}
+                            />
+                          </Modal.Actions>
+                        </Modal>}
+
+                        {(this.state.rr_del_state) &&
+                        <Modal
+                          style={{ position: 'relative', height: '200px' }}
+                          closeIcon={{ style: { top: '1.0535rem', right: '1rem' }, color: 'black', name: 'close' }}
+                          open={this.state.rr_del_state}
+                          onClose={this.closeDeletionRerp}
+                        >
+                          <Modal.Header>댓글 삭제하기</Modal.Header>
+                          <Modal.Content>
+                            <p>'{this.state.r_rlist.find(r => r.rereply_uid === this.state.rrid).rereply_content}'
+                      댓글을 삭제하시겠습니까?</p>
+                          </Modal.Content>
+                          <Modal.Actions>
+                            <Button
+                              icon='check'
+                              content='확인'
+                              onClick={this.handleDeleteRereplyEvent}
+                            />
+                          </Modal.Actions>
+                        </Modal>}
               </Modal>
             }
           </Segment>
