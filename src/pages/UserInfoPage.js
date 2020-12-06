@@ -6,15 +6,11 @@ import InfoHeader from '../components/MyPage/InfoHeader'
 
 class UserInfoPage extends Component {
     render(){
-        const { match } = this.props;
-        const number = match.params.number;
-
         return (
             <Layout>
-                <InfoHeader number={number} />
+                <InfoHeader/>
                 <Store.Consumer>                    
                     {Store => (
-                        (number === '1' || number === undefined) &&
                         <Info 
                         memberId={Store.memberId}
                         id={Store.id}
