@@ -29,7 +29,6 @@ class Commu extends Component {
       dresslist: [],
       clicked: false,
       clickedCard: [],
-      ddto: [],
       rlist: [],
       r_rlist: [],
       like: 0,
@@ -86,7 +85,6 @@ class Commu extends Component {
       this.setState({
         dresslist: Items
       })
-      //console.log('list:', Items);
     }
     else {
       alert('로그인 여부를 확인해주세요.');
@@ -151,9 +149,8 @@ class Commu extends Component {
 
     if (data.status === 200) {
       this.setState({
-        clicked: !this.state.clicked,
+        clicked: true,
         clickedCard: card,
-        ddto: data.ddto,
         rlist: data.rlist,
         like: data.intResult,
         r_rlist: data.rrlist,
@@ -464,13 +461,15 @@ class Commu extends Component {
                                               0.0
                                             )
                                               +
-                                              (((season.indexOf(this.state.clickedCard.props.result[1].props.type) + 1 === this.props.colorType) &&
+                                              ((this.state.clickedCard.props.result.length >= 2) &&
+                                                (((season.indexOf(this.state.clickedCard.props.result[1].props.type) + 1 === this.props.colorType) &&
                                                 (parseFloat(this.state.clickedCard.props.result[1].props.ratio) * 100))
                                                 ||
                                                 (((season.indexOf(this.state.clickedCard.props.result[1].props.type) + 2) % 4 + 1 === this.props.colorType) &&
                                                   (parseFloat(this.state.clickedCard.props.result[1].props.ratio) * 70))
                                                 ||
-                                                0.0
+                                                0.0)
+                                                || 0.0
                                               )
                                               +
                                               (
