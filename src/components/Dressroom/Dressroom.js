@@ -316,10 +316,13 @@ class Dressroom extends Component {
                   <Grid fluid>
 
                     <Grid.Row columns={2}>
-                      <Grid.Column>
+                      <Grid.Column className="segment centered">
                         <Image size='huge'
                           style={{
-                            position: 'relative',
+                            display: 'flex',
+                            position: 'absolute',
+                            width: '100%',
+                            height: '100%',
                             alignSelf: 'center',
                             justifyContent: 'center',
                             alignItems: 'center'
@@ -387,14 +390,14 @@ class Dressroom extends Component {
                                       +
                                       (
                                         ((this.state.clickedCard.props.result.length >= 2) &&
-                                      (((season.indexOf(this.state.clickedCard.props.result[1].key) + 1 === this.props.colorType) &&
-                                        (parseFloat(this.state.clickedCard.props.result[1].props.ratio) * 100))
-                                        ||
-                                        (((season.indexOf(this.state.clickedCard.props.result[1].key) + 2) % 4 + 1 === this.props.colorType) &&
-                                          (parseFloat(this.state.clickedCard.props.result[1].props.ratio) * 70))
-                                        || 0.0
-                                      ))
-                                      || 0.0)
+                                          (((season.indexOf(this.state.clickedCard.props.result[1].key) + 1 === this.props.colorType) &&
+                                            (parseFloat(this.state.clickedCard.props.result[1].props.ratio) * 100))
+                                            ||
+                                            (((season.indexOf(this.state.clickedCard.props.result[1].key) + 2) % 4 + 1 === this.props.colorType) &&
+                                              (parseFloat(this.state.clickedCard.props.result[1].props.ratio) * 70))
+                                            || 0.0
+                                          ))
+                                        || 0.0)
                                       +
                                       (
                                         (this.state.clickedCard.props.result.length === 3) && (

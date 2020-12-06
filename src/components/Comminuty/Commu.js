@@ -64,6 +64,8 @@ class Commu extends Component {
             <li
               key={c.hex}
               ratio={parseFloat(c.ratio)}
+              type={c.type}
+              subtype={c.subtype}
             />)}
           dress_name={item.dress_name}
           dress_memo={item.dress_memo}
@@ -76,17 +78,15 @@ class Commu extends Component {
           type={[item.spring, item.summer, item.autumn, item.winter].indexOf(Math.max(...[item.spring, item.summer, item.autumn, item.winter]))}
           result={(JSON.parse(item.result)).map(r =>
             <li
-              key={r.type + "-" + r.subtype}
-              type={r.type}
+              key={r.type}
               ratio={parseFloat(r.ratio)}
-              subtype={r.subtype}
             />)}
         />
       )
       this.setState({
         dresslist: Items
       })
-      console.log('list:', Items);
+      //console.log('list:', Items);
     }
     else {
       alert('로그인 여부를 확인해주세요.');
@@ -119,6 +119,8 @@ class Commu extends Component {
             <li
               key={c.hex}
               ratio={parseFloat(c.ratio)}
+              type={c.type}
+              subtype={c.subtype}
             />)}
           dress_name={item.dress_name}
           dress_memo={item.dress_memo}
@@ -131,10 +133,8 @@ class Commu extends Component {
           type={[item.spring, item.summer, item.autumn, item.winter].indexOf(Math.max(...[item.spring, item.summer, item.autumn, item.winter]))}
           result={(JSON.parse(item.result)).map(r =>
             <li
-              key={r.type + "-" + r.subtype}
-              type={r.type}
+              key={r.type}
               ratio={parseFloat(r.ratio)}
-              subtype={r.subtype}
             />)}
         />
       )
@@ -390,15 +390,19 @@ class Commu extends Component {
                       <Modal.Content image scrolling>
                         <Grid fluid>
                           <Grid.Row columns={2}>
-                            <Grid.Column>
+                            <Grid.Column className="segment centered">
                               <Image size='huge'
                                 style={{
-                                  position: 'relative',
+                                  display: 'flex',
+                                  position: 'absolute',
+                                  width: '100%',
+                                  height: '100%',
                                   alignSelf: 'center',
                                   justifyContent: 'center',
                                   alignItems: 'center'
                                 }}
-                                src={this.state.clickedCard.props.dress_img_org} wrapped />
+                                src={this.state.clickedCard.props.dress_img_org}
+                                wrapped/>
                             </Grid.Column>
                             <Grid.Column>
                               <Modal.Description>
@@ -431,31 +435,23 @@ class Commu extends Component {
                                               animationEnabled: true,
                                               dataPoints: [
                                                 {
-                                                  label: this.state.clickedCard.props.color[0].key,
+                                                  label: this.state.clickedCard.props.color[0].props.type + "-" + this.state.clickedCard.props.color[0].props.subtype,
                                                   y: this.state.clickedCard.props.color[0].props.ratio,
                                                   color: this.state.clickedCard.props.color[0].key
                                                 },
                                                 {
-                                                  label: this.state.clickedCard.props.color[1].key,
+                                                  label: this.state.clickedCard.props.color[1].props.type + "-" + this.state.clickedCard.props.color[1].props.subtype,
                                                   y: this.state.clickedCard.props.color[1].props.ratio,
                                                   color: this.state.clickedCard.props.color[1].key
                                                 },
                                                 {
-                                                  label: this.state.clickedCard.props.color[2].key,
+                                                  label: this.state.clickedCard.props.color[2].props.type + "-" + this.state.clickedCard.props.color[2].props.subtype,
                                                   y: this.state.clickedCard.props.color[2].props.ratio,
                                                   color: this.state.clickedCard.props.color[2].key
                                                 },
                                               ]
                                             }]
                                           }} />
-
-                                          {this.state.clickedCard.props.result.map(
-                                            s => <Card.Description>
-                                              <div style={{ color: seasonColor[season.indexOf(s.props.type)] }}>
-                                                {s.key} : {(s.props.ratio * 100).toFixed(2)}%
-                                                                </div>
-                                            </Card.Description>
-                                          )}
 
                             나와 어울리는 정도 : {
                                             ((((season.indexOf(this.state.clickedCard.props.result[0].props.type) + 1 === this.props.colorType) &&
@@ -578,7 +574,6 @@ class Commu extends Component {
                                         name='reply'
                                         value={this.state.reply}
                                         onChange={this.handleChange}>
-
                                       </Form.TextArea>
                                       <Button
                                         content='저장'
