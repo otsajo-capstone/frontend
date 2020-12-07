@@ -27,6 +27,7 @@ class Commu extends Component {
       dresslist: [],
       clicked: false,
       clickedCard: [],
+      matching: 0,
       rlist: [],
       r_rlist: [],
       like: 0,
@@ -40,7 +41,7 @@ class Commu extends Component {
       rrid: null,
       rr_update_state: false,
       new_r_reply: "",
-      rr_del_state: false,
+      rr_del_state: false
     };
   }
 
@@ -150,13 +151,47 @@ class Commu extends Component {
     const { data } = response;
 
     if (data.status === 200) {
+      var matching = ((
+        ((season.indexOf(card.props.result[0].key) + 1 === this.props.colorType) &&
+        (parseFloat(card.props.result[0].props.ratio) * 100))
+        ||
+        (((season.indexOf(card.props.result[0].key) + 2) % 4 + 1 === this.props.colorType) &&
+          (parseFloat(card.props.result[0].props.ratio) * 70))
+        ||
+        0.0
+      )
+        +
+        (
+          ((card.props.result.length >= 2) &&
+            (((season.indexOf(card.props.result[1].key) + 1 === this.props.colorType) &&
+              (parseFloat(card.props.result[1].props.ratio) * 100))
+              ||
+              (((season.indexOf(card.props.result[1].key) + 2) % 4 + 1 === this.props.colorType) &&
+                (parseFloat(card.props.result[1].props.ratio) * 70))
+              || 0.0
+            ))
+          || 0.0)
+        +
+        (
+          (card.props.result.length === 3) && (
+            (((season.indexOf(card.props.result[2].key) + 1 === this.props.colorType) &&
+              (parseFloat(card.props.result[2].props.ratio) * 100))
+              ||
+              (((season.indexOf(card.props.result[2].key) + 2) % 4 + 1 === this.props.colorType) &&
+                (parseFloat(card.props.result[2].props.ratio) * 70))
+              ||
+              0.0)
+          )
+          || 0.0)).toFixed(2);
+
       this.setState({
         clicked: true,
         clickedCard: card,
         rlist: data.rlist,
         like: data.intResult,
         r_rlist: data.rrlist,
-        rrply_state: false
+        rrply_state: false,
+        matching: matching
       })
     }
   }
@@ -536,38 +571,7 @@ class Commu extends Component {
                                           }} />
 
                             나와 어울리는 정도 : {
-                                            ((((season.indexOf(this.state.clickedCard.props.result[0].props.type) + 1 === this.props.colorType) &&
-                                              (parseFloat(this.state.clickedCard.props.result[0].props.ratio) * 100))
-                                              ||
-                                              (((season.indexOf(this.state.clickedCard.props.result[0].props.type) + 2) % 4 + 1 === this.props.colorType) &&
-                                                (parseFloat(this.state.clickedCard.props.result[0].props.ratio) * 70))
-                                              ||
-                                              0.0
-                                            )
-                                              +
-                                              ((this.state.clickedCard.props.result.length >= 2) &&
-                                                (((season.indexOf(this.state.clickedCard.props.result[1].props.type) + 1 === this.props.colorType) &&
-                                                (parseFloat(this.state.clickedCard.props.result[1].props.ratio) * 100))
-                                                ||
-                                                (((season.indexOf(this.state.clickedCard.props.result[1].props.type) + 2) % 4 + 1 === this.props.colorType) &&
-                                                  (parseFloat(this.state.clickedCard.props.result[1].props.ratio) * 70))
-                                                ||
-                                                0.0)
-                                                || 0.0
-                                              )
-                                              +
-                                              (
-                                                (this.state.clickedCard.props.result.length === 3) && (
-                                                  (((season.indexOf(this.state.clickedCard.props.result[2].props.type) + 1 === this.props.colorType) &&
-                                                    (parseFloat(this.state.clickedCard.props.result[2].props.ratio) * 100))
-                                                    ||
-                                                    (((season.indexOf(this.state.clickedCard.props.result[2].props.type) + 2) % 4 + 1 === this.props.colorType) &&
-                                                      (parseFloat(this.state.clickedCard.props.result[2].props.ratio) * 70))
-                                                    ||
-                                                    0.0)
-                                                )
-                                                || 0.0)).toFixed(2)
-                                          }%
+                                            this.state.matching}%
                                                                     </Item.Description>
                                       </Item.Content>
                                     </Item>
