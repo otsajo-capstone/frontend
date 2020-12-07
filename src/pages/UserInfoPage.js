@@ -15,7 +15,8 @@ class UserInfoPage extends Component {
                         memberId={Store.memberId}
                         id={Store.id}
                         colorType={Store.colorType}
-                        onChangeColor={Store.onChangeColor}/>
+                        onChangeColor={Store.onChangeColor}
+                        onLogout={Store.onLogout}/>
                     )}
                 </Store.Consumer>
             </Layout>

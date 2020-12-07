@@ -97,7 +97,7 @@ class PersonalInput extends Component {
                             placeholder='아이디 (5자 이상)'
                             value={this.state.id}
                             onChange={this.handleChange}
-                            error={this.state.id.length < 4} />
+                            error={this.state.id.length < 5} />
 
                         <Label style={style.base}> 이름 </Label>
                         <Form.Input
@@ -122,7 +122,7 @@ class PersonalInput extends Component {
                             type='password'
                             value={this.state.password}
                             onChange={this.handleChange}
-                            error={(this.state.password.length < 4)} />
+                            error={(this.state.password.length < 5)} />
 
                         <Label style={style.base}> 비밀번호 확인 </Label>
                         <Form.Input
@@ -233,7 +233,7 @@ class PersonalInput extends Component {
                     </Segment>
 
                     <Button
-                        disabled={this.state.id.length < 4
+                        disabled={this.state.id.length < 5
                             || this.state.name.length < 1
                             || this.state.email.length < 1
                             || this.state.password.length < 5

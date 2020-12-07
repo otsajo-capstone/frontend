@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import {
   Button,
   Form,
   Label,
   Segment,
   Grid,
-  Container
+  Container,
+  Modal
 } from 'semantic-ui-react';
 import Axios from 'axios';
 
@@ -35,7 +36,8 @@ class Info extends Component {
       mb_email: 'noemail',
       mb_type: 0,
       password: '',
-      pw_check: ''
+      pw_check: '',
+      del_state: false
     };
   }
 
@@ -95,6 +97,41 @@ class Info extends Component {
     catch (error) {
       console.log(error);
     }
+  }
+
+  handleClickDeletion = async () => {
+    this.setState({
+      del_state: true
+    })
+  }
+
+  withdrawal = async e => {
+    e.preventDefault();
+
+    try {
+      const response = await Axios.post(
+        "http://localhost:8080/colorfit/member/withdrawal/" + String(this.props.memberId),
+      );
+
+      const { data } = response;
+      if (data.status === 200) {
+        alert("탈퇴 되었습니다.");
+        this.props.onLogout();
+        this.props.history.push('/');
+      }
+      else {
+        alert("오류");
+      }
+    }
+    catch (error) {
+      console.log(error);
+    }
+  }
+
+  closeDeletion = async e => {
+    this.setState({
+      del_state: false,
+    })
   }
 
   render() {
@@ -249,6 +286,28 @@ class Info extends Component {
               }}>
                 수정하기</div>
             </Button>
+            <Link onClick={this.handleClickDeletion}>탈퇴하기</Link>
+
+            {(this.state.del_state) &&
+                  <Modal
+                    style={{ position: 'relative', height: '200px' }}
+                    closeIcon={{ style: { top: '1.0535rem', right: '1rem' }, color: 'black', name: 'close' }}
+                    open={this.state.del_state}
+                    onClose={this.closeDeletion}
+                  >
+                    <Modal.Header>회원 탈퇴</Modal.Header>
+                    <Modal.Content>
+                      <p>정말 탈퇴하시겠습니까?</p>
+                      <p>저장된 회원 정보와 옷 데이터가 즉시 삭제되며, 복구되지 않습니다.</p>
+                    </Modal.Content>
+                    <Modal.Actions>
+                      <Button
+                        icon='check'
+                        content='확인'
+                        onClick={this.withdrawal}
+                      />
+                    </Modal.Actions>
+                  </Modal>}
           </Form>
         </Container>
       </div>
